@@ -1,0 +1,19 @@
+<body>
+  <app-nav-menu
+    (toggleSidebarEvent)="toggleSidebar($event)"
+    *ngIf="isLoggedIn"></app-nav-menu>
+  <ng-sidebar-container>
+    <ng-sidebar
+      [opened]="sidebarOpened"
+      *ngIf="isLoggedIn">
+      <div sidebar-menu></div>
+    </ng-sidebar>
+    <div ng-sidebar-content style="margin-top:15px;">
+      <div class="container-fluid">
+        <router-outlet></router-outlet>
+      </div>
+      <notifier-container></notifier-container>
+      <app-confirm-dialog></app-confirm-dialog>
+    </div>
+  </ng-sidebar-container>
+</body>

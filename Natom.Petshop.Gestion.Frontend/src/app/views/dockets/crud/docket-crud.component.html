@@ -1,0 +1,324 @@
+<div class="container-fluid" id="docket-crud">
+  <div class="row">
+    <div class="col-md-12">
+      <h3>{{ crud.mode }} legajo</h3>
+    </div>
+  </div>
+  <hr class="divider" />
+
+  <nav>
+    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+      <a class="nav-item nav-link active" id="nav-general-tab" data-toggle="tab" href="#nav-general" role="tab" aria-controls="nav-home" aria-selected="true">General</a>
+      <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-presence" role="tab" aria-controls="nav-presence" aria-selected="false">Presencialidad</a>
+      <a class="nav-item nav-link" id="nav-valores-tab" data-toggle="tab" href="#nav-valores" role="tab" aria-controls="nav-valores" aria-selected="false">Valores</a>
+    </div>
+  </nav>
+
+  <div class="tab-content" id="nav-tabContent">
+
+    <div class="tab-pane fade show active" id="nav-general" role="tabpanel" aria-labelledby="nav-general-tab">
+      <div class="row">
+        <div class="alert alert-success" role="alert">
+          <i class="fa fa-bullhorn"></i>&nbsp;Recuerde que el legajo debe darse de alta también en cada dispositivo acompañado del registro de la huella digital
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-3">
+          <div class="form-group">
+            <label for="formGroupExampleInput">Legajo N°</label>
+            <input
+              type="text"
+              class="form-control"
+              placeholder="XXXXX"
+              [(ngModel)]="crud.model.docket_number" />
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="form-group">
+            <label for="formGroupExampleInput">Nombre</label>
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Nombre"
+              [(ngModel)]="crud.model.employee_first_name" />
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="form-group">
+            <label for="formGroupExampleInput">Apellido</label>
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Apellido"
+              [(ngModel)]="crud.model.employee_last_name" />
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="form-group">
+            <label for="formGroupExampleInput">DNI</label>
+            <input
+              type="text"
+              class="form-control"
+              placeholder="XX.XXX.XXX"
+              [(ngModel)]="crud.model.employee_dni" />
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-3">
+          <div class="form-group">
+            <label for="formGroupExampleInput">Cargo</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text">
+                  <i class="fa fa-user"></i>
+                </span>
+              </div>
+              <select
+                class="form-control"
+                size="1">
+                <option value="">Seleccione...</option>
+                <option value="1">Jefe de mantenimiento</option>
+                <option value="2">Manufactura</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="tab-pane fade" id="nav-presence" role="tabpanel" aria-labelledby="nav-presence-tab">
+      <div class="row" day-of-week="1" style="margin-top:10px;">
+          <div class="col-md-2 input-group input-sm">
+              <div class="input-group-prepend" style="width:100%">
+                  <span class="input-group-text" style="width:100%"><b>Lunes</b></span>
+              </div>
+          </div>
+          <div class="col-md-5 input-group input-sm">
+              <div class="input-group-prepend">
+                  <span class="input-group-text">Desde</span>
+              </div>
+              <input type="text" class="form-control Desde1" placeholder="HH:MM" value="08:00" maxlength="5">
+              <div class="input-group-prepend">
+                  <span class="input-group-text">Hasta</span>
+              </div>
+              <input type="text" class="form-control to1" placeholder="HH:MM" value="13:00" maxlength="5">
+          </div>
+          <div class="col-md-5 input-group input-sm">
+              <div class="input-group-prepend">
+                  <span class="input-group-text">Desde</span>
+              </div>
+              <input type="text" class="form-control Desde2" placeholder="HH:MM" value="15:00" maxlength="5">
+              <div class="input-group-prepend">
+                  <span class="input-group-text">Hasta</span>
+              </div>
+              <input type="text" class="form-control to2" placeholder="HH:MM" value="23:30" maxlength="5">
+          </div>
+      </div>
+      <div class="row" style="margin-top:10px;" day-of-week="2">
+          <div class="col-md-2 input-group input-sm">
+              <div class="input-group-prepend" style="width:100%">
+                  <span class="input-group-text" style="width:100%"><b>Martes</b></span>
+              </div>
+          </div>
+          <div class="col-md-5 input-group input-sm">
+              <div class="input-group-prepend">
+                  <span class="input-group-text">Desde</span>
+              </div>
+              <input type="text" class="form-control Desde1" placeholder="HH:MM" value="08:00" maxlength="5">
+              <div class="input-group-prepend">
+                  <span class="input-group-text">Hasta</span>
+              </div>
+              <input type="text" class="form-control to1" placeholder="HH:MM" value="13:00" maxlength="5">
+          </div>
+          <div class="col-md-5 input-group input-sm">
+              <div class="input-group-prepend">
+                  <span class="input-group-text">Desde</span>
+              </div>
+              <input type="text" class="form-control Desde2" placeholder="HH:MM" value="15:00" maxlength="5">
+              <div class="input-group-prepend">
+                  <span class="input-group-text">Hasta</span>
+              </div>
+              <input type="text" class="form-control to2" placeholder="HH:MM" value="23:30" maxlength="5">
+          </div>
+      </div>
+      <div class="row" style="margin-top:10px;" day-of-week="3">
+          <div class="col-md-2 input-group input-sm">
+              <div class="input-group-prepend" style="width:100%">
+                  <span class="input-group-text" style="width:100%"><b>Miércoles</b></span>
+              </div>
+          </div>
+          <div class="col-md-5 input-group input-sm">
+              <div class="input-group-prepend">
+                  <span class="input-group-text">Desde</span>
+              </div>
+              <input type="text" class="form-control Desde1" placeholder="HH:MM" value="08:00" maxlength="5">
+              <div class="input-group-prepend">
+                  <span class="input-group-text">Hasta</span>
+              </div>
+              <input type="text" class="form-control to1" placeholder="HH:MM" value="13:00" maxlength="5">
+          </div>
+          <div class="col-md-5 input-group input-sm">
+              <div class="input-group-prepend">
+                  <span class="input-group-text">Desde</span>
+              </div>
+              <input type="text" class="form-control Desde2" placeholder="HH:MM" value="15:00" maxlength="5">
+              <div class="input-group-prepend">
+                  <span class="input-group-text">Hasta</span>
+              </div>
+              <input type="text" class="form-control to2" placeholder="HH:MM" value="23:30" maxlength="5">
+          </div>
+      </div>
+      <div class="row" style="margin-top:10px;" day-of-week="4">
+          <div class="col-md-2 input-group input-sm">
+              <div class="input-group-prepend" style="width:100%">
+                  <span class="input-group-text" style="width:100%"><b>Jueves</b></span>
+              </div>
+          </div>
+          <div class="col-md-5 input-group input-sm">
+              <div class="input-group-prepend">
+                  <span class="input-group-text">Desde</span>
+              </div>
+              <input type="text" class="form-control Desde1" placeholder="HH:MM" value="08:00" maxlength="5">
+              <div class="input-group-prepend">
+                  <span class="input-group-text">Hasta</span>
+              </div>
+              <input type="text" class="form-control to1" placeholder="HH:MM" value="13:00" maxlength="5">
+          </div>
+          <div class="col-md-5 input-group input-sm">
+              <div class="input-group-prepend">
+                  <span class="input-group-text">Desde</span>
+              </div>
+              <input type="text" class="form-control Desde2" placeholder="HH:MM" value="15:00" maxlength="5">
+              <div class="input-group-prepend">
+                  <span class="input-group-text">Hasta</span>
+              </div>
+              <input type="text" class="form-control to2" placeholder="HH:MM" value="23:30" maxlength="5">
+          </div>
+      </div>
+      <div class="row" style="margin-top:10px;" day-of-week="5">
+          <div class="col-md-2 input-group input-sm">
+              <div class="input-group-prepend" style="width:100%">
+                  <span class="input-group-text" style="width:100%"><b>Viernes</b></span>
+              </div>
+          </div>
+          <div class="col-md-5 input-group input-sm">
+              <div class="input-group-prepend">
+                  <span class="input-group-text">Desde</span>
+              </div>
+              <input type="text" class="form-control Desde1" placeholder="HH:MM" value="08:00" maxlength="5">
+              <div class="input-group-prepend">
+                  <span class="input-group-text">Hasta</span>
+              </div>
+              <input type="text" class="form-control to1" placeholder="HH:MM" value="13:00" maxlength="5">
+          </div>
+          <div class="col-md-5 input-group input-sm">
+              <div class="input-group-prepend">
+                  <span class="input-group-text">Desde</span>
+              </div>
+              <input type="text" class="form-control Desde2" placeholder="HH:MM" value="15:00" maxlength="5">
+              <div class="input-group-prepend">
+                  <span class="input-group-text">Hasta</span>
+              </div>
+              <input type="text" class="form-control to2" placeholder="HH:MM" value="23:30" maxlength="5">
+          </div>
+      </div>
+      <div class="row" style="margin-top:10px;" day-of-week="6">
+          <div class="col-md-2 input-group input-sm">
+              <div class="input-group-prepend" style="width:100%">
+                  <span class="input-group-text" style="width:100%"><b>Sabado</b></span>
+              </div>
+          </div>
+          <div class="col-md-5 input-group input-sm">
+              <div class="input-group-prepend">
+                  <span class="input-group-text">Desde</span>
+              </div>
+              <input type="text" class="form-control Desde1" placeholder="HH:MM" value="08:00" maxlength="5">
+              <div class="input-group-prepend">
+                  <span class="input-group-text">Hasta</span>
+              </div>
+              <input type="text" class="form-control to1" placeholder="HH:MM" value="23:00" maxlength="5">
+          </div>
+          <div class="col-md-5 input-group input-sm">
+              <div class="input-group-prepend">
+                  <span class="input-group-text">Desde</span>
+              </div>
+              <input type="text" class="form-control Desde2" placeholder="HH:MM" value="" maxlength="5">
+              <div class="input-group-prepend">
+                  <span class="input-group-text">Hasta</span>
+              </div>
+              <input type="text" class="form-control to2" placeholder="HH:MM" value="" maxlength="5">
+          </div>
+      </div>
+      <div class="row" style="margin-top:10px;" day-of-week="0">
+          <div class="col-md-2 input-group input-sm">
+              <div class="input-group-prepend" style="width:100%">
+                  <span class="input-group-text" style="width:100%"><b>Domingo</b></span>
+              </div>
+          </div>
+          <div class="col-md-5 input-group input-sm">
+              <div class="input-group-prepend">
+                  <span class="input-group-text">Desde</span>
+              </div>
+              <input type="text" class="form-control Desde1" placeholder="HH:MM" value="08:00" maxlength="5">
+              <div class="input-group-prepend">
+                  <span class="input-group-text">Hasta</span>
+              </div>
+              <input type="text" class="form-control to1" placeholder="HH:MM" value="23:00" maxlength="5">
+          </div>
+          <div class="col-md-5 input-group input-sm">
+              <div class="input-group-prepend">
+                  <span class="input-group-text">Desde</span>
+              </div>
+              <input type="text" class="form-control Desde2" placeholder="HH:MM" value="" maxlength="5">
+              <div class="input-group-prepend">
+                  <span class="input-group-text">Hasta</span>
+              </div>
+              <input type="text" class="form-control to2" placeholder="HH:MM" value="" maxlength="5">
+          </div>
+      </div>
+    </div>
+
+    <div class="tab-pane fade" id="nav-valores" role="tabpanel" aria-labelledby="nav-valores-tab">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="formGroupExampleInput">Valor hora trabajada</label>
+                    <div class="input-group input-sm">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">$</span>
+                        </div>
+                        <input
+                          type="text"
+                          class="form-control"
+                          value="150,00" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="formGroupExampleInput">Valor hora extra trabajada</label>
+                    <div class="input-group input-sm">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">$</span>
+                        </div>
+                        <input
+                          type="text"
+                          class="form-control"
+                          value="120,00" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
+
+  
+  <div class="row crud-footer">
+    <div class="col-md-12">
+      <button class="btn btn-danger btn-circular left" (click)="onCancelClick()" data-toggle="tooltip" data-placement="right" title="Cancelar"><i class="fa fa-times"></i></button>
+      <button class="btn btn-success btn-circular right" (click)="onSaveClick()" data-toggle="tooltip" data-placement="left" title="Guardar"><i class="fa fa-check"></i></button>
+    </div>
+  </div>
+</div>

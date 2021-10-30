@@ -1,0 +1,53 @@
+<div class="nav-sidebar-menu-content">
+    <div class="nav-sidebar-menu-header">
+        <div class="row">
+            <div class="col-md-4">
+              <div class="photo-border">
+                <div class="photo"
+                [ngStyle]="{backgroundImage: 'url(' + user.picture_url + ')'}"></div>
+              </div>
+            </div>
+            <div class="col-md-8 user-data">
+                <div class="user-name">{{ user.first_name }} {{ user.last_name }}</div>
+                <div class="user-organization">
+                    {{ user.business_name }}
+                    <br/>
+                    {{ user.business_role_name }}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="nav-sidebar-menu-body">
+        <ul class="menu">
+            <li>
+                <div class="option-header" option="admin">Administración</div>
+                <ul class="option-body" option="admin">
+                    <li><a class="nav-link text-dark" [routerLink]="['/titles']">Administrar Cargos</a></li>
+                    <li><a class="nav-link text-dark" [routerLink]="['/dockets']">Administrar Legajos</a></li>
+                    <li><a class="nav-link text-dark" [routerLink]="['/users']">Administrar Usuarios</a></li>
+                    <li><a class="nav-link text-dark" [routerLink]="['/devices']">Administrar Dispositivos</a></li>
+                </ul>
+            </li>
+            <li>
+                <div class="option-header" option="my-settings">Descarga de documentación</div>
+                <ul class="option-body" option="my-settings">
+                    <li><a class="nav-link text-dark" href="/assets/docs/Documento1.rtf">Documento 1</a></li>
+                    <li><a class="nav-link text-dark" href="/assets/docs/Documento2.rtf">Documento 2</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <div class="nav-sidebar-menu-footer">
+        <div class="sidebar-full-row">
+            Ultima sincronización: 10:35hs<br/>
+            Próxima sincronización: 10:50hs<br/><br/>
+            &copy; 2021 - Natom technologies
+        </div>
+        <div class="sidebar-button left" [routerLink]="['/me/profile']">
+            <i class="fa fa-user" aria-hidden="true"></i> Mi perfil
+        </div>
+        <div class="sidebar-button right" [routerLink]="['/logout']">
+            <i class="fa fa-sign-out" aria-hidden="true"></i> Cerrar sesión
+        </div>
+    </div>
+</div>
