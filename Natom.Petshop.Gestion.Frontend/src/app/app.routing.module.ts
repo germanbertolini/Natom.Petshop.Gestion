@@ -24,6 +24,7 @@ import { CajaDiariaComponent } from "./views/cajas/diaria/caja-diaria.component"
 import { CajaDiariaNewComponent } from "./views/cajas/diaria/new/caja-diaria-new.component";
 import { CajaFuerteComponent } from "./views/cajas/fuerte/caja-fuerte.component";
 import { CajaFuerteNewComponent } from "./views/cajas/fuerte/new/caja-fuerte-new.component";
+import { CajaTransferenciaComponent } from "./views/cajas/transferencia/caja-transferencia.component";
 
 const appRoutes: Routes = [
     { path: 'login', component: LoginComponent, pathMatch: 'full' },
@@ -52,6 +53,7 @@ const appRoutes: Routes = [
     { canActivate: [ AuthGuard ], path: "cajas/diaria/new", component: CajaDiariaNewComponent },
     { canActivate: [ AuthGuard ], path: 'cajas/fuerte', component: CajaFuerteComponent },
     { canActivate: [ AuthGuard ], path: "cajas/fuerte/new", component: CajaFuerteNewComponent },
+    { canActivate: [ AuthGuard ], path: "cajas/transferencia", component: CajaTransferenciaComponent },
     { canActivate: [ AuthGuard ], path: "queries/1/a", component: Query1AComponent },
     { canActivate: [ AuthGuard ], path: "queries/1/b", component: Query1BComponent },
     { canActivate: [ AuthGuard ], path: "reports/attendance/by_device", component: ReportsAttendanceByDeviceComponent },

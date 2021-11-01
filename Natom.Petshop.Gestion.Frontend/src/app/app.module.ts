@@ -4,6 +4,15 @@ import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { NgbDate, NgbDateParserFormatter, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
+//Local imports
+import localeEsAR from '@angular/common/locales/es-AR';
+
+//Register local imports
+import { registerLocaleData } from '@angular/common';
+import { NgbDateCustomParserFormatter } from './utils/datepicker/datepicker-popup';
+registerLocaleData(localeEsAR, 'es-AR');
+
+//Components
 import { AppComponent } from './app.component';
 import { NavMenuComponent } from './components/nav-menu/nav-menu.component';
 import { HomeComponent } from './views/home/home.component';
@@ -37,16 +46,11 @@ import { MarcasComponent } from './views/marcas/marcas.component';
 import { MarcaCrudComponent } from './views/marcas/crud/marca-crud.component';
 import { CajaDiariaComponent } from './views/cajas/diaria/caja-diaria.component';
 import { CajaDiariaNewComponent } from './views/cajas/diaria/new/caja-diaria-new.component';
-
-//Local imports
-import localeEsAR from '@angular/common/locales/es-AR';
-
-//Register local imports
-import { registerLocaleData } from '@angular/common';
 import { CajaFuerteComponent } from './views/cajas/fuerte/caja-fuerte.component';
 import { CajaFuerteNewComponent } from './views/cajas/fuerte/new/caja-fuerte-new.component';
-import { NgbDateCustomParserFormatter } from './utils/datepicker/datepicker-popup';
-registerLocaleData(localeEsAR, 'es-AR');
+import { CajaTransferenciaComponent } from './views/cajas/transferencia/caja-transferencia.component';
+
+
 
 @NgModule({
   declarations: [
@@ -70,6 +74,7 @@ registerLocaleData(localeEsAR, 'es-AR');
     CajaDiariaNewComponent,
     CajaFuerteComponent,
     CajaFuerteNewComponent,
+    CajaTransferenciaComponent,
     DevicesSyncConfigComponent,
     Query1AComponent,
     Query1BComponent,
