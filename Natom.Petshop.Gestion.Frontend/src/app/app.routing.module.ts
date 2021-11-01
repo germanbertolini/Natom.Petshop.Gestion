@@ -7,7 +7,6 @@ import { DevicesSyncConfigComponent } from "./views/devices/sync/config/devices-
 import { DocketCrudComponent } from "./views/dockets/crud/docket-crud.component";
 import { DocketsComponent } from "./views/dockets/dockets.component";
 import { HomeComponent } from "./views/home/home.component";
-import { MeOrganizationComponent } from "./views/me/organization/me-organization.component";
 import { MeProfileComponent } from "./views/me/profile/me-profile.component";
 import { Query1AComponent } from "./views/queries/1/A/query-1-a.component";
 import { Query1BComponent } from "./views/queries/1/B/query-1-b.component";
@@ -19,6 +18,12 @@ import { TitlesComponent } from "./views/titles/titles.component";
 import { UserCrudComponent } from "./views/users/crud/user-crud.component";
 import { UsersComponent } from "./views/users/users.component";
 import { LoginComponent } from "./views/login/login.component";
+import { MarcaCrudComponent } from "./views/marcas/crud/marca-crud.component";
+import { MarcasComponent } from "./views/marcas/marcas.component";
+import { CajaDiariaComponent } from "./views/cajas/diaria/caja-diaria.component";
+import { CajaDiariaNewComponent } from "./views/cajas/diaria/new/caja-diaria-new.component";
+import { CajaFuerteComponent } from "./views/cajas/fuerte/caja-fuerte.component";
+import { CajaFuerteNewComponent } from "./views/cajas/fuerte/new/caja-fuerte-new.component";
 
 const appRoutes: Routes = [
     { path: 'login', component: LoginComponent, pathMatch: 'full' },
@@ -34,13 +39,19 @@ const appRoutes: Routes = [
     { canActivate: [ AuthGuard ], path: "users/new", component: UserCrudComponent },
     { canActivate: [ AuthGuard ], path: "users/edit/:id", component: UserCrudComponent },
     { canActivate: [ AuthGuard ], path: "me/profile", component: MeProfileComponent },
-    { canActivate: [ AuthGuard ], path: "me/organization", component: MeOrganizationComponent },
     { canActivate: [ AuthGuard ], path: 'dockets', component: DocketsComponent },
     { canActivate: [ AuthGuard ], path: "dockets/new", component: DocketCrudComponent },
     { canActivate: [ AuthGuard ], path: "dockets/edit/:id", component: DocketCrudComponent },
     { canActivate: [ AuthGuard ], path: 'titles', component: TitlesComponent },
     { canActivate: [ AuthGuard ], path: "titles/new", component: TitleCrudComponent },
     { canActivate: [ AuthGuard ], path: "titles/edit/:id", component: TitleCrudComponent },
+    { canActivate: [ AuthGuard ], path: 'marcas', component: MarcasComponent },
+    { canActivate: [ AuthGuard ], path: "marcas/new", component: MarcaCrudComponent },
+    { canActivate: [ AuthGuard ], path: "marcas/edit/:id", component: MarcaCrudComponent },
+    { canActivate: [ AuthGuard ], path: 'cajas/diaria', component: CajaDiariaComponent },
+    { canActivate: [ AuthGuard ], path: "cajas/diaria/new", component: CajaDiariaNewComponent },
+    { canActivate: [ AuthGuard ], path: 'cajas/fuerte', component: CajaFuerteComponent },
+    { canActivate: [ AuthGuard ], path: "cajas/fuerte/new", component: CajaFuerteNewComponent },
     { canActivate: [ AuthGuard ], path: "queries/1/a", component: Query1AComponent },
     { canActivate: [ AuthGuard ], path: "queries/1/b", component: Query1BComponent },
     { canActivate: [ AuthGuard ], path: "reports/attendance/by_device", component: ReportsAttendanceByDeviceComponent },

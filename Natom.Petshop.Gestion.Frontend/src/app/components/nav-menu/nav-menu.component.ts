@@ -7,20 +7,5 @@ import { Output, EventEmitter } from '@angular/core';
   styleUrls: ['./nav-menu.component.css']
 })
 export class NavMenuComponent {
-  @Output() toggleSidebarEvent = new EventEmitter<boolean>();
-  isSidebarExpanded = false;
-  isExpanded = false;
-
-  collapse() {
-    this.isExpanded = false;
-  }
-
-  toggle() {
-    this.isExpanded = !this.isExpanded;
-  }
-
-  onSidebarMenuClick() {
-    this.isSidebarExpanded = !this.isSidebarExpanded;
-    this.toggleSidebarEvent.emit(this.isSidebarExpanded);
-  }
+  
 }

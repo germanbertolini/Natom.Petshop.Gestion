@@ -10,7 +10,16 @@ a.navbar-brand {
   white-space: normal;
   text-align: center;
   word-break: break-all;
-  margin-left:65px;
+}
+
+a img {
+  width: 120px;
+  position: absolute;
+  top: 7px;
+}
+
+#navbarSupportedContent {
+  margin-left:130px;
 }
 
 html {

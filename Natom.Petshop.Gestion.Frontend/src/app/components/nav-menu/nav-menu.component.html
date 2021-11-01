@@ -3,38 +3,21 @@
     class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark border-bottom box-shadow mb-3"
   >
     <div class="container-fluid">
-      <div class="nav-menu-button"
-        [ngStyle]="{backgroundImage: 'url(assets/img/menu-button.png)'}"
-        data-toggle="tooltip"
-        data-placement="right"
-        title="Click para Menu"
-        (click)="onSidebarMenuClick()"></div>
-      <a class="navbar-brand" [routerLink]="['/']"><b style="color: var(--color-04-light);">Bio</b><b style="color: var(--color-02-light);">Anviz</b>&nbsp;<b style="color: var(--color-01-high);">+</b></a>
-      <button
-        class="navbar-toggler"
-        type="button"
-        data-toggle="collapse"
-        data-target=".navbar-collapse"
-        aria-label="Toggle navigation"
-        [attr.aria-expanded]="isExpanded"
-        (click)="toggle()"
-      >
-        <span class="navbar-toggler-icon"></span>
-      </button>
-
-
+      <a class="navbar-brand" [routerLink]="['/']">
+        <img src="assets/img/logo.png" />
+      </a>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
-          <li class="nav-item nav-item-now">
+          <!-- <li class="nav-item nav-item-now">
             <a class="nav-link" [routerLink]="['/']"><b>Ahora</b></a>
-          </li>
+          </li> -->
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Consultas 1
+              ABM
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" [routerLink]="['/queries/1/a']">Consulta tipo A</a>
-              <a class="dropdown-item" [routerLink]="['/queries/1/b']">Consulta tipo B</a>
+              <a class="dropdown-item" [routerLink]="['/marcas']">Marcas</a>
+              <a class="dropdown-item" [routerLink]="['/marcas/new']">[+] Nueva Marca</a>
               <div class="dropdown-divider"></div>
               <a class="dropdown-item" href="#">Consulta tipo Y</a>
               <a class="dropdown-item" href="#">Consulta tipo Z</a>
@@ -42,26 +25,14 @@
           </li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Consultas 2
+              Caja
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" href="#">Consulta tipo A</a>
-              <a class="dropdown-item" href="#">Consulta tipo B</a>
+              <a class="dropdown-item" [routerLink]="['/cajas/diaria']">Ver caja diaria</a>
+              <a class="dropdown-item" [routerLink]="['/cajas/diaria/new']">[+] Nuevo movimiento</a>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="#">Consulta tipo Y</a>
-              <a class="dropdown-item" href="#">Consulta tipo Z</a>
-            </div>
-          </li>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Consultas 3
-            </a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" href="#">Consulta tipo A</a>
-              <a class="dropdown-item" href="#">Consulta tipo B</a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="#">Consulta tipo Y</a>
-              <a class="dropdown-item" href="#">Consulta tipo Z</a>
+              <a class="dropdown-item" [routerLink]="['/cajas/fuerte']">Ver caja fuerte</a>
+              <a class="dropdown-item" [routerLink]="['/cajas/fuerte/new']">[+] Nuevo movimiento</a>
             </div>
           </li>
         </ul>
