@@ -2,7 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { NotifierService } from "angular-notifier";
-import { MovimientoCajaDiaria } from "src/app/classes/models/movimiento-caja-diaria.model";
+import { MovimientoCajaDiaria } from "src/app/classes/models/cajas/movimiento-caja-diaria.model";
 import { CRUDView } from "src/app/classes/views/crud-view.classes";
 import { ConfirmDialogService } from "src/app/components/confirm-dialog/confirm-dialog.service";
 

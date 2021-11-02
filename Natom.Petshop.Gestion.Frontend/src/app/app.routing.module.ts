@@ -14,6 +14,8 @@ import { CajaDiariaNewComponent } from "./views/cajas/diaria/new/caja-diaria-new
 import { CajaFuerteComponent } from "./views/cajas/fuerte/caja-fuerte.component";
 import { CajaFuerteNewComponent } from "./views/cajas/fuerte/new/caja-fuerte-new.component";
 import { CajaTransferenciaComponent } from "./views/cajas/transferencia/caja-transferencia.component";
+import { ClienteCrudComponent } from "./views/clientes/crud/cliente-crud.component";
+import { ClientesComponent } from "./views/clientes/clientes.component";
 
 const appRoutes: Routes = [
     { path: 'login', component: LoginComponent, pathMatch: 'full' },
@@ -32,7 +34,10 @@ const appRoutes: Routes = [
     { canActivate: [ AuthGuard ], path: "cajas/diaria/new", component: CajaDiariaNewComponent },
     { canActivate: [ AuthGuard ], path: 'cajas/fuerte', component: CajaFuerteComponent },
     { canActivate: [ AuthGuard ], path: "cajas/fuerte/new", component: CajaFuerteNewComponent },
-    { canActivate: [ AuthGuard ], path: "cajas/transferencia", component: CajaTransferenciaComponent }
+    { canActivate: [ AuthGuard ], path: "cajas/transferencia", component: CajaTransferenciaComponent },
+    { canActivate: [ AuthGuard ], path: 'clientes', component: ClientesComponent },
+    { canActivate: [ AuthGuard ], path: "clientes/new", component: ClienteCrudComponent },
+    { canActivate: [ AuthGuard ], path: "clientes/edit/:id", component: ClienteCrudComponent }
 ]
 
 @NgModule({

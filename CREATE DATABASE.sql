@@ -118,6 +118,7 @@ INSERT INTO TipoDocumento (TipoDocumentoId, Descripcion) VALUES
 CREATE TABLE Cliente
 (
 	ClienteId INT NOT NULL IDENTITY(1,1),
+	EsEmpresa BIT,
 	Nombre NVARCHAR(50),
 	Apellido NVARCHAR(50),
 	RazonSocial NVARCHAR(50),

@@ -2,31 +2,41 @@ import { HttpClient } from "@angular/common/http";
 import { Component, Input, OnInit, ViewChild } from "@angular/core";
 import { Router } from "@angular/router";
 import { NotifierService } from "angular-notifier";
-import { Marca } from "src/app/classes/models/marca.model";
-import { MovimientoCajaDiaria } from "src/app/classes/models/cajas/movimiento-caja-diaria.model";
-import { DataTablesResponse } from '../../../classes/data-tables-response';
-import { ConfirmDialogService } from "../../../components/confirm-dialog/confirm-dialog.service";
+import { ClienteList } from "src/app/classes/models/clientes/cliente-list.model";
+import { DataTablesResponse } from '../../classes/data-tables-response';
+import { ConfirmDialogService } from "../../components/confirm-dialog/confirm-dialog.service";
 
 @Component({
-  selector: 'app-caja-diaria',
-  styleUrls: ['./caja-diaria.component.css'],
-  templateUrl: './caja-diaria.component.html'
+  selector: 'app-clientes',
+  templateUrl: './clientes.component.html'
 })
-export class CajaDiariaComponent implements OnInit {
+export class ClientesComponent implements OnInit {
 
   dtIndex: DataTables.Settings = {};
-  Movimientos: MovimientoCajaDiaria[];
-  saldoActual: number;
-  filtroFecha: string;
+  Clientes: ClienteList[];
   Noty: any;
-
-  decideClosure(event, datepicker) { const path = event.path.map(p => p.localName); if (!path.includes('ngb-datepicker')) { datepicker.close(); } }
 
   constructor(private httpClientService: HttpClient,
               private routerService: Router,
               private notifierService: NotifierService,
               private confirmDialogService: ConfirmDialogService) {
                 
+  }
+
+  onFiltroEstadoChange(newValue: string) {
+    console.log(newValue);
+  }
+
+  onEditClick(id: string) {
+    this.routerService.navigate(['/clientes/edit/' + id]);
+  }
+
+  onDeleteClick(id: string) {
+    console.log(id);
+    let notifier = this.notifierService;
+    this.confirmDialogService.showConfirm("Desea dar de baja al cliente?", function () {  
+      notifier.notify('success', 'Cliente dado de baja con éxito.');
+    });
   }
 
   ngOnInit(): void {
@@ -71,31 +81,28 @@ export class CajaDiariaComponent implements OnInit {
         //    }
         //  }
         //  );
-        this.saldoActual = 100.54;
-        this.Movimientos = [
+        this.Clientes = [
           {
             encrypted_id: "asddas123132",
-            fechaHora: new Date('2020-12-28T20:30:54'),
-            usuarioNombre: "German",
-            tipo: "Ingreso",
-            importe: 1030.54,
-            observaciones: "Venta Nro 380289 /// FCB 0001-29804802"
+            nombre: "Rodrigo Lopez",
+            tipoDocumento: "DNI",
+            numeroDocumento: "12.345.678",
+            localidad: "Ituzaingó"
           },
           {
-            encrypted_id: "asddas123133",
-            fechaHora: new Date('2020-12-28T22:00:00'),
-            usuarioNombre: "German",
-            tipo: "Egreso",
-            importe: 100.54,
-            observaciones: "Cierre caja /// Transferencia de saldo a caja fuerte"
-          },
+            encrypted_id: "324c234c3cx",
+            nombre: "Empresa de prueba S.A.",
+            tipoDocumento: "CUIT",
+            numeroDocumento: "11-1111111-3",
+            localidad: "San Antonio de Padua"
+          }
         ];
         callback({
-          recordsTotal: this.Movimientos.length,
-          recordsFiltered: this.Movimientos.length,
+          recordsTotal: this.Clientes.length,
+          recordsFiltered: this.Clientes.length,
           data: [] //Siempre vacío para delegarle el render a Angular
         });
-        if (this.Movimientos.length > 0) {
+        if (this.Clientes.length > 0) {
           $('.dataTables_empty').hide();
         }
         else {
