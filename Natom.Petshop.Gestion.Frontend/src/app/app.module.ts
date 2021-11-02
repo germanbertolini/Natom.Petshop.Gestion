@@ -40,6 +40,8 @@ import { CajaFuerteNewComponent } from './views/cajas/fuerte/new/caja-fuerte-new
 import { CajaTransferenciaComponent } from './views/cajas/transferencia/caja-transferencia.component';
 import { ClienteCrudComponent } from './views/clientes/crud/cliente-crud.component';
 import { ClientesComponent } from './views/clientes/clientes.component';
+import { ProductoCrudComponent } from './views/productos/crud/producto-crud.component';
+import { ProductosComponent } from './views/productos/productos.component';
 
 
 
@@ -63,6 +65,8 @@ import { ClientesComponent } from './views/clientes/clientes.component';
     ConfirmDialogComponent,
     ClientesComponent,
     ClienteCrudComponent,
+    ProductosComponent,
+    ProductoCrudComponent,
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),

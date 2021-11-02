@@ -180,6 +180,7 @@ CREATE TABLE Producto
 	DescripcionLarga NVARCHAR(200),
 	UnidadPesoId INT NOT NULL,
 	PesoUnitario INT NOT NULL DEFAULT 0,
+	MueveStock BIT NOT NULL DEFAULT 1,
 	PRIMARY KEY (ProductoId),
 	FOREIGN KEY (MarcaId) REFERENCES Marca(MarcaId),
 	FOREIGN KEY (UnidadPesoId) REFERENCES UnidadPeso(UnidadPesoId)
