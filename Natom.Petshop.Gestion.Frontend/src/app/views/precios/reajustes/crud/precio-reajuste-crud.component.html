@@ -1,0 +1,96 @@
+<div class="container-fluid" id="title-crud">
+  <div class="row">
+    <div class="col-md-12">
+      <h3>{{ crud.mode }} reajuste de precio por Marca</h3>
+    </div>
+  </div>
+  <hr class="divider" />
+  <div class="row">
+    <div class="col-md-2">
+      <div class="form-group">
+        <label for="formGroupExampleInput">Desde</label>
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text"><i class="fa fa-calendar" aria-hidden="true"></i></span>
+          </div>
+          <input class="form-control"
+              placeholder="Ahora"
+              name="dp"
+              [(ngModel)]="crud.model.aplicaDesdeFechaHora"
+              ngbDatepicker
+              #d="ngbDatepicker"
+              restoreFocus="false"
+              (click)="d.toggle(); $event.stopPropagation()"
+              (document:click)="decideClosure($event, d)"
+              readonly>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-2">
+      <div class="form-group">
+        <label for="formGroupExampleInput">Aplica a Marca</label>
+        <select
+              class="form-control"
+              size="1"
+              [(ngModel)]="crud.model.aplicoMarca_encrypted_id">
+          <option value="" selected>Seleccione...</option>
+          <option value="1">Royal Canin</option>
+          <option value="2">Vital can</option>
+        </select>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="form-group">
+        <label for="formGroupExampleInput">Lista de precios</label>
+        <select
+              class="form-control"
+              size="1"
+              [(ngModel)]="crud.model.aplicoListaDePrecios_encrypted_id">
+          <option value="" selected>Seleccione...</option>
+          <option value="0">Todas</option>
+          <option value="1">Lista de precios 1</option>
+          <option value="2">Lista de precios 2</option>
+          <option value="3">Lista de precios 3</option>
+        </select>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="form-group">
+        <label for="formGroupExampleInput">Tipo</label>
+        <select
+              class="form-control"
+              size="1"
+              #tipoReajuste>
+          <option value="" selected>Seleccione...</option>
+          <option value="1">Aumento - Porcentaje</option>
+          <option value="2">Aumento - Monto fijo</option>
+          <option value="3">Decremento - Porcentaje</option>
+          <option value="4">Decremento - Monto fijo</option>
+        </select>
+      </div>
+    </div>
+    <div class="col-md-2">
+      <div class="form-group">
+        <label for="formGroupExampleInput">Valor</label>
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text" *ngIf="tipoReajuste.value === '2' || tipoReajuste.value === '4'">$</span>
+            <span class="input-group-text" *ngIf="tipoReajuste.value === '1' || tipoReajuste.value === '3'">%</span>
+          </div>
+          <input type="text"
+            class="form-control"
+            placeholder="0,00"
+            onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode === 44"
+            [(ngModel)]="crud.model.valor" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row crud-footer">
+    <div class="col-md-12">
+      <button class="btn btn-danger btn-circular left" (click)="onCancelClick()" data-toggle="tooltip" data-placement="right" title="Cancelar"><i class="fa fa-times"></i></button>
+      <button class="btn btn-success btn-circular right" (click)="onSaveClick()" data-toggle="tooltip" data-placement="left" title="Guardar"><i class="fa fa-check"></i></button>
+    </div>
+  </div>
+</div>

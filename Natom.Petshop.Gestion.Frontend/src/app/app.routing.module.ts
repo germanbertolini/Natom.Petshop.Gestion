@@ -18,6 +18,10 @@ import { ClienteCrudComponent } from "./views/clientes/crud/cliente-crud.compone
 import { ClientesComponent } from "./views/clientes/clientes.component";
 import { ProductosComponent } from "./views/productos/productos.component";
 import { ProductoCrudComponent } from "./views/productos/crud/producto-crud.component";
+import { PreciosComponent } from "./views/precios/precios.component";
+import { PrecioCrudComponent } from "./views/precios/crud/precio-crud.component";
+import { PreciosReajustesComponent } from "./views/precios/reajustes/precios-reajustes.component";
+import { PrecioReajusteCrudComponent } from "./views/precios/reajustes/crud/precio-reajuste-crud.component";
 
 const appRoutes: Routes = [
     { path: 'login', component: LoginComponent, pathMatch: 'full' },
@@ -42,7 +46,12 @@ const appRoutes: Routes = [
     { canActivate: [ AuthGuard ], path: "clientes/edit/:id", component: ClienteCrudComponent },
     { canActivate: [ AuthGuard ], path: 'productos', component: ProductosComponent },
     { canActivate: [ AuthGuard ], path: "productos/new", component: ProductoCrudComponent },
-    { canActivate: [ AuthGuard ], path: "productos/edit/:id", component: ProductoCrudComponent }
+    { canActivate: [ AuthGuard ], path: "productos/edit/:id", component: ProductoCrudComponent },
+    { canActivate: [ AuthGuard ], path: "precios", component: PreciosComponent },
+    { canActivate: [ AuthGuard ], path: "precios/new", component: PrecioCrudComponent },
+    { canActivate: [ AuthGuard ], path: "precios/renew/:id", component: PrecioCrudComponent },
+    { canActivate: [ AuthGuard ], path: "precios/reajustes", component: PreciosReajustesComponent },
+    { canActivate: [ AuthGuard ], path: "precios/reajustes/new", component: PrecioReajusteCrudComponent },
 ]
 
 @NgModule({

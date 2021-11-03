@@ -42,6 +42,10 @@ import { ClienteCrudComponent } from './views/clientes/crud/cliente-crud.compone
 import { ClientesComponent } from './views/clientes/clientes.component';
 import { ProductoCrudComponent } from './views/productos/crud/producto-crud.component';
 import { ProductosComponent } from './views/productos/productos.component';
+import { PreciosComponent } from './views/precios/precios.component';
+import { PrecioCrudComponent } from './views/precios/crud/precio-crud.component';
+import { PrecioReajusteCrudComponent } from './views/precios/reajustes/crud/precio-reajuste-crud.component';
+import { PreciosReajustesComponent } from './views/precios/reajustes/precios-reajustes.component';
 
 
 
@@ -67,6 +71,10 @@ import { ProductosComponent } from './views/productos/productos.component';
     ClienteCrudComponent,
     ProductosComponent,
     ProductoCrudComponent,
+    PreciosComponent,
+    PrecioCrudComponent,
+    PreciosReajustesComponent,
+    PrecioReajusteCrudComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),

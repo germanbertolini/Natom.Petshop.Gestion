@@ -191,20 +191,23 @@ CREATE TABLE HistoricoReajustePrecio
 	HistoricoReajustePrecioId INT NOT NULL IDENTITY(1,1),
 	FechaHora DATETIME NOT NULL,
 	UsuarioId INT NOT NULL,
-	EsAumentoPorcentual BIT NOT NULL,
-	ValorAumento DECIMAL(18,2) NOT NULL,
+	EsIncremento BIT NOT NULL,
+	EsPorcentual BIT NOT NULL,
+	Valor DECIMAL(18,2) NOT NULL,
 	AplicoMarcaId INT NOT NULL,
+	AplicoListaDePreciosId INT,
 	AplicaDesdeFechaHora DATETIME NOT NULL,
 	PRIMARY KEY (HistoricoReajustePrecioId),
 	FOREIGN KEY (UsuarioId) REFERENCES Usuario(UsuarioId),
-	FOREIGN KEY (AplicoMarcaId) REFERENCES Marca(MarcaId)
+	FOREIGN KEY (AplicoMarcaId) REFERENCES Marca(MarcaId),
+	FOREIGN KEY (AplicoListaDePreciosId) REFERENCES ListaDePrecios(ListaDePreciosId)
 );
 
 CREATE TABLE ProductoPrecio
 (
 	ProductoPrecioId INT NOT NULL IDENTITY(1,1),
 	ProductoId INT NOT NULL,
-	ListaDePreciosId INT NOT NULL,
+	ListaDePreciosId INT,
 	Precio DECIMAL(18,2) NOT NULL,
 	AplicaDesdeFechaHora DATETIME NOT NULL,
 	HistoricoReajustePrecioId INT,	--POR SI FUE PRODUCTO DE UN REAJUSTE POR MARCA CON PORCENTAJE
