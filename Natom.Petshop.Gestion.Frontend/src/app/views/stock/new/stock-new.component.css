@@ -1,0 +1,12 @@
+textarea {
+    resize:none;
+    height:100px;
+}
+
+.egreso {
+    color:rgb(209, 12, 12);
+}
+
+.ingreso {
+    color:rgb(6, 109, 12);
+}

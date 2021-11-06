@@ -22,6 +22,8 @@ import { PreciosComponent } from "./views/precios/precios.component";
 import { PrecioCrudComponent } from "./views/precios/crud/precio-crud.component";
 import { PreciosReajustesComponent } from "./views/precios/reajustes/precios-reajustes.component";
 import { PrecioReajusteCrudComponent } from "./views/precios/reajustes/crud/precio-reajuste-crud.component";
+import { StockComponent } from "./views/stock/stock.component";
+import { StockNewComponent } from "./views/stock/new/stock-new.component";
 
 const appRoutes: Routes = [
     { path: 'login', component: LoginComponent, pathMatch: 'full' },
@@ -52,6 +54,8 @@ const appRoutes: Routes = [
     { canActivate: [ AuthGuard ], path: "precios/renew/:id", component: PrecioCrudComponent },
     { canActivate: [ AuthGuard ], path: "precios/reajustes", component: PreciosReajustesComponent },
     { canActivate: [ AuthGuard ], path: "precios/reajustes/new", component: PrecioReajusteCrudComponent },
+    { canActivate: [ AuthGuard ], path: "stock", component: StockComponent },
+    { canActivate: [ AuthGuard ], path: "stock/new", component: StockNewComponent },
 ]
 
 @NgModule({

@@ -46,6 +46,8 @@ import { PreciosComponent } from './views/precios/precios.component';
 import { PrecioCrudComponent } from './views/precios/crud/precio-crud.component';
 import { PrecioReajusteCrudComponent } from './views/precios/reajustes/crud/precio-reajuste-crud.component';
 import { PreciosReajustesComponent } from './views/precios/reajustes/precios-reajustes.component';
+import { StockComponent } from './views/stock/stock.component';
+import { StockNewComponent } from './views/stock/new/stock-new.component';
 
 
 
@@ -74,7 +76,9 @@ import { PreciosReajustesComponent } from './views/precios/reajustes/precios-rea
     PreciosComponent,
     PrecioCrudComponent,
     PreciosReajustesComponent,
-    PrecioReajusteCrudComponent
+    PrecioReajusteCrudComponent,
+    StockComponent,
+    StockNewComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),

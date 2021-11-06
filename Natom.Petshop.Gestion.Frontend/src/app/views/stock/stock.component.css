@@ -1,0 +1,13 @@
+.cantidad {
+    text-align:right !important;
+    font-weight: bold;
+    padding-right:20px;
+}
+
+.cantidad.egreso {
+    color:rgb(209, 12, 12);
+}
+
+.cantidad.ingreso {
+    color:rgb(6, 109, 12);
+}

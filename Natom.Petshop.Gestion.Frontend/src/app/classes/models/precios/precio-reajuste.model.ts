@@ -3,7 +3,7 @@ export class PrecioReajuste {
 	public usuario: string;
 	public esIncremento: boolean;
 	public esPorcentual: boolean;
-	public valorAumento: number;
+	public valor: number;
 	public aplicoMarca_encrypted_id: string;
 	public aplicoListaDePrecios_encrypted_id: string;
 	public aplicaDesdeFechaHora: Date;

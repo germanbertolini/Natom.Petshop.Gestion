@@ -1,0 +1,92 @@
+<div class="container-fluid" id="title-crud">
+  <div class="row">
+    <div class="col-md-12">
+      <h3>Nuevo Ingreso / Egreso de Mercadería</h3>
+    </div>
+  </div>
+  <hr class="divider" />
+  <br>
+  <div class="row">
+    <div class="col-md-4">
+      <div class="form-group">
+        <label for="formGroupExampleInput">Producto</label>
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1"><i class="fa fa-search" aria-hidden="true"></i></span>
+          </div>
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Buscar por código o palabra clave..." />
+        </div>
+      </div>
+    </div>
+    <div class="col-md-2">
+      <div class="form-group">
+        <label for="formGroupExampleInput">Stock actual</label>
+        <input type="text"
+            class="form-control"
+            readonly
+            [(ngModel)]="stockActual" />
+      </div>
+    </div>
+    <div class="col-md-2">
+      <div class="form-group">
+        <label for="formGroupExampleInput">Tipo</label>
+        <select size="1"
+          class="form-control"
+          [(ngModel)]="crud.model.tipo"
+          #tipoMovimiento>
+          <option value="" disabled selected>Seleccione...</option>
+          <option value="I">Ingreso</option>
+          <option value="E">Egreso</option>
+        </select>
+      </div>
+    </div>
+    <div class="col-md-2">
+      <div class="form-group">
+        <label for="formGroupExampleInput">Cantidad</label>
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span *ngIf="tipoMovimiento.value === 'I'" class="input-group-text ingreso" id="basic-addon1"><i class="fa fa-plus" aria-hidden="true"></i></span>
+            <span *ngIf="tipoMovimiento.value === 'E'" class="input-group-text egreso" id="basic-addon1"><i class="fa fa-minus" aria-hidden="true"></i></span>
+          </div>
+          <input type="text"
+            class="form-control"
+            placeholder="0,00"
+            onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode === 44"
+            [(ngModel)]="crud.model.valor" />
+        </div>
+      </div>
+    </div>
+    <div class="col-md-2">
+      <div class="form-group">
+        <label for="formGroupExampleInput">Efectuado por</label>
+        <input type="text"
+            class="form-control"
+            placeholder="Efectuado por"
+            readonly
+             />
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="form-group">
+        <label for="formGroupExampleInput">Observaciones</label>
+        <textarea type="text"
+            class="form-control"
+            placeholder="Observaciones"
+            maxlength="200"
+            [(ngModel)]="crud.model.observaciones">
+        </textarea>
+      </div>
+    </div>
+  </div>
+  <div class="row crud-footer">
+    <div class="col-md-12">
+      <button class="btn btn-danger btn-circular left" (click)="onCancelClick()" data-toggle="tooltip" data-placement="right" title="Cancelar"><i class="fa fa-times"></i></button>
+      <button class="btn btn-success btn-circular right" (click)="onSaveClick()" data-toggle="tooltip" data-placement="left" title="Guardar"><i class="fa fa-check"></i></button>
+    </div>
+  </div>
+</div>
