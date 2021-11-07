@@ -9,8 +9,8 @@ import { AuthService } from 'src/app/services/auth.service';
   templateUrl: './login.component.html'
 })
 export class LoginComponent {
-    private email : string = "";
-    private password : string = "";
+    email : string = "";
+    password : string = "";
 
     constructor(private _authService: AuthService,
                         private _router: Router,

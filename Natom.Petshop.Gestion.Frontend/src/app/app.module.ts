@@ -9,7 +9,7 @@ import localeEsAR from '@angular/common/locales/es-AR';
 
 //Register local imports
 import { registerLocaleData } from '@angular/common';
-import { NgbDateCustomParserFormatter } from './utils/datepicker/datepicker-popup';
+import { NgbDateCustomParserFormatter, NgbdDatepickerPopup } from './utils/datepicker/datepicker-popup';
 registerLocaleData(localeEsAR, 'es-AR');
 
 //Components
@@ -82,7 +82,8 @@ import { PedidoCrudComponent } from './views/pedidos/crud/pedido-crud.component'
     StockComponent,
     StockNewComponent,
     PedidosComponent,
-    PedidoCrudComponent
+    PedidoCrudComponent,
+    NgbdDatepickerPopup
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),

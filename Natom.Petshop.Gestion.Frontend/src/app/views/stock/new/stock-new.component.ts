@@ -15,6 +15,8 @@ import { ConfirmDialogService } from "src/app/components/confirm-dialog/confirm-
 
 export class StockNewComponent implements OnInit {
   crud: CRUDView<MovimientoStock>;
+  stockActual: 100;
+  valor: 0;
 
   constructor(private httpClientService: HttpClient,
               private routerService: Router,
