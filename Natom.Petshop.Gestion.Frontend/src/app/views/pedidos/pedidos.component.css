@@ -1,0 +1,6 @@
+tr.pending {
+    background-color:#feef87 !important;
+}
+tr.prepared {
+    background-color:#95fe87 !important;
+}

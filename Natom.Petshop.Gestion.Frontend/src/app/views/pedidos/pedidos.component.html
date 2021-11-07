@@ -1,0 +1,65 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-7">
+      <h3>Ordenes de pedido</h3>
+    </div>
+    <div class="col-md-3">
+      <div class="input-group input-group-sm">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="basic-addon1">Ver</span>
+        </div>
+        <select class="form-control" size="1" #filtroEstado (change)="onFiltroEstadoChange(filtroEstado.value)">
+          <option value="TODOS" selected>Todos</option>
+          <option value="PENDIENTE">Pendiente de preparación</option>
+          <option value="EN_PREPARACION" >En preparación</option>
+          <option value="PENDIENTE_DESPACHO">Pendiente de despacho</option>
+          <option value="PENDIENTE_ENTREGA">Pendiente de entrega</option>
+          <option value="ENTREGADO">Entregado</option>
+          <option value="ANULADO">Anulados</option>
+        </select>
+      </div>
+    </div>
+    <div class="col-md-2">
+      <button class="btn btn-sm btn-success right" [routerLink]="['/pedidos/new']">[+] Nueva</button>
+    </div>
+  </div>
+  <hr class="divider" />
+  <div class="row">
+    <div class="col-md-12">
+      <table datatable [dtOptions]="dtIndex" class="table table-striped table-bordered dt-responsive nowrap">
+        <thead>
+          <tr>
+            <th># Pedido</th>
+            <th>Documento</th>
+            <th>Cliente</th>
+            <th>Fecha / Hora</th>
+            <th>Estado</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+              *ngFor="let pedido of Pedidos"
+              [ngClass]="{
+                  'pending' : pedido.estado === 'Pendiente',
+                  'prepared' : pedido.prepared === true
+              }"
+            >
+            <td><b>{{ pedido.numero }}</b><br/><small>{{ pedido.numeroVenta }}</small></td>
+            <td>{{ pedido.remito }}<br/><small>{{ pedido.factura }}</small></td>
+            <td>{{ pedido.cliente }}</td>
+            <td>{{ pedido.fechaHora  |  date:'dd/MM/yyyy HH:mm' }} hs</td>
+            <td>{{ pedido.estado }}</td>
+            <td>
+              <a *ngIf="pedido.estado === 'Pendiente'" class="btn btn-warning btn-sm comenzar-smt-btn spacingLeft" (click)="onIniciarOrdenClick(pedido.encrypted_id)" data-toggle="tooltip" data-placement="top" title="Iniciar preparación"><i class="fa fa-play" aria-hidden="true"></i></a>
+              <a *ngIf="pedido.estado === 'En preparación'" class="btn btn-success btn-sm finalizar-smt-btn spacingLeft" (click)="onCompletarOrdenClick(pedido.encrypted_id)" data-toggle="tooltip" data-placement="top" title="Finalizar orden"><i class="fa fa-check" aria-hidden="true"></i></a>
+              <a class="btn btn-secondary btn-sm print-orden-smt-btn spacingLeft" (click)="onPrintOrdenClick(pedido.encrypted_id)" data-toggle="tooltip" data-placement="top" title="Imprimir orden"><i class="fa fa-print" aria-hidden="true"></i></a>
+              <a class="btn btn-primary btn-sm print-remito-smt-btn spacingLeft" (click)="onPrintRemitoClick(pedido.encrypted_id)" data-toggle="tooltip" data-placement="top" title="Imprimir remito"><i class="fa fa-print" aria-hidden="true"></i></a>
+              <a *ngIf="pedido.prepared === false" class="btn btn-danger btn-sm delete-smt-btn spacingLeft" (click)="onDeleteClick(pedido.encrypted_id)" data-toggle="tooltip" data-placement="top" title="Anular"><i class="fa fa-times" aria-hidden="true"></i></a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

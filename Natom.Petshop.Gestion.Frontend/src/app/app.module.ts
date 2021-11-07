@@ -48,6 +48,8 @@ import { PrecioReajusteCrudComponent } from './views/precios/reajustes/crud/prec
 import { PreciosReajustesComponent } from './views/precios/reajustes/precios-reajustes.component';
 import { StockComponent } from './views/stock/stock.component';
 import { StockNewComponent } from './views/stock/new/stock-new.component';
+import { PedidosComponent } from './views/pedidos/pedidos.component';
+import { PedidoCrudComponent } from './views/pedidos/crud/pedido-crud.component';
 
 
 
@@ -78,7 +80,9 @@ import { StockNewComponent } from './views/stock/new/stock-new.component';
     PreciosReajustesComponent,
     PrecioReajusteCrudComponent,
     StockComponent,
-    StockNewComponent
+    StockNewComponent,
+    PedidosComponent,
+    PedidoCrudComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),

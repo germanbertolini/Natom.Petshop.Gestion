@@ -1,0 +1,67 @@
+<div class="container-fluid" id="title-crud">
+  <div class="row">
+    <div class="col-md-6">
+      <h3>{{ crud.mode }} pedido</h3>
+    </div>
+    <div class="col-md-2">
+      <div class="input-group input-group-sm">
+        <div class="input-group-prepend">
+          <span class="input-group-text">Fecha</span>
+        </div>
+        <input
+            type="text"
+            class="form-control"
+            style="text-align:right;"
+            value="{{ crud.model.fechaHora  |  date:'dd/MM/yyyy' }}"
+            readonly>
+      </div>
+    </div>
+    <div class="col-md-2">
+      <div class="input-group input-group-sm">
+        <div class="input-group-prepend">
+          <span class="input-group-text">Usuario</span>
+        </div>
+        <input
+            type="text"
+            class="form-control"
+            style="text-align:right;"
+            value="{{ crud.model.usuario }}"
+            readonly>
+      </div>
+    </div>
+    <div class="col-md-2">
+      <div class="input-group input-group-sm">
+        <div class="input-group-prepend">
+          <span class="input-group-text"># Pedido</span>
+        </div>
+        <input
+            type="text"
+            class="form-control"
+            style="text-align:right;"
+            value="{{ crud.model.numero }}"
+            readonly>
+      </div>
+    </div>
+  </div>
+  <hr class="divider" />
+  <div class="row">
+    <div class="col-md-4">
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="basic-addon1">Cliente</span>
+        </div>
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Buscar por código o palabra clave..." />
+      </div>
+    </div>
+  </div>
+  
+  <div class="row crud-footer">
+    <div class="col-md-12">
+      <button class="btn btn-danger btn-circular left" (click)="onCancelClick()" data-toggle="tooltip" data-placement="right" title="Cancelar"><i class="fa fa-times"></i></button>
+      <button class="btn btn-success btn-circular right" (click)="onSaveClick()" data-toggle="tooltip" data-placement="left" title="Guardar"><i class="fa fa-check"></i></button>
+    </div>
+  </div>
+</div>
