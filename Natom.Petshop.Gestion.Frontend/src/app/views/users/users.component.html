@@ -17,7 +17,6 @@
             <th>Apellido</th>
             <th>Email</th>
             <th>Registrado</th>
-            <th>Rol / Permisos</th>
             <th></th>
           </tr>
         </thead>
@@ -27,7 +26,6 @@
             <td>{{ user.last_name }}</td>
             <td>{{ user.email }}</td>
             <td>{{ user.registered_at  |  date:'dd/MM/yyyy' }}</td>
-            <td>{{ user.business_role_name }}</td>
             <td>
               <a class="btn btn-primary btn-sm edit-smt-btn" (click)="onEditClick(user.encrypted_id)" data-toggle="tooltip" data-placement="top" title="Editar"><i class="fa fa-edit" aria-hidden="true"></i></a>
               <a class="btn btn-danger btn-sm delete-smt-btn spacingLeft" (click)="onDeleteClick(user.encrypted_id)" data-toggle="tooltip" data-placement="top" title="Eliminar"><i class="fa fa-times" aria-hidden="true"></i></a>

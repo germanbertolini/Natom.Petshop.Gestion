@@ -84,10 +84,7 @@ export class UsersComponent implements OnInit {
             last_name: "Bertolini",
             email: "german.bertolini@gmail.com",
             registered_at: new Date('2020-12-28T00:00:00'),
-            business_role_name: "Administrador",
-            picture_url: "",
-            business_name: "",
-            country_icon: ""
+            picture_url: ""
           },
           {
             encrypted_id: "2398n23984n",
@@ -95,10 +92,7 @@ export class UsersComponent implements OnInit {
             last_name: "Sanchez",
             email: "gaston.sanchez@gmail.com",
             registered_at: new Date('2019-02-26T00:00:00'),
-            business_role_name: "Administrador",
-            picture_url: "",
-            business_name: "",
-            country_icon: ""
+            picture_url: ""
           },
           {
             encrypted_id: "13d2123",
@@ -106,10 +100,7 @@ export class UsersComponent implements OnInit {
             last_name: "Anello",
             email: "mariano.anello@gmail.com",
             registered_at: new Date('2019-08-10T00:00:00'),
-            business_role_name: "Administrador",
-            picture_url: "",
-            business_name: "",
-            country_icon: ""
+            picture_url: ""
           },
           {
             encrypted_id: "c424c2423243",
@@ -117,10 +108,7 @@ export class UsersComponent implements OnInit {
             last_name: "Lopez",
             email: "plopez@hotmail.com",
             registered_at: new Date('2019-10-19T00:00:00'),
-            business_role_name: "Operador",
-            picture_url: "",
-            business_name: "",
-            country_icon: ""
+            picture_url: ""
           },
           {
             encrypted_id: "24098jsda",
@@ -128,10 +116,7 @@ export class UsersComponent implements OnInit {
             last_name: "Gutierrez",
             email: "dguti@outlook.com.ar",
             registered_at: new Date('2019-10-19T00:00:00'),
-            business_role_name: "Operador",
-            picture_url: "",
-            business_name: "",
-            country_icon: ""
+            picture_url: ""
           }
         ];
         callback({

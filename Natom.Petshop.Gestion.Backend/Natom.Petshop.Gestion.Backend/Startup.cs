@@ -1,10 +1,12 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Natom.Petshop.Gestion.Biz;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +16,8 @@ namespace Natom.Petshop.Gestion.Backend
 {
     public class Startup
     {
+        private readonly string CorsConfiguration = "_corsConfiguration";
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -24,6 +28,20 @@ namespace Natom.Petshop.Gestion.Backend
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<BizDbContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")
+            ));
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: CorsConfiguration,
+                                  builder =>
+                                  {
+                                      builder.WithOrigins("http://localhost:4200/")
+                                                .AllowAnyHeader()
+                                                .AllowAnyMethod();
+                                  });
+            });
 
             services.AddControllers();
         }
@@ -37,6 +55,8 @@ namespace Natom.Petshop.Gestion.Backend
             }
 
             app.UseRouting();
+
+            app.UseCors(CorsConfiguration);
 
             app.UseAuthorization();
 

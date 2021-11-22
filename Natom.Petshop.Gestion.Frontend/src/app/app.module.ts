@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { CUSTOM_ELEMENTS_SCHEMA, LOCALE_ID, NgModule } from '@angular/core';
+import { APP_INITIALIZER, CUSTOM_ELEMENTS_SCHEMA, LOCALE_ID, NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { NgbDate, NgbDateParserFormatter, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 //Local imports
@@ -50,8 +50,15 @@ import { StockComponent } from './views/stock/stock.component';
 import { StockNewComponent } from './views/stock/new/stock-new.component';
 import { PedidosComponent } from './views/pedidos/pedidos.component';
 import { PedidoCrudComponent } from './views/pedidos/crud/pedido-crud.component';
+import { JsonAppConfigService } from './services/json-app-config.service';
+import { AppConfig } from './classes/app-config';
+import { ApiService } from './services/api.service';
 
-
+export function OnInit(jsonAppConfigService: JsonAppConfigService) {
+  return () => {
+    return jsonAppConfigService.load();
+  };
+}
 
 @NgModule({
   declarations: [
@@ -108,12 +115,24 @@ import { PedidoCrudComponent } from './views/pedidos/crud/pedido-crud.component'
       provide: LOCALE_ID,
       useValue: 'es-AR'
     },
+    {
+      provide: AppConfig,
+      deps: [HttpClient],
+      useExisting: JsonAppConfigService
+    },
+    {
+      provide: APP_INITIALIZER,
+      multi: true,
+      deps: [JsonAppConfigService],
+      useFactory: OnInit
+    },
     { provide: NgbDateParserFormatter,
       useClass: NgbDateCustomParserFormatter
     },
     ConfirmDialogService,
     ThemeService,
-    CookieService ],
+    CookieService,
+    ApiService ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

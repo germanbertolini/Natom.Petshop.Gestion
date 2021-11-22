@@ -33,9 +33,6 @@ export class MeProfileComponent implements OnInit {
     this.crud.model.picture_url = "https://lh3.googleusercontent.com/ogw/ADea4I77Za6iqEqbdUL2uqgk2F88wtfI43U8O3gxDBdbRg=s128-c-mo";
     this.crud.model.email = "german.bertolini@gmail.com";
     this.crud.model.registered_at = new Date('2020-12-28T00:00:00');
-    this.crud.model.business_name = "Natom";
-    this.crud.model.business_role_name = "Administrador";
-    this.crud.model.country_icon = "arg";
   }
 
   onCancelClick() {

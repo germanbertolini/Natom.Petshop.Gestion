@@ -6,7 +6,7 @@ GO
 
 CREATE TABLE Permiso
 (
-	PermisoId INT NOT NULL,
+	PermisoId NVARCHAR(50) NOT NULL,
 	Descripcion NVARCHAR(200),
 	PRIMARY KEY (PermisoId)
 );
@@ -29,7 +29,7 @@ CREATE TABLE UsuarioPermiso
 (
 	UsuarioPermisoId INT NOT NULL IDENTITY(1,1),
 	UsuarioId INT NOT NULL,
-	PermisoId INT NOT NULL,
+	PermisoId NVARCHAR(50) NOT NULL,
 	PRIMARY KEY (UsuarioPermisoId),
 	FOREIGN KEY (UsuarioId) REFERENCES Usuario(UsuarioId),
 	FOREIGN KEY (PermisoId) REFERENCES Permiso(PermisoId)
@@ -318,4 +318,13 @@ CREATE TABLE VentaDetalle
 	FOREIGN KEY (ProductoId) REFERENCES Producto(ProductoId),
 	FOREIGN KEY (DepositoId) REFERENCES Deposito(DepositoId),
 	FOREIGN KEY (OrdenDePedidoDetalleId) REFERENCES OrdenDePedidoDetalle(OrdenDePedidoDetalleId)
+);
+
+CREATE TABLE [Log]
+(
+	LogId INT NOT NULL IDENTITY(1,1),
+	UsuarioId INT,
+	FechaHora DATETIME NOT NULL,
+	UserAgent NVARCHAR(400),
+	Exception NVARCHAR(MAX)
 );

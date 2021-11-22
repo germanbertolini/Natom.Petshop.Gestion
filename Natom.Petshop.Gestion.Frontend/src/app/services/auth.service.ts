@@ -1,9 +1,12 @@
+import { HttpHeaders } from '@angular/common/http';
+import { toBase64String } from '@angular/compiler/src/output/source_map';
 import { Injectable } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
 import { HandledError } from '../classes/errors/handled.error';
 import { LoginResult } from '../classes/models/auth/login-result.model';
 import { ApiResult } from '../classes/models/shared/api-result.model';
 import { User } from "../classes/models/user.model";
+import { ApiService } from './api.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +16,7 @@ export class AuthService {
   private _current_token: string;
   private _current_permissions: Array<string>;
   
-  constructor(private cookieService: CookieService) {
+  constructor(private cookieService: CookieService, private apiService: ApiService) {
     this._current_user = null;
     this._current_token = null;
     this._current_permissions = null;
@@ -43,28 +46,50 @@ export class AuthService {
   public Login(email: string, password: string): LoginResult {
     //MOCK RESPUESTA API
     let response = new ApiResult<LoginResult>();
-    if (email === "admin" && password === "admin") {
-      response.success = true;
-      response.message = null;
-      
+    let headers = new HttpHeaders();
+    headers = headers.append('Authorization', 'Basic ' + btoa(email + ":" + password));
+    
+    console.log(headers);
+    this.apiService.DoPOST<LoginResult>("auth/login", {}, headers,
+                      (response) => {
+                        console.log(response);
+                      },
+                      (errorMessage) => {
+                        console.log(errorMessage);
+                      });
+
+    if (email === "admin" && password === "admin") {      
       response.data = new LoginResult();
-
       response.data.User = new User();
-      response.data.User.encrypted_id = "adssdadas123e213132";
-      response.data.User.first_name = "German";
-      response.data.User.last_name = "Bertolini";
-      response.data.User.picture_url = "https://electronicssoftware.net/wp-content/uploads/user.png";
-      response.data.User.email = "admin@bioanvizplus.com";
-      response.data.User.registered_at = new Date('2020-12-28T00:00:00');
-      response.data.User.business_name = "BioAnviz+";
-      response.data.User.business_role_name = "Administrador";
-      response.data.User.country_icon = "arg";
-      response.data.Token = "98cb7b439xbx349c8273bc98b73c48927c9";
-
       response.data.Permissions = new Array<string>();
-      response.data.Permissions.push("/");
-      response.data.Permissions.push("/queries/1/a");
-      response.data.Permissions.push("/queries/1/b");
+
+      // response.data.User.encrypted_id = "adssdadas123e213132";
+      // response.data.User.first_name = "German";
+      // response.data.User.last_name = "Bertolini";
+      // response.data.User.picture_url = "https://electronicssoftware.net/wp-content/uploads/user.png";
+      // response.data.User.email = "admin@bioanvizplus.com";
+      // response.data.User.registered_at = new Date('2020-12-28T00:00:00');
+      // response.data.User.business_name = "BioAnviz+";
+      // response.data.User.business_role_name = "Administrador";
+      // response.data.User.country_icon = "arg";
+      // response.data.Token = "98cb7b439xbx349c8273bc98b73c48927c9";
+
+      // response.data.Permissions.push("/");
+      // response.data.Permissions.push("/queries/1/a");
+      // response.data.Permissions.push("/queries/1/b");
+
+      //response.success = true;
+      //response.message = null;
+
+      this._current_user = response.data.User;
+      this._current_token = response.data.Token;
+      this._current_permissions = response.data.Permissions.map(function(permission) {
+        return permission.toLowerCase();
+      });
+
+      this.cookieService.set('Auth.Current.User', JSON.stringify(this._current_user));
+      this.cookieService.set('Auth.Current.Token', JSON.stringify(this._current_token));
+      this.cookieService.set('Auth.Current.Permissions', JSON.stringify(this._current_permissions));
     }
     else {
       response.success = false;
@@ -75,16 +100,7 @@ export class AuthService {
 
     if (!response.success)
       throw new HandledError(response.message);
-      
-    this._current_user = response.data.User;
-    this._current_token = response.data.Token;
-    this._current_permissions = response.data.Permissions.map(function(permission) {
-      return permission.toLowerCase();
-    });
-
-    this.cookieService.set('Auth.Current.User', JSON.stringify(this._current_user));
-    this.cookieService.set('Auth.Current.Token', JSON.stringify(this._current_token));
-    this.cookieService.set('Auth.Current.Permissions', JSON.stringify(this._current_permissions));
+    
 
     return response.data;
   }
