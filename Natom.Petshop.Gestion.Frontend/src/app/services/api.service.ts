@@ -22,6 +22,7 @@ export class ApiService {
         if (!headers.has("Authorization") && token !== "")
             headers = headers.append("Authorization", "Bearer " + token);
 
+
         this.httpClient
                 .post(this.jsonAppConfig.baseURL + relativeUrl, body, { headers: headers })
                 .subscribe({

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
 using Natom.Petshop.Gestion.Biz;
 using System;
@@ -15,8 +16,9 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
 
         public BaseController(IServiceProvider serviceProvider)
         {
+            var httpContextAccessor = (IHttpContextAccessor)serviceProvider.GetService(typeof(IHttpContextAccessor));
             _db = (BizDbContext)serviceProvider.GetService(typeof(BizDbContext));
-            _userAgent = HttpContext.Request.Headers["User-Agent"];
+            _userAgent = httpContextAccessor.HttpContext.Request.Headers["User-Agent"];
         }
 
         protected string GetAuthorizationFromHeader()

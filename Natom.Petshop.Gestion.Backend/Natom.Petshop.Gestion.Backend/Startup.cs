@@ -16,8 +16,6 @@ namespace Natom.Petshop.Gestion.Backend
 {
     public class Startup
     {
-        private readonly string CorsConfiguration = "_corsConfiguration";
-
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -31,17 +29,15 @@ namespace Natom.Petshop.Gestion.Backend
             services.AddDbContext<BizDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")
             ));
+            
+            services.AddHttpContextAccessor();
 
-            services.AddCors(options =>
+            services.AddCors(o => o.AddPolicy("CorsPolicy", builder =>
             {
-                options.AddPolicy(name: CorsConfiguration,
-                                  builder =>
-                                  {
-                                      builder.WithOrigins("http://localhost:4200/")
-                                                .AllowAnyHeader()
-                                                .AllowAnyMethod();
-                                  });
-            });
+                builder.WithOrigins("http://localhost:4200")
+                       .AllowAnyMethod()
+                       .AllowAnyHeader();
+            }));
 
             services.AddControllers();
         }
@@ -54,9 +50,9 @@ namespace Natom.Petshop.Gestion.Backend
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseRouting();
+            app.UseCors("CorsPolicy");
 
-            app.UseCors(CorsConfiguration);
+            app.UseRouting();
 
             app.UseAuthorization();
 
