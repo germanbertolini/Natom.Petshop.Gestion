@@ -9,13 +9,13 @@ namespace Natom.Petshop.Gestion.Entities.DTO.Auth
 {
     public class LoginResultDTO
     {
-        [JsonProperty("User")]
+        [JsonProperty("user")]
         public UserDTO User { get; set; }
 
-        [JsonProperty("Token")]
+        [JsonProperty("token")]
         public string Token { get; set; }
 
-        [JsonProperty("Permissions")]
+        [JsonProperty("permissions")]
         public List<string> Permissions { get; set; }
     }
 }

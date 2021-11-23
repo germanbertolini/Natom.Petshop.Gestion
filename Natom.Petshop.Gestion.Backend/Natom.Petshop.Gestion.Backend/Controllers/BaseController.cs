@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Primitives;
 using Natom.Petshop.Gestion.Biz;
 using System;
@@ -11,13 +12,17 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
 {
     public class BaseController : ControllerBase
     {
+        protected IServiceProvider _serviceProvider;
+        protected IConfiguration _configuration;
         protected BizDbContext _db;
         protected string _userAgent;
 
         public BaseController(IServiceProvider serviceProvider)
         {
             var httpContextAccessor = (IHttpContextAccessor)serviceProvider.GetService(typeof(IHttpContextAccessor));
+            _serviceProvider = serviceProvider;
             _db = (BizDbContext)serviceProvider.GetService(typeof(BizDbContext));
+            _configuration = (IConfiguration)serviceProvider.GetService(typeof(IConfiguration));
             _userAgent = httpContextAccessor.HttpContext.Request.Headers["User-Agent"];
         }
 

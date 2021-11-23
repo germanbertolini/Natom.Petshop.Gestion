@@ -17,9 +17,11 @@ namespace Natom.Petshop.Gestion.Entities.Model
 		public string Apellido { get; set; }
 		public string Email { get; set; }
 		public string Clave { get; set; }
-		public DateTime FechaHoraConfirmacionEmail { get; set; }
+		public DateTime? FechaHoraConfirmacionEmail { get; set; }
 		public string SecretConfirmacion { get; set; }
 		public DateTime FechaHoraAlta { get; set; }
 		public DateTime? FechaHoraBaja { get; set; }
+
+		public List<UsuarioPermiso> Permisos { get; set; }
 	}
 }

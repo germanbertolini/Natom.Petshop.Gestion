@@ -19,15 +19,15 @@ export class LoginComponent {
     }
 
     onLoginClick() {
-        try
-        {
-            this._authService.Login(this.email, this.password);
-            this._router.navigate(['/']);
-        }
-        catch (error)
-        {
-            this._confirmDialogService.showError(error.message);
-            this.password = "";
-        }
+        this._authService.Login(this.email, this.password,
+            /* onSuccess */
+            () => {
+                this._router.navigate(['/']);
+            },
+            /* onError */
+            (errorMessage) => {
+                this._confirmDialogService.showError(errorMessage);
+                this.password = "";
+            });
     }
 }

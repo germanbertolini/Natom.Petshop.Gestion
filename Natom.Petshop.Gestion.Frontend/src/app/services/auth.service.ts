@@ -43,65 +43,34 @@ export class AuthService {
     return this._current_permissions;
   }
 
-  public Login(email: string, password: string): LoginResult {
-    //MOCK RESPUESTA API
+  public Login(email: string, password: string, onSuccess: () => void, onError: (errorMessage: string) => void) {
     let response = new ApiResult<LoginResult>();
     let headers = new HttpHeaders();
     headers = headers.append('Authorization', 'Basic ' + btoa(email + ":" + password));
-    
-    console.log(headers);
-    this.apiService.DoPOST<LoginResult>("auth/login", {}, headers,
+
+    this.apiService.DoPOST<ApiResult<LoginResult>>("auth/login", {}, headers,
                       (response) => {
                         console.log(response);
+
+                        if (!response.success) {
+                          onError(response.message);
+                        }
+                        else {
+                          this._current_user = response.data.user;
+                          this._current_token = response.data.token;
+                          this._current_permissions = response.data.permissions.map(function(permission) {
+                            return permission.toLowerCase();
+                          });
+
+                          this.cookieService.set('Auth.Current.User', JSON.stringify(this._current_user));
+                          this.cookieService.set('Auth.Current.Token', JSON.stringify(this._current_token));
+                          this.cookieService.set('Auth.Current.Permissions', JSON.stringify(this._current_permissions));
+
+                          onSuccess();
+                        }
                       },
                       (errorMessage) => {
-                        console.log(errorMessage);
+                        onError(errorMessage);
                       });
-
-    if (email === "admin" && password === "admin") {      
-      response.data = new LoginResult();
-      response.data.User = new User();
-      response.data.Permissions = new Array<string>();
-
-      // response.data.User.encrypted_id = "adssdadas123e213132";
-      // response.data.User.first_name = "German";
-      // response.data.User.last_name = "Bertolini";
-      // response.data.User.picture_url = "https://electronicssoftware.net/wp-content/uploads/user.png";
-      // response.data.User.email = "admin@bioanvizplus.com";
-      // response.data.User.registered_at = new Date('2020-12-28T00:00:00');
-      // response.data.User.business_name = "BioAnviz+";
-      // response.data.User.business_role_name = "Administrador";
-      // response.data.User.country_icon = "arg";
-      // response.data.Token = "98cb7b439xbx349c8273bc98b73c48927c9";
-
-      // response.data.Permissions.push("/");
-      // response.data.Permissions.push("/queries/1/a");
-      // response.data.Permissions.push("/queries/1/b");
-
-      //response.success = true;
-      //response.message = null;
-
-      this._current_user = response.data.User;
-      this._current_token = response.data.Token;
-      this._current_permissions = response.data.Permissions.map(function(permission) {
-        return permission.toLowerCase();
-      });
-
-      this.cookieService.set('Auth.Current.User', JSON.stringify(this._current_user));
-      this.cookieService.set('Auth.Current.Token', JSON.stringify(this._current_token));
-      this.cookieService.set('Auth.Current.Permissions', JSON.stringify(this._current_permissions));
-    }
-    else {
-      response.success = false;
-      response.message = "Usuario y/o clave inválida.";
-      response.data = null;
-    }
-    //FIN MOCK RESPUESTA API
-
-    if (!response.success)
-      throw new HandledError(response.message);
-    
-
-    return response.data;
   }
 }

@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Natom.Petshop.Gestion.Backend.Services;
 using Natom.Petshop.Gestion.Biz;
 using Natom.Petshop.Gestion.Biz.Exceptions;
+using Natom.Petshop.Gestion.Biz.Managers;
+using Natom.Petshop.Gestion.Entities.DTO;
 using Natom.Petshop.Gestion.Entities.DTO.Auth;
 using System;
 using System.Collections.Generic;
@@ -32,30 +34,39 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
                 
                 GetClientAndSecretFromAuthorizationBasic(out email, out password);
 
-                
-                return Ok(new LoginResultDTO
+                var manager = new UsuariosManager(_serviceProvider);
+                var usuario = await manager.LoginAsync(email, password);
+                var permisos = await manager.ObtenerPermisosAsync(usuario.UsuarioId);
+                var tokenDurationInSeconds = 24 * 60 * 60; //24 HORAS
+                var token = OAuthService.GenerateAccessToken(scope: "gestionBackend", usuario, permisos, tokenDurationInSeconds);
+
+                return Ok(new ApiResultDTO<LoginResultDTO>
                 {
-                    User = new UserDTO
+                    Success = true,
+                    Data = new LoginResultDTO
                     {
-                        EncryptedId = "",
-                        FirstName = "",
-                        LastName = "",
-                        Email = "",
-                        PictureURL = "",
-                        RegisteredAt = new DateTime(2020, 01, 01)
-                    },
-                    Permissions = new List<string>(),
-                    Token = ""
+                        User = new UserDTO
+                        {
+                            EncryptedId = EncryptionService.Encrypt(usuario.UsuarioId),
+                            FirstName = usuario.Nombre,
+                            LastName = usuario.Apellido,
+                            Email = usuario.Email,
+                            PictureURL = "assets/img/user-photo.png",
+                            RegisteredAt = new DateTime(2021, 12, 01)
+                        },
+                        Permissions = token.Permissions,
+                        Token = OAuthService.Encode(token)
+                    }
                 });
             }
             catch (HandledException ex)
             {
-                return StatusCode(StatusCodes.Status400BadRequest, new { error = ex.Message });
+                return Ok(new ApiResultDTO { Success = false, Message = ex.Message });
             }
             catch (Exception ex)
             {
                 await LoggingService.LogExceptionAsync(_db, ex, usuarioId: null, _userAgent);
-                return StatusCode(StatusCodes.Status500InternalServerError, new { error = "Se ha producido un error interno." });
+                return Ok(new ApiResultDTO { Success = false, Message = "Se ha producido un error interno." });
             }
         }
 

@@ -1,7 +1,7 @@
 import { User } from "../user.model";
 
 export class LoginResult {
-    public User: User;
-    public Token: string;
-    public Permissions: Array<string>;
+    public user: User;
+    public token: string;
+    public permissions: Array<string>;
 }

@@ -34,7 +34,7 @@ namespace Natom.Petshop.Gestion.Backend
 
             services.AddCors(o => o.AddPolicy("CorsPolicy", builder =>
             {
-                builder.WithOrigins("http://localhost:4200")
+                builder.WithOrigins(Configuration["CORS:FrontendOrigin"])
                        .AllowAnyMethod()
                        .AllowAnyHeader();
             }));
