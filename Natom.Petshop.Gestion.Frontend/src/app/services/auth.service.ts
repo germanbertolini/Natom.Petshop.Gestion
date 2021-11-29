@@ -50,8 +50,6 @@ export class AuthService {
 
     this.apiService.DoPOST<ApiResult<LoginResult>>("auth/login", {}, headers,
                       (response) => {
-                        console.log(response);
-
                         if (!response.success) {
                           onError(response.message);
                         }

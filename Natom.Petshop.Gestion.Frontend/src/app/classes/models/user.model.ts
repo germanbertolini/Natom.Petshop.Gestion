@@ -4,5 +4,6 @@ export class User {
     public last_name: string;
     public picture_url: string;
     public email: string;
+    public status: string;
     public registered_at: Date;
 }

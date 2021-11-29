@@ -26,5 +26,8 @@ namespace Natom.Petshop.Gestion.Entities.DTO.Auth
 
         [JsonProperty("registered_at")]
         public DateTime RegisteredAt { get; set; }
+
+        [JsonProperty("status")]
+        public string Status { get; set; }
     }
 }

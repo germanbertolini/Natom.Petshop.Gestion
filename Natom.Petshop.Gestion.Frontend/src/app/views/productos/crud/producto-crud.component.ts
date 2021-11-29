@@ -6,7 +6,7 @@ import { Cliente } from "src/app/classes/models/clientes/cliente.model";
 import { Producto } from "src/app/classes/models/productos/producto.model";
 import { CRUDView } from "src/app/classes/views/crud-view.classes";
 import { ConfirmDialogService } from "src/app/components/confirm-dialog/confirm-dialog.service";
-import { DataTablesResponse } from "../../../classes/data-tables-response";
+import { DataTableDTO } from "../../../classes/data-table-dto";
 
 @Component({
   selector: 'app-producto-crud',

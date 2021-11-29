@@ -4,7 +4,7 @@ import { Router } from "@angular/router";
 import { NotifierService } from "angular-notifier";
 import { Marca } from "src/app/classes/models/marca.model";
 import { PedidosList } from "src/app/classes/models/pedidos/pedidos-list.model";
-import { DataTablesResponse } from '../../classes/data-tables-response';
+import { DataTableDTO } from '../../classes/data-table-dto';
 import { ConfirmDialogService } from "../../components/confirm-dialog/confirm-dialog.service";
 
 @Component({

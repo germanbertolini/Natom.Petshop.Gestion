@@ -3,7 +3,7 @@ import { Component, Input, OnInit, ViewChild } from "@angular/core";
 import { Router } from "@angular/router";
 import { NotifierService } from "angular-notifier";
 import { PrecioReajusteList } from "src/app/classes/models/precios/precio-reajuste-list.model";
-import { DataTablesResponse } from '../../../classes/data-tables-response';
+import { DataTableDTO } from '../../../classes/data-table-dto';
 import { ConfirmDialogService } from "../../../components/confirm-dialog/confirm-dialog.service";
 
 @Component({

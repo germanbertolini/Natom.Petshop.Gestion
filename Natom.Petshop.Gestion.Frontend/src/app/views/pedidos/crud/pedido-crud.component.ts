@@ -5,7 +5,7 @@ import { NotifierService } from "angular-notifier";
 import { Pedido } from "src/app/classes/models/pedidos/pedido.model";
 import { CRUDView } from "src/app/classes/views/crud-view.classes";
 import { ConfirmDialogService } from "src/app/components/confirm-dialog/confirm-dialog.service";
-import { DataTablesResponse } from "../../../classes/data-tables-response";
+import { DataTableDTO } from "../../../classes/data-table-dto";
 
 @Component({
   selector: 'app-pedido-crud',

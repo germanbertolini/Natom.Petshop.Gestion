@@ -14,15 +14,22 @@ export class ApiService {
 
     }
 
+    public DoGET<TResponse>(relativeUrl: string, headers: HttpHeaders = null, onSuccess: (response: TResponse) => void, onError: (errorMessage: string) => void) {
+        headers = this.SetAPIHeaders(headers);
+        this.httpClient
+                .get(this.jsonAppConfig.baseURL + relativeUrl, { headers: headers })
+                .subscribe({
+                    next: response => {
+                        onSuccess(<TResponse>response);
+                    },
+                    error: error => {
+                        onError(error.message);
+                    }
+                });
+    }
+
     public DoPOST<TResponse>(relativeUrl: string, body: any, headers: HttpHeaders = null, onSuccess: (response: TResponse) => void, onError: (errorMessage: string) => void) {
-        if (headers === null)
-            headers = new HttpHeaders();
-
-        let token = this.cookieService.get('Auth.Current.Token');
-        if (!headers.has("Authorization") && token !== "")
-            headers = headers.append("Authorization", "Bearer " + token);
-
-
+        headers = this.SetAPIHeaders(headers);
         this.httpClient
                 .post(this.jsonAppConfig.baseURL + relativeUrl, body, { headers: headers })
                 .subscribe({
@@ -33,5 +40,16 @@ export class ApiService {
                         onError(error.message);
                     }
                 });
+    }
+
+    private SetAPIHeaders (headers: HttpHeaders) : HttpHeaders {
+        if (headers === null)
+            headers = new HttpHeaders();
+
+        let token = this.cookieService.get('Auth.Current.Token');
+        if (!headers.has("Authorization") && token !== "")
+            headers = headers.append("Authorization", "Bearer " + token);
+
+        return headers;
     }
 }

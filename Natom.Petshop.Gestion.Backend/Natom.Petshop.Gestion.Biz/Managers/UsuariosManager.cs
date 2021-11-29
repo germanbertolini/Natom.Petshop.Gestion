@@ -44,11 +44,6 @@ namespace Natom.Petshop.Gestion.Biz.Managers
             return usuario;
         }
 
-        public string GenerarToken(Usuario usuario)
-        {
-            throw new NotImplementedException();
-        }
-
         public Task<List<Permiso>> ObtenerPermisosAsync(int usuarioId)
         {
             if (usuarioId == 0) //ADMIN
@@ -59,6 +54,53 @@ namespace Natom.Petshop.Gestion.Biz.Managers
                         .Where(p => p.UsuarioId == usuarioId)
                         .Select(p => p.Permiso)
                         .ToListAsync();
+        }
+
+        public string ObtenerEstado(Usuario usuario)
+        {
+            if (usuario.FechaHoraBaja.HasValue)
+                return "ELIMINADO";
+            else if (!usuario.FechaHoraConfirmacionEmail.HasValue)
+                return "PENDIENTE DE CONFIRMACIÓN";
+            else
+                return "ACTIVO";
+        }
+
+        public Task<int> ObtenerUsuariosCountAsync()
+                    => _db.Usuarios
+                            .Where(p => !p.FechaHoraBaja.HasValue)
+                            .CountAsync();
+
+        public Task<List<Usuario>> ObtenerUsuariosDataTableAsync(int start, int size, string filter, int sortColumnIndex, string sortDirection)
+        {
+            var queryable = _db.Usuarios.Where(p => !p.FechaHoraBaja.HasValue);
+
+            //FILTROS
+            if (!string.IsNullOrEmpty(filter))
+            {
+                queryable = queryable.Where(p => p.Nombre.ToLower().Contains(filter.ToLower())
+                                                    || p.Apellido.ToLower().Contains(filter.ToLower())
+                                                    || p.Email.ToLower().Contains(filter.ToLower()));
+            }
+
+            //ORDEN
+            var queryableOrdered = sortDirection.ToLower().Equals("asc")
+                                        ? queryable.OrderBy(c => sortColumnIndex == 0 ? c.Nombre :
+                                                                  sortColumnIndex == 1 ? c.Apellido :
+                                                                  sortColumnIndex == 2 ? c.Email :
+                                                                  sortColumnIndex == 3 ? c.FechaHoraAlta.Ticks.ToString() :
+                                                            "")
+                                        : queryable.OrderByDescending(c => sortColumnIndex == 0 ? c.Nombre :
+                                                                  sortColumnIndex == 1 ? c.Apellido :
+                                                                  sortColumnIndex == 2 ? c.Email :
+                                                                  sortColumnIndex == 3 ? c.FechaHoraAlta.Ticks.ToString() :
+                                                            "");
+
+            //SKIP Y TAKE
+            return queryableOrdered
+                    .Skip(start)
+                    .Take(size)
+                    .ToListAsync();
         }
     }
 }

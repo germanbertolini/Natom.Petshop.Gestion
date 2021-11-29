@@ -5,7 +5,7 @@ import { NotifierService } from "angular-notifier";
 import { PrecioReajuste } from "src/app/classes/models/precios/precio-reajuste.model";
 import { CRUDView } from "src/app/classes/views/crud-view.classes";
 import { ConfirmDialogService } from "src/app/components/confirm-dialog/confirm-dialog.service";
-import { DataTablesResponse } from "../../../../classes/data-tables-response";
+import { DataTableDTO } from "../../../../classes/data-table-dto";
 
 @Component({
   selector: 'app-precio-reajuste-crud',
