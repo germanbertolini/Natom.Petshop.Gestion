@@ -1,10 +1,11 @@
 import { HttpHeaders } from "@angular/common/http";
 import { Component, Input, OnInit, ViewChild } from "@angular/core";
 import { Router } from "@angular/router";
+import { DataTableDirective } from "angular-datatables/src/angular-datatables.directive";
 import { NotifierService } from "angular-notifier";
 import { DataTableDTO } from "src/app/classes/data-table-dto";
-import { ApiResult } from "src/app/classes/models/shared/api-result.model";
-import { User } from "src/app/classes/models/user.model";
+import { ApiResult } from "src/app/classes/dto/shared/api-result.dto";
+import { UserDTO } from "src/app/classes/dto/user.dto";
 import { ApiService } from "src/app/services/api.service";
 import { ConfirmDialogService } from "../../components/confirm-dialog/confirm-dialog.service";
 
@@ -14,8 +15,11 @@ import { ConfirmDialogService } from "../../components/confirm-dialog/confirm-di
 })
 export class UsersComponent implements OnInit {
 
+  @ViewChild(DataTableDirective, { static: false })
+  dtElement: DataTableDirective;
+  dtInstance: Promise<DataTables.Api>;
   dtUsers: DataTables.Settings = {};
-  Users: User[];
+  Users: UserDTO[];
   Noty: any;
 
   constructor(private apiService: ApiService,
@@ -26,14 +30,58 @@ export class UsersComponent implements OnInit {
   }
 
   onEditClick(id: string) {
-    this.routerService.navigate(['/users/edit/' + id]);
+    this.routerService.navigate(['/users/edit/' + encodeURIComponent(id)]);
   }
 
   onDeleteClick(id: string) {
-    console.log(id);
     let notifier = this.notifierService;
+    let confirmDialogService = this.confirmDialogService;
+    let apiService = this.apiService;
+    let dataTableInstance = this.dtElement.dtInstance;
+
     this.confirmDialogService.showConfirm("Desea eliminar el usuario?", function () {  
-      notifier.notify('success', 'Usuario eliminado con éxito.');
+      apiService.DoDELETE<ApiResult<any>>("users/delete?encryptedId=" + encodeURIComponent(id), /*headers*/ null,
+                                            (response) => {
+                                              if (!response.success) {
+                                                confirmDialogService.showError(response.message);
+                                              }
+                                              else {
+                                                notifier.notify('success', 'Usuario eliminado con éxito.');
+                                                dataTableInstance.then((dtInstance: DataTables.Api) => {
+                                                  dtInstance.ajax.reload()
+                                                });
+                                              }
+                                            },
+                                            (errorMessage) => {
+                                              confirmDialogService.showError(errorMessage);
+                                            });
+      
+    });
+  }
+
+  onRecoverClick(id: string) {
+    let notifier = this.notifierService;
+    let confirmDialogService = this.confirmDialogService;
+    let apiService = this.apiService;
+    let dataTableInstance = this.dtElement.dtInstance;
+
+    this.confirmDialogService.showConfirm("Desea recuperar la clave del usuario? (Esto lo inactivará hasta confirmar el correo)", function () {  
+      apiService.DoPOST<ApiResult<any>>("users/recover?encryptedId=" + encodeURIComponent(id), {}, /*headers*/ null,
+                                            (response) => {
+                                              if (!response.success) {
+                                                confirmDialogService.showError(response.message);
+                                              }
+                                              else {
+                                                notifier.notify('success', 'Email de recuperación enviado con éxito.');
+                                                dataTableInstance.then((dtInstance: DataTables.Api) => {
+                                                  dtInstance.ajax.reload()
+                                                });
+                                              }
+                                            },
+                                            (errorMessage) => {
+                                              confirmDialogService.showError(errorMessage);
+                                            });
+      
     });
   }
 
@@ -61,7 +109,7 @@ export class UsersComponent implements OnInit {
         },
       },
       ajax: (dataTablesParameters: any, callback) => {
-        this.apiService.DoPOST<ApiResult<DataTableDTO<User>>>("users/list", dataTablesParameters, /*headers*/ null,
+        this.apiService.DoPOST<ApiResult<DataTableDTO<UserDTO>>>("users/list", dataTablesParameters, /*headers*/ null,
                       (response) => {
                         if (!response.success) {
                           this.confirmDialogService.showError(response.message);
@@ -97,6 +145,8 @@ export class UsersComponent implements OnInit {
         { data: '' } //BOTONERA
       ]
     };
+
+    console.log(this.dtUsers);
   }
 
 }

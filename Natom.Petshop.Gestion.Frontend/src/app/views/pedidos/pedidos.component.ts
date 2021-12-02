@@ -2,8 +2,8 @@ import { HttpClient } from "@angular/common/http";
 import { Component, Input, OnInit, ViewChild } from "@angular/core";
 import { Router } from "@angular/router";
 import { NotifierService } from "angular-notifier";
-import { Marca } from "src/app/classes/models/marca.model";
-import { PedidosList } from "src/app/classes/models/pedidos/pedidos-list.model";
+import { MarcaDTO } from "src/app/classes/dto/marca.dto";
+import { PedidosListDTO } from "src/app/classes/dto/pedidos/pedidos-list.dto";
 import { DataTableDTO } from '../../classes/data-table-dto';
 import { ConfirmDialogService } from "../../components/confirm-dialog/confirm-dialog.service";
 
@@ -15,7 +15,7 @@ import { ConfirmDialogService } from "../../components/confirm-dialog/confirm-di
 export class PedidosComponent implements OnInit {
 
   dtIndex: DataTables.Settings = {};
-  Pedidos: PedidosList[];
+  Pedidos: PedidosListDTO[];
   Noty: any;
 
   constructor(private httpClientService: HttpClient,

@@ -2,7 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { NotifierService } from "angular-notifier";
-import { TransferenciaEntreCajas } from "src/app/classes/models/cajas/transferencia-entre-cajas.model";
+import { TransferenciaEntreCajasDTO } from "src/app/classes/dto/cajas/transferencia-entre-cajas.dto";
 import { CRUDView } from "src/app/classes/views/crud-view.classes";
 import { ConfirmDialogService } from "src/app/components/confirm-dialog/confirm-dialog.service";
 
@@ -13,7 +13,7 @@ import { ConfirmDialogService } from "src/app/components/confirm-dialog/confirm-
 })
 
 export class CajaTransferenciaComponent implements OnInit {
-  crud: CRUDView<TransferenciaEntreCajas>;
+  crud: CRUDView<TransferenciaEntreCajasDTO>;
 
   constructor(private httpClientService: HttpClient,
               private routerService: Router,
@@ -21,8 +21,8 @@ export class CajaTransferenciaComponent implements OnInit {
               private notifierService: NotifierService,
               private confirmDialogService: ConfirmDialogService) {
                 
-    this.crud = new CRUDView<TransferenciaEntreCajas>(routeService);
-    this.crud.model = new TransferenciaEntreCajas();
+    this.crud = new CRUDView<TransferenciaEntreCajasDTO>(routeService);
+    this.crud.model = new TransferenciaEntreCajasDTO();
     this.crud.model.origen = "diaria";
     this.crud.model.destino = "fuerte";
     this.crud.model.usuarioNombre = "German";

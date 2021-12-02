@@ -2,7 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Component, Input, OnInit, ViewChild } from "@angular/core";
 import { Router } from "@angular/router";
 import { NotifierService } from "angular-notifier";
-import { Marca } from "src/app/classes/models/marca.model";
+import { MarcaDTO } from "src/app/classes/dto/marca.dto";
 import { DataTableDTO } from '../../classes/data-table-dto';
 import { ConfirmDialogService } from "../../components/confirm-dialog/confirm-dialog.service";
 
@@ -13,7 +13,7 @@ import { ConfirmDialogService } from "../../components/confirm-dialog/confirm-di
 export class MarcasComponent implements OnInit {
 
   dtIndex: DataTables.Settings = {};
-  Marcas: Marca[];
+  Marcas: MarcaDTO[];
   Noty: any;
 
   constructor(private httpClientService: HttpClient,

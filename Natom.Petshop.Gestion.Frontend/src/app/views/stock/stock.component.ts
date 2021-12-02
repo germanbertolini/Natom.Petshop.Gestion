@@ -4,7 +4,7 @@ import { Router } from "@angular/router";
 import { NotifierService } from "angular-notifier";
 import { DataTableDTO } from '../../classes/data-table-dto';
 import { ConfirmDialogService } from "../../components/confirm-dialog/confirm-dialog.service";
-import { StockList } from "src/app/classes/models/stock/stock-list.model";
+import { StockListDTO } from "src/app/classes/dto/stock/stock-list.dto";
 
 @Component({
   selector: 'app-stock',
@@ -14,7 +14,7 @@ import { StockList } from "src/app/classes/models/stock/stock-list.model";
 export class StockComponent implements OnInit {
 
   dtIndex: DataTables.Settings = {};
-  Movimientos: StockList[];
+  Movimientos: StockListDTO[];
   saldoActual: number;
   filtroFecha: string;
   Noty: any;

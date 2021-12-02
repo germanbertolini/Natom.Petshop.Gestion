@@ -6,7 +6,7 @@
   </div>
   <hr class="divider" />
   <div class="row">
-    <div class="col-md-3 offset-md-3">
+    <div class="col-md-3 offset-md-1">
       <div class="form-group">
         <label for="formGroupExampleInput">Nombre</label>
         <input
@@ -26,9 +26,7 @@
           [(ngModel)]="crud.model.last_name" />
       </div>
     </div>
-  </div>
-  <div class="row">
-    <div class="col-md-3 offset-md-3">
+    <div class="col-md-4">
       <div class="form-group">
         <label for="formGroupExampleInput">Email</label>
         <div class="input-group">
@@ -41,29 +39,38 @@
             type="text"
             class="form-control"
             placeholder="ejemplo@ejemplo.com"
-            [(ngModel)]="crud.model.email" />
+            [(ngModel)]="crud.model.email"
+            [readonly]="crud.isEditMode"
+            />
         </div>
       </div>
     </div>
-    <div class="col-md-3">
-      <div class="form-group">
-        <label for="formGroupExampleInput">Rol</label>
-        <div class="input-group">
-          <div class="input-group-prepend">
-            <span class="input-group-text">
-              <i class="fa fa-user"></i>
-            </span>
+  </div>
+  <div class="row" *ngIf="!crud.isEditMode">
+    <div class="col-md-8 offset-md-2">
+      <div class="alert alert-success" role="alert">
+        <i class="fa fa-bell" aria-hidden="true"></i>&nbsp;&nbsp; Se enviará un mail a la casilla de correo indicada para que el usuario pueda establecer su contraseña
+      </div>
+    </div>
+  </div>
+  <hr>
+  <div class="row">
+    <div class="col-md-12 divPermisos">
+      <div class="row">
+        <div class="col-md-4" *ngFor="let permiso of permisos; let i = index">
+          <div class="material-switch pull-left" style="margin-top: 2px; margin-bottom:10px;"><!-- <div class="material-switch pull-right"> -->
+              <input
+                type="checkbox"
+                class="switchPermiso"
+                id="switchPermiso{{ i }}"
+                [checked]="containsPermiso(permiso.encrypted_id)"
+                (change)="onSwitchPermisoChanged($event, permiso.encrypted_id)"
+                />
+              <label for="switchPermiso{{ i }}" class="switch-danger"></label>
           </div>
-          <select
-            class="form-control"
-            size="1">
-            <option value="">Seleccione...</option>
-            <option value="sysAdmin">Administrador</option>
-            <option value="operator">Operador</option>
-          </select>
+          &nbsp;&nbsp;&nbsp;<b>{{ permiso.descripcion }}</b>
         </div>
       </div>
-
     </div>
   </div>
   <div class="row crud-footer">

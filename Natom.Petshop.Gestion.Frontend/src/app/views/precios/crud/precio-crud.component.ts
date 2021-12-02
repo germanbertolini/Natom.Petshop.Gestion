@@ -2,7 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { NotifierService } from "angular-notifier";
-import { Precio } from "src/app/classes/models/precios/precio.model";
+import { PrecioDTO } from "src/app/classes/dto/precios/precio.dto";
 import { CRUDView } from "src/app/classes/views/crud-view.classes";
 import { ConfirmDialogService } from "src/app/components/confirm-dialog/confirm-dialog.service";
 import { DataTableDTO } from "../../../classes/data-table-dto";
@@ -15,7 +15,7 @@ import { DataTableDTO } from "../../../classes/data-table-dto";
 
 export class PrecioCrudComponent implements OnInit {
 
-  crud: CRUDView<Precio>;
+  crud: CRUDView<PrecioDTO>;
 
   decideClosure(event, datepicker) { const path = event.path.map(p => p.localName); if (!path.includes('ngb-datepicker')) { datepicker.close(); } }
 
@@ -25,8 +25,8 @@ export class PrecioCrudComponent implements OnInit {
               private notifierService: NotifierService,
               private confirmDialogService: ConfirmDialogService) {
                 
-    this.crud = new CRUDView<Precio>(routeService);
-    this.crud.model = new Precio();
+    this.crud = new CRUDView<PrecioDTO>(routeService);
+    this.crud.model = new PrecioDTO();
     this.crud.model.listaDePrecios_encrypted_id = "";
   }
 

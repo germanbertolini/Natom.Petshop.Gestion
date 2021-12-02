@@ -2,7 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { NotifierService } from "angular-notifier";
-import { Marca } from "src/app/classes/models/marca.model";
+import { MarcaDTO } from "src/app/classes/dto/marca.dto";
 import { CRUDView } from "src/app/classes/views/crud-view.classes";
 import { ConfirmDialogService } from "src/app/components/confirm-dialog/confirm-dialog.service";
 import { DataTableDTO } from "../../../classes/data-table-dto";
@@ -15,7 +15,7 @@ import { DataTableDTO } from "../../../classes/data-table-dto";
 
 export class MarcaCrudComponent implements OnInit {
 
-  crud: CRUDView<Marca>;
+  crud: CRUDView<MarcaDTO>;
 
   constructor(private httpClientService: HttpClient,
               private routerService: Router,
@@ -23,8 +23,8 @@ export class MarcaCrudComponent implements OnInit {
               private notifierService: NotifierService,
               private confirmDialogService: ConfirmDialogService) {
                 
-    this.crud = new CRUDView<Marca>(routeService);
-    this.crud.model = new Marca();
+    this.crud = new CRUDView<MarcaDTO>(routeService);
+    this.crud.model = new MarcaDTO();
   }
 
   onCancelClick() {

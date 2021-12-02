@@ -2,8 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { NotifierService } from "angular-notifier";
-import { MovimientoCajaFuerte } from "src/app/classes/models/cajas/movimiento-caja-fuerte.model";
-import { MovimientoStock } from "src/app/classes/models/stock/movimiento-stock.model";
+import { MovimientoStockDTO } from "src/app/classes/dto/stock/movimiento-stock.dto";
 import { CRUDView } from "src/app/classes/views/crud-view.classes";
 import { ConfirmDialogService } from "src/app/components/confirm-dialog/confirm-dialog.service";
 
@@ -14,7 +13,7 @@ import { ConfirmDialogService } from "src/app/components/confirm-dialog/confirm-
 })
 
 export class StockNewComponent implements OnInit {
-  crud: CRUDView<MovimientoStock>;
+  crud: CRUDView<MovimientoStockDTO>;
   stockActual: 100;
   valor: 0;
 
@@ -24,8 +23,8 @@ export class StockNewComponent implements OnInit {
               private notifierService: NotifierService,
               private confirmDialogService: ConfirmDialogService) {
                 
-    this.crud = new CRUDView<MovimientoStock>(routeService);
-    this.crud.model = new MovimientoStock();
+    this.crud = new CRUDView<MovimientoStockDTO>(routeService);
+    this.crud.model = new MovimientoStockDTO();
     this.crud.model.tipo = "";
   }
 

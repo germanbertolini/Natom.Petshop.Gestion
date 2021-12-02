@@ -2,7 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { NotifierService } from "angular-notifier";
-import { PrecioReajuste } from "src/app/classes/models/precios/precio-reajuste.model";
+import { PrecioReajusteDTO } from "src/app/classes/dto/precios/precio-reajuste.dto";
 import { CRUDView } from "src/app/classes/views/crud-view.classes";
 import { ConfirmDialogService } from "src/app/components/confirm-dialog/confirm-dialog.service";
 import { DataTableDTO } from "../../../../classes/data-table-dto";
@@ -15,7 +15,7 @@ import { DataTableDTO } from "../../../../classes/data-table-dto";
 
 export class PrecioReajusteCrudComponent implements OnInit {
 
-  crud: CRUDView<PrecioReajuste>;
+  crud: CRUDView<PrecioReajusteDTO>;
 
   decideClosure(event, datepicker) { const path = event.path.map(p => p.localName); if (!path.includes('ngb-datepicker')) { datepicker.close(); } }
 
@@ -25,8 +25,8 @@ export class PrecioReajusteCrudComponent implements OnInit {
               private notifierService: NotifierService,
               private confirmDialogService: ConfirmDialogService) {
                 
-    this.crud = new CRUDView<PrecioReajuste>(routeService);
-    this.crud.model = new PrecioReajuste();
+    this.crud = new CRUDView<PrecioReajusteDTO>(routeService);
+    this.crud.model = new PrecioReajusteDTO();
     this.crud.model.aplicoListaDePrecios_encrypted_id = "";
     this.crud.model.aplicoMarca_encrypted_id = "";
   }

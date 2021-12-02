@@ -2,11 +2,9 @@ import { HttpClient } from "@angular/common/http";
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { NotifierService } from "angular-notifier";
-import { Cliente } from "src/app/classes/models/clientes/cliente.model";
-import { Producto } from "src/app/classes/models/productos/producto.model";
+import { ProductoDTO } from "src/app/classes/dto/productos/producto.dto";
 import { CRUDView } from "src/app/classes/views/crud-view.classes";
 import { ConfirmDialogService } from "src/app/components/confirm-dialog/confirm-dialog.service";
-import { DataTableDTO } from "../../../classes/data-table-dto";
 
 @Component({
   selector: 'app-producto-crud',
@@ -16,7 +14,7 @@ import { DataTableDTO } from "../../../classes/data-table-dto";
 
 export class ProductoCrudComponent implements OnInit {
 
-  crud: CRUDView<Producto>;
+  crud: CRUDView<ProductoDTO>;
 
   constructor(private httpClientService: HttpClient,
               private routerService: Router,
@@ -24,8 +22,8 @@ export class ProductoCrudComponent implements OnInit {
               private notifierService: NotifierService,
               private confirmDialogService: ConfirmDialogService) {
                 
-    this.crud = new CRUDView<Producto>(routeService);
-    this.crud.model = new Producto();
+    this.crud = new CRUDView<ProductoDTO>(routeService);
+    this.crud.model = new ProductoDTO();
     this.crud.model.marca_encrypted_id = "";
     this.crud.model.unidadPeso_encrypted_id = "";
     this.crud.model.mueveStock = true;

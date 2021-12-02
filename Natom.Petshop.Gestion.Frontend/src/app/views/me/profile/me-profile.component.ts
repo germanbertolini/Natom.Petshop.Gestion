@@ -2,7 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { NotifierService } from "angular-notifier";
-import { User } from "src/app/classes/models/user.model";
+import { UserDTO } from "src/app/classes/dto/user.dto";
 import { CRUDView } from "src/app/classes/views/crud-view.classes";
 import { ConfirmDialogService } from "src/app/components/confirm-dialog/confirm-dialog.service";
 import { DataTableDTO } from "../../../classes/data-table-dto";
@@ -14,7 +14,7 @@ import { DataTableDTO } from "../../../classes/data-table-dto";
 })
 
 export class MeProfileComponent implements OnInit {
-  crud: CRUDView<User>;
+  crud: CRUDView<UserDTO>;
   dtDevices: DataTables.Settings = {};
 
   constructor(private httpClientService: HttpClient,
@@ -23,8 +23,8 @@ export class MeProfileComponent implements OnInit {
               private notifierService: NotifierService,
               private confirmDialogService: ConfirmDialogService) {
                 
-    this.crud = new CRUDView<User>(routeService);
-    this.crud.model = new User();
+    this.crud = new CRUDView<UserDTO>(routeService);
+    this.crud.model = new UserDTO();
 
     //MOCK
     this.crud.model.encrypted_id = "adssdadas123e213132";

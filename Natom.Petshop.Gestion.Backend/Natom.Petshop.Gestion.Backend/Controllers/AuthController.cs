@@ -45,15 +45,7 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
                     Success = true,
                     Data = new LoginResultDTO
                     {
-                        User = new UserDTO
-                        {
-                            EncryptedId = EncryptionService.Encrypt(usuario.UsuarioId),
-                            FirstName = usuario.Nombre,
-                            LastName = usuario.Apellido,
-                            Email = usuario.Email,
-                            PictureURL = "assets/img/user-photo.png",
-                            RegisteredAt = new DateTime(2021, 12, 01)
-                        },
+                        User = new UserDTO().From(usuario),
                         Permissions = token.Permissions,
                         Token = OAuthService.Encode(token)
                     }

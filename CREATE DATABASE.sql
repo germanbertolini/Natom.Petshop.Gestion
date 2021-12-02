@@ -17,9 +17,9 @@ CREATE TABLE Usuario
 	Nombre VARCHAR(50) NOT NULL,
 	Apellido VARCHAR(50) NOT NULL,
 	Email VARCHAR(150) NOT NULL,
-	Clave VARCHAR(32) NOT NULL,
-	FechaHoraConfirmacionEmail DATETIME NOT NULL,
-	SecretConfirmacion CHAR(32) NOT NULL,
+	Clave VARCHAR(32),
+	FechaHoraConfirmacionEmail DATETIME,
+	SecretConfirmacion CHAR(32),
 	FechaHoraAlta DATETIME NOT NULL,
 	FechaHoraBaja DATETIME DEFAULT NULL,
 	PRIMARY KEY (UsuarioId)
@@ -328,3 +328,28 @@ CREATE TABLE [Log]
 	UserAgent NVARCHAR(400),
 	Exception NVARCHAR(MAX)
 );
+
+INSERT INTO Permiso (PermisoId, Descripcion) VALUES
+							('ABM_USUARIOS', 'ABM Usuarios'),
+							('ABM_MARCAS', 'ABM Marcas'),
+							('CAJA_DIARIA_VER', 'Caja diaria: Ver movimientos'),
+							('CAJA_DIARIA_NUEVO_MOVIMIENTO', 'Caja diaria: Registrar movimientos'),
+							('CAJA_FUERTE_VER', 'Caja fuerte: Ver movimientos'),
+							('CAJA_FUERTE_NUEVO_MOVIMIENTO', 'Caja fuerte: Registrar movimientos'),
+							('CAJA_TRANSFERENCIA', 'Transferencia entre cajas'),
+							('CLIENTES_VER', 'Clientes: Consultar'),
+							('CLIENTES_CRUD', 'Clientes: Alta, Baja, Modificación'),
+							('PRODUCTOS_VER', 'Productos: Consultar'),
+							('PRODUCTOS_CRUD', 'Productos: Alta, Baja, Modificación'),
+							('PRECIOS_VER', 'Precios: Consultar'),
+							('PRECIOS_CRUD', 'Precios: Alta, Baja, Modificación'),
+							('PRECIOS_REAJUSTAR', 'Precios: Reajuste por Marca'),
+							('STOCK_VER', 'Stock: Ver movimientos'),
+							('STOCK_NUEVO_MOVIMIENTO', 'Stock: Registrar movimientos'),
+							('PEDIDOS_VER', 'Pedidos: Ver pedidos'),
+							('PEDIDOS_NUEVO', 'Pedidos: Carga nuevo pedido'),
+							('PEDIDOS_ANULAR', 'Pedidos: Anular pedido'),
+							('PEDIDOS_DEPOSITO', 'Pedidos: Armado / Finalización de preparación'),
+							('VENTAS_VER', 'Ventas: Ver ventas'),
+							('VENTAS_NUEVO', 'Ventas: Carga nueva venta'),
+							('VENTAS_ANULAR', 'Ventas: Anular venta');

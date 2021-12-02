@@ -42,6 +42,20 @@ export class ApiService {
                 });
     }
 
+    public DoDELETE<TResponse>(relativeUrl: string, headers: HttpHeaders = null, onSuccess: (response: TResponse) => void, onError: (errorMessage: string) => void) {
+        headers = this.SetAPIHeaders(headers);
+        this.httpClient
+                .delete(this.jsonAppConfig.baseURL + relativeUrl, { headers: headers })
+                .subscribe({
+                    next: response => {
+                        onSuccess(<TResponse>response);
+                    },
+                    error: error => {
+                        onError(error.message);
+                    }
+                });
+    }
+
     private SetAPIHeaders (headers: HttpHeaders) : HttpHeaders {
         if (headers === null)
             headers = new HttpHeaders();

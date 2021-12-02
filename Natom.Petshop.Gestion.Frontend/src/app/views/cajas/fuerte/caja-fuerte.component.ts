@@ -2,8 +2,8 @@ import { HttpClient } from "@angular/common/http";
 import { Component, Input, OnInit, ViewChild } from "@angular/core";
 import { Router } from "@angular/router";
 import { NotifierService } from "angular-notifier";
-import { Marca } from "src/app/classes/models/marca.model";
-import { MovimientoCajaFuerte } from "src/app/classes/models/cajas/movimiento-caja-fuerte.model";
+import { MarcaDTO } from "src/app/classes/dto/marca.dto";
+import { MovimientoCajaFuerteDTO } from "src/app/classes/dto/cajas/movimiento-caja-fuerte.dto";
 import { DataTableDTO } from "src/app/classes/data-table-dto";
 import { ConfirmDialogService } from "../../../components/confirm-dialog/confirm-dialog.service";
 
@@ -15,7 +15,7 @@ import { ConfirmDialogService } from "../../../components/confirm-dialog/confirm
 export class CajaFuerteComponent implements OnInit {
 
   dtIndex: DataTables.Settings = {};
-  Movimientos: MovimientoCajaFuerte[];
+  Movimientos: MovimientoCajaFuerteDTO[];
   saldoActual: number;
   filtroFecha: string;
   Noty: any;

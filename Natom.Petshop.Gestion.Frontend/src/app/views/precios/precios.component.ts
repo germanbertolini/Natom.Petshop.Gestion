@@ -2,7 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Component, Input, OnInit, ViewChild } from "@angular/core";
 import { Router } from "@angular/router";
 import { NotifierService } from "angular-notifier";
-import { PrecioList } from "src/app/classes/models/precios/precio-list.model";
+import { PrecioListDTO } from "src/app/classes/dto/precios/precio-list.dto";
 import { DataTableDTO } from '../../classes/data-table-dto';
 import { ConfirmDialogService } from "../../components/confirm-dialog/confirm-dialog.service";
 
@@ -14,7 +14,7 @@ import { ConfirmDialogService } from "../../components/confirm-dialog/confirm-di
 export class PreciosComponent implements OnInit {
 
   dtIndex: DataTables.Settings = {};
-  Precios: PrecioList[];
+  Precios: PrecioListDTO[];
   Noty: any;
 
   constructor(private httpClientService: HttpClient,

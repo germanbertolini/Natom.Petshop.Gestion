@@ -26,6 +26,7 @@ import { StockComponent } from "./views/stock/stock.component";
 import { StockNewComponent } from "./views/stock/new/stock-new.component";
 import { PedidosComponent } from "./views/pedidos/pedidos.component";
 import { PedidoCrudComponent } from "./views/pedidos/crud/pedido-crud.component";
+import { UserConfirmComponent } from "./views/users/confirm/user-confirm.component";
 
 const appRoutes: Routes = [
     { path: 'login', component: LoginComponent, pathMatch: 'full' },
@@ -36,6 +37,7 @@ const appRoutes: Routes = [
     { canActivate: [ AuthGuard ], path: 'users', component: UsersComponent },
     { canActivate: [ AuthGuard ], path: "users/new", component: UserCrudComponent },
     { canActivate: [ AuthGuard ], path: "users/edit/:id", component: UserCrudComponent },
+    { canActivate: [ AuthGuard ], path: "users/confirm/:data", component: UserConfirmComponent },
     { canActivate: [ AuthGuard ], path: "me/profile", component: MeProfileComponent },
     { canActivate: [ AuthGuard ], path: 'marcas', component: MarcasComponent },
     { canActivate: [ AuthGuard ], path: "marcas/new", component: MarcaCrudComponent },

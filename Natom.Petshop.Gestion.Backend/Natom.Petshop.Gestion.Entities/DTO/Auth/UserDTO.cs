@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using Natom.Petshop.Gestion.Entities.Model;
+using Natom.Petshop.Gestion.Entities.Services;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,5 +31,22 @@ namespace Natom.Petshop.Gestion.Entities.DTO.Auth
 
         [JsonProperty("status")]
         public string Status { get; set; }
+
+        [JsonProperty("permisos")]
+        public List<string> Permisos { get; set; }
+
+        public UserDTO From(Usuario entity, string status = null)
+        {
+            EncryptedId = EncryptionService.Encrypt(entity.UsuarioId);
+            FirstName = entity.Nombre;
+            LastName = entity.Apellido;
+            Email = entity.Email;
+            PictureURL = "assets/img/user-photo.png";
+            RegisteredAt = entity.FechaHoraAlta;
+            Status = status;
+            Permisos = entity.Permisos?.Select(permiso => EncryptionService.Encrypt(permiso.PermisoId)).ToList();
+
+            return this;
+        }
     }
 }

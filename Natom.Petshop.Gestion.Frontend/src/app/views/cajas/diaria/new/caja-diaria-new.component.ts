@@ -2,7 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { NotifierService } from "angular-notifier";
-import { MovimientoCajaDiaria } from "src/app/classes/models/cajas/movimiento-caja-diaria.model";
+import { MovimientoCajaDiariaDTO } from "src/app/classes/dto/cajas/movimiento-caja-diaria.dto";
 import { CRUDView } from "src/app/classes/views/crud-view.classes";
 import { ConfirmDialogService } from "src/app/components/confirm-dialog/confirm-dialog.service";
 
@@ -13,7 +13,7 @@ import { ConfirmDialogService } from "src/app/components/confirm-dialog/confirm-
 })
 
 export class CajaDiariaNewComponent implements OnInit {
-  crud: CRUDView<MovimientoCajaDiaria>;
+  crud: CRUDView<MovimientoCajaDiariaDTO>;
 
   constructor(private httpClientService: HttpClient,
               private routerService: Router,
@@ -21,8 +21,8 @@ export class CajaDiariaNewComponent implements OnInit {
               private notifierService: NotifierService,
               private confirmDialogService: ConfirmDialogService) {
                 
-    this.crud = new CRUDView<MovimientoCajaDiaria>(routeService);
-    this.crud.model = new MovimientoCajaDiaria();
+    this.crud = new CRUDView<MovimientoCajaDiariaDTO>(routeService);
+    this.crud.model = new MovimientoCajaDiariaDTO();
     this.crud.model.tipo = "";
     this.crud.model.usuarioNombre = "German";
   }

@@ -5,6 +5,8 @@ using Natom.Petshop.Gestion.Biz.Managers;
 using Natom.Petshop.Gestion.Entities.DTO;
 using Natom.Petshop.Gestion.Entities.DTO.Auth;
 using Natom.Petshop.Gestion.Entities.DTO.DataTable;
+using Natom.Petshop.Gestion.Entities.Services;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +26,7 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
         // POST: users/list
         [HttpPost]
         [ActionName("list")]
-        public async Task<IActionResult> PostList([FromBody]DataTableRequestDTO request)
+        public async Task<IActionResult> PostListAsync([FromBody]DataTableRequestDTO request)
         {
             try
             {
@@ -39,15 +41,7 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
                     {
                         RecordsTotal = usuariosCount,
                         RecordsFiltered = usuarios.Count,
-                        Records = usuarios.Select(usuario => new UserDTO
-                        {
-                            EncryptedId = EncryptionService.Encrypt(usuario.UsuarioId),
-                            FirstName = usuario.Nombre,
-                            LastName = usuario.Apellido,
-                            Email = usuario.Email,
-                            RegisteredAt = usuario.FechaHoraAlta,
-                            Status = manager.ObtenerEstado(usuario)
-                        }).ToList()
+                        Records = usuarios.Select(usuario => new UserDTO().From(usuario, manager.ObtenerEstado(usuario))).ToList()
                     }
                 });
             }
@@ -62,25 +56,159 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
             }
         }
 
-        private void GetClientAndSecretFromAuthorizationBasic(out string client, out string secret)
+        // GET: users/basics/data
+        // GET: users/basics/data?encryptedId={encryptedId}
+        [HttpGet]
+        [ActionName("basics/data")]
+        public async Task<IActionResult> GetBasicsDataAsync([FromQuery]string encryptedId = null)
         {
-            client = null;
-            secret = null;
-
-            string authorization = GetAuthorizationFromHeader();
-            if (!authorization.StartsWith("Basic")) throw new HandledException("Authorization header inválido");
-
-            var data = Convert.FromBase64String(authorization.Replace("Basic ", ""));
-            var authorizationDecoded = Encoding.UTF8.GetString(data);
-
-            if (authorizationDecoded.IndexOf(":") >= 0)
+            try
             {
-                client = authorizationDecoded.Substring(0, authorizationDecoded.IndexOf(":"));
-                secret = authorizationDecoded.Substring(authorizationDecoded.IndexOf(":") + 1);
+                var manager = new UsuariosManager(_serviceProvider);
+                var permisos = await manager.ObtenerListaPermisosAsync();
+                UserDTO entity = null;
+
+                if (!string.IsNullOrEmpty(encryptedId))
+                {
+                    var usuarioId = EncryptionService.Decrypt<int>(Uri.UnescapeDataString(encryptedId));
+                    var usuario = await manager.ObtenerUsuarioAsync(usuarioId);
+                    entity = new UserDTO().From(usuario);
+                }
+
+                return Ok(new ApiResultDTO<dynamic>
+                {
+                    Success = true,
+                    Data = new
+                    {
+                        entity = entity,
+                        permisos = permisos.Select(permiso => new PermisoDTO().From(permiso)).ToList()
+                    }
+                });
             }
-            else
+            catch (HandledException ex)
             {
-                throw new HandledException("No se pudo obtener el client y secret");
+                return Ok(new ApiResultDTO { Success = false, Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                await LoggingService.LogExceptionAsync(_db, ex, usuarioId: null, _userAgent);
+                return Ok(new ApiResultDTO { Success = false, Message = "Se ha producido un error interno." });
+            }
+        }
+
+        // POST: users/save
+        [HttpPost]
+        [ActionName("save")]
+        public async Task<IActionResult> PostSaveAsync([FromBody] UserDTO user)
+        {
+            try
+            {
+                var manager = new UsuariosManager(_serviceProvider);
+                var usuario = await manager.GuardarUsuarioAsync(_configuration, user);
+
+                return Ok(new ApiResultDTO<UserDTO>
+                {
+                    Success = true,
+                    Data = new UserDTO().From(usuario)
+                });
+            }
+            catch (HandledException ex)
+            {
+                return Ok(new ApiResultDTO { Success = false, Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                await LoggingService.LogExceptionAsync(_db, ex, usuarioId: null, _userAgent);
+                return Ok(new ApiResultDTO { Success = false, Message = "Se ha producido un error interno." });
+            }
+        }
+
+        // DELETE: users/delete?encryptedId={encryptedId}
+        [HttpDelete]
+        [ActionName("delete")]
+        public async Task<IActionResult> DeleteAsync([FromQuery] string encryptedId)
+        {
+            try
+            {
+                var usuarioId = EncryptionService.Decrypt<int>(Uri.UnescapeDataString(encryptedId));
+
+                var manager = new UsuariosManager(_serviceProvider);
+                await manager.EliminarUsuarioAsync(usuarioId);
+
+                return Ok(new ApiResultDTO
+                {
+                    Success = true
+                });
+            }
+            catch (HandledException ex)
+            {
+                return Ok(new ApiResultDTO { Success = false, Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                await LoggingService.LogExceptionAsync(_db, ex, usuarioId: null, _userAgent);
+                return Ok(new ApiResultDTO { Success = false, Message = "Se ha producido un error interno." });
+            }
+        }
+
+        // POST: users/confirm?data={data}
+        [HttpPost]
+        [ActionName("confirm")]
+        public async Task<IActionResult> ConfirmAsync([FromQuery] string data)
+        {
+            try
+            {
+                var encodedString = Uri.UnescapeDataString(data);
+                byte[] dataBytes = Convert.FromBase64String(encodedString);
+                string dataString = Encoding.UTF8.GetString(dataBytes);
+                var obj = JsonConvert.DeserializeObject<dynamic>(dataString);
+                var secret = (string)obj.s;
+                var clave = (string)obj.p;
+
+                var manager = new UsuariosManager(_serviceProvider);
+                await manager.ConfirmarUsuarioAsync(secret, clave);
+
+                return Ok(new ApiResultDTO
+                {
+                    Success = true
+                });
+            }
+            catch (HandledException ex)
+            {
+                return Ok(new ApiResultDTO { Success = false, Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                await LoggingService.LogExceptionAsync(_db, ex, usuarioId: null, _userAgent);
+                return Ok(new ApiResultDTO { Success = false, Message = "Se ha producido un error interno." });
+            }
+        }
+
+        // POST: users/recover?encryptedId={encryptedId}
+        [HttpPost]
+        [ActionName("recover")]
+        public async Task<IActionResult> RecoverAsync([FromQuery] string encryptedId)
+        {
+            try
+            {
+                var usuarioId = EncryptionService.Decrypt<int>(Uri.UnescapeDataString(encryptedId));
+
+                var manager = new UsuariosManager(_serviceProvider);
+                await manager.RecuperarUsuarioAsync(_configuration, usuarioId);
+
+                return Ok(new ApiResultDTO
+                {
+                    Success = true
+                });
+            }
+            catch (HandledException ex)
+            {
+                return Ok(new ApiResultDTO { Success = false, Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                await LoggingService.LogExceptionAsync(_db, ex, usuarioId: null, _userAgent);
+                return Ok(new ApiResultDTO { Success = false, Message = "Se ha producido un error interno." });
             }
         }
     }

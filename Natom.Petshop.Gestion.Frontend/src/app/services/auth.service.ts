@@ -3,16 +3,16 @@ import { toBase64String } from '@angular/compiler/src/output/source_map';
 import { Injectable } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
 import { HandledError } from '../classes/errors/handled.error';
-import { LoginResult } from '../classes/models/auth/login-result.model';
-import { ApiResult } from '../classes/models/shared/api-result.model';
-import { User } from "../classes/models/user.model";
+import { LoginResult } from '../classes/dto/auth/login-result.dto';
+import { ApiResult } from '../classes/dto/shared/api-result.dto';
+import { UserDTO } from "../classes/dto/user.dto";
 import { ApiService } from './api.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private _current_user: User;
+  private _current_user: UserDTO;
   private _current_token: string;
   private _current_permissions: Array<string>;
   

@@ -53,6 +53,7 @@ import { PedidoCrudComponent } from './views/pedidos/crud/pedido-crud.component'
 import { JsonAppConfigService } from './services/json-app-config.service';
 import { AppConfig } from './classes/app-config';
 import { ApiService } from './services/api.service';
+import { UserConfirmComponent } from './views/users/confirm/user-confirm.component';
 
 export function OnInit(jsonAppConfigService: JsonAppConfigService) {
   return () => {
@@ -69,6 +70,7 @@ export function OnInit(jsonAppConfigService: JsonAppConfigService) {
     ErrorPageComponent,
     UsersComponent,
     UserCrudComponent,
+    UserConfirmComponent,
     MeProfileComponent,
     MarcasComponent,
     MarcaCrudComponent,
