@@ -37,7 +37,6 @@ export class UserCrudComponent implements OnInit {
   }
 
   onSaveClick() {
-    console.log(this.crud.model);
     if (this.crud.model.first_name === undefined)
     {
       this.confirmDialogService.showError("Debes ingresar un Nombre.");
