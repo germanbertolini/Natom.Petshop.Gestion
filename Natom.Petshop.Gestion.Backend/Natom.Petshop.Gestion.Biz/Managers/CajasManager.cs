@@ -180,5 +180,71 @@ namespace Natom.Petshop.Gestion.Biz.Managers
 
             return movimiento;
         }
+
+        public Task GuardarMovimientoEntreCajasAsync(MovimientoEntreCajasDTO movimientoDto, int usuarioId)
+        {
+            if (movimientoDto.Origen.Equals("diaria"))
+                return GuardarTransferenciaDiariaAFuerteAsync(movimientoDto, usuarioId);
+            else
+                return GuardarTransferenciaFuerteADiariaAsync(movimientoDto, usuarioId);
+        }
+
+        private Task GuardarTransferenciaFuerteADiariaAsync(MovimientoEntreCajasDTO movimientoDto, int usuarioId)
+        {
+            string observaciones = "TRANSFERENCIA CAJA FUERTE A DIARIA";
+            if (!string.IsNullOrEmpty(movimientoDto.Observaciones))
+                observaciones += " /// " + movimientoDto.Observaciones;
+
+            var movimientoDebito = new MovimientoCajaFuerte()
+            {
+                FechaHora = DateTime.Now,
+                Importe = movimientoDto.Importe,
+                Observaciones = observaciones,
+                Tipo = "D", //DEBITO EN CAJA FUERTE
+                UsuarioId = usuarioId
+            };
+
+            var movimientoCredito = new MovimientoCajaDiaria()
+            {
+                FechaHora = movimientoDebito.FechaHora,
+                Importe = movimientoDto.Importe,
+                Observaciones = observaciones,
+                Tipo = "C", //CREDITO EN CAJA DIARIA
+                UsuarioId = usuarioId
+            };
+
+            _db.MovimientosCajaFuerte.Add(movimientoDebito);
+            _db.MovimientosCajaDiaria.Add(movimientoCredito);
+            return _db.SaveChangesAsync();
+        }
+
+        private Task GuardarTransferenciaDiariaAFuerteAsync(MovimientoEntreCajasDTO movimientoDto, int usuarioId)
+        {
+            string observaciones = "TRANSFERENCIA CAJA DIARIA A FUERTE";
+            if (!string.IsNullOrEmpty(movimientoDto.Observaciones))
+                observaciones += " /// " + movimientoDto.Observaciones;
+
+            var movimientoDebito = new MovimientoCajaDiaria()
+            {
+                FechaHora = DateTime.Now,
+                Importe = movimientoDto.Importe,
+                Observaciones = observaciones,
+                Tipo = "D", //DEBITO EN CAJA DIARIA
+                UsuarioId = usuarioId
+            };
+
+            var movimientoCredito = new MovimientoCajaFuerte()
+            {
+                FechaHora = movimientoDebito.FechaHora,
+                Importe = movimientoDto.Importe,
+                Observaciones = observaciones,
+                Tipo = "C", //CREDITO EN CAJA FUERTE
+                UsuarioId = usuarioId
+            };
+
+            _db.MovimientosCajaDiaria.Add(movimientoDebito);
+            _db.MovimientosCajaFuerte.Add(movimientoCredito);
+            return _db.SaveChangesAsync();
+        }
     }
 }

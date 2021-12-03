@@ -28,7 +28,7 @@ export class CajaFuerteNewComponent implements OnInit {
     this.crud = new CRUDView<MovimientoCajaFuerteDTO>(routeService);
     this.crud.model = new MovimientoCajaFuerteDTO();
     this.crud.model.tipo = "";
-    this.crud.model.usuarioNombre = "German";
+    this.crud.model.usuarioNombre = authService.getCurrentUser().first_name;
   }
 
   onCancelClick() {

@@ -159,5 +159,31 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
                 return Ok(new ApiResultDTO { Success = false, Message = "Se ha producido un error interno." });
             }
         }
+
+        // POST: cajas/transfer
+        [HttpPost]
+        [ActionName("transfer")]
+        public async Task<IActionResult> PostMovimientoEntreCajasSaveAsync([FromBody] MovimientoEntreCajasDTO movimientoDto)
+        {
+            try
+            {
+                var manager = new CajasManager(_serviceProvider);
+                await manager.GuardarMovimientoEntreCajasAsync(movimientoDto, (int)(_token?.UserId ?? 0));
+
+                return Ok(new ApiResultDTO
+                {
+                    Success = true
+                });
+            }
+            catch (HandledException ex)
+            {
+                return Ok(new ApiResultDTO { Success = false, Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                await LoggingService.LogExceptionAsync(_db, ex, usuarioId: (int?)_token?.UserId, _userAgent);
+                return Ok(new ApiResultDTO { Success = false, Message = "Se ha producido un error interno." });
+            }
+        }
     }
 }
