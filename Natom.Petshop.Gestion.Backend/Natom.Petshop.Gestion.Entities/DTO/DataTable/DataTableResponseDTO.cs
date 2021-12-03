@@ -15,6 +15,9 @@ namespace Natom.Petshop.Gestion.Entities.DTO.DataTable
         [JsonProperty("recordsFiltered")]
         public int RecordsFiltered { get; set; }
 
+        [JsonProperty("extraData")]
+        public object ExtraData { get; set; }
+
         [JsonProperty("records")]
         public List<TRecord> Records { get; set; }
     }

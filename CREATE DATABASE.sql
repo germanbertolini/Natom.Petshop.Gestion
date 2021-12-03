@@ -63,8 +63,7 @@ CREATE TABLE MovimientoCajaDiaria
 	Tipo CHAR(1) NOT NULL,	--(C)REDITO / (D)EBITO
 	Importe DECIMAL(18,2) NOT NULL,
 	Observaciones NVARCHAR(200),
-	PRIMARY KEY (MovimientoCajaDiariaId),
-	FOREIGN KEY (UsuarioId) REFERENCES Usuario(UsuarioId)
+	PRIMARY KEY (MovimientoCajaDiariaId)
 );
 
 CREATE TABLE MovimientoCajaFuerte
@@ -75,8 +74,7 @@ CREATE TABLE MovimientoCajaFuerte
 	Tipo CHAR(1) NOT NULL,	--(C)REDITO / (D)EBITO
 	Importe DECIMAL(18,2) NOT NULL,
 	Observaciones NVARCHAR(200),
-	PRIMARY KEY (MovimientoCajaFuerteId),
-	FOREIGN KEY (UsuarioId) REFERENCES Usuario(UsuarioId)
+	PRIMARY KEY (MovimientoCajaFuerteId)
 );
 
 CREATE TABLE TipoResponsable
@@ -198,7 +196,6 @@ CREATE TABLE HistoricoReajustePrecio
 	AplicoListaDePreciosId INT,
 	AplicaDesdeFechaHora DATETIME NOT NULL,
 	PRIMARY KEY (HistoricoReajustePrecioId),
-	FOREIGN KEY (UsuarioId) REFERENCES Usuario(UsuarioId),
 	FOREIGN KEY (AplicoMarcaId) REFERENCES Marca(MarcaId),
 	FOREIGN KEY (AplicoListaDePreciosId) REFERENCES ListaDePrecios(ListaDePreciosId)
 );
@@ -240,7 +237,6 @@ CREATE TABLE MovimientoStock
 	DepositoId INT NOT NULL,
 	Observaciones NVARCHAR(200),
 	PRIMARY KEY (MovimientoStockId),
-	FOREIGN KEY (UsuarioId) REFERENCES Usuario(UsuarioId),
 	FOREIGN KEY (DepositoId) REFERENCES Deposito(DepositoId),
 	FOREIGN KEY (ProductoId) REFERENCES Producto(ProductoId)
 );
@@ -271,8 +267,7 @@ CREATE TABLE OrdenDePedido
 	Activo BIT,
 	Observaciones NVARCHAR(200),
 	PRIMARY KEY (OrdenDePedidoId),
-	FOREIGN KEY (ClienteId) REFERENCES Cliente(ClienteId),
-	FOREIGN KEY (UsuarioId) REFERENCES Usuario(UsuarioId)
+	FOREIGN KEY (ClienteId) REFERENCES Cliente(ClienteId)
 );
 
 CREATE TABLE OrdenDePedidoDetalle
@@ -301,8 +296,7 @@ CREATE TABLE Venta
 	Activo BIT,
 	Observaciones NVARCHAR(200),
 	PRIMARY KEY (VentaId),
-	FOREIGN KEY (ClienteId) REFERENCES Cliente(ClienteId),
-	FOREIGN KEY (UsuarioId) REFERENCES Usuario(UsuarioId)
+	FOREIGN KEY (ClienteId) REFERENCES Cliente(ClienteId)
 );
 
 CREATE TABLE VentaDetalle
