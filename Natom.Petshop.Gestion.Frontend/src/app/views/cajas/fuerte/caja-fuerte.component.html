@@ -20,6 +20,7 @@
             placeholder="- todas -"
             name="dp"
             [(ngModel)]="filtroFecha"
+            (ngModelChange)="onFiltroFechaChange($event)"
             ngbDatepicker
             #d="ngbDatepicker"
             restoreFocus="false"

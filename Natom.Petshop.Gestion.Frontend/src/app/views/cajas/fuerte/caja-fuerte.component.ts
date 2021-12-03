@@ -6,6 +6,9 @@ import { MarcaDTO } from "src/app/classes/dto/marca.dto";
 import { MovimientoCajaFuerteDTO } from "src/app/classes/dto/cajas/movimiento-caja-fuerte.dto";
 import { DataTableDTO } from "src/app/classes/data-table-dto";
 import { ConfirmDialogService } from "../../../components/confirm-dialog/confirm-dialog.service";
+import { DataTableDirective } from "angular-datatables/src/angular-datatables.directive";
+import { ApiService } from "src/app/services/api.service";
+import { ApiResult } from "src/app/classes/dto/shared/api-result.dto";
 
 @Component({
   selector: 'app-caja-fuerte',
@@ -13,20 +16,30 @@ import { ConfirmDialogService } from "../../../components/confirm-dialog/confirm
   templateUrl: './caja-fuerte.component.html'
 })
 export class CajaFuerteComponent implements OnInit {
-
+  @ViewChild(DataTableDirective, { static: false })
+  dtElement: DataTableDirective;
+  dtInstance: Promise<DataTables.Api>;
   dtIndex: DataTables.Settings = {};
   Movimientos: MovimientoCajaFuerteDTO[];
   saldoActual: number;
   filtroFecha: string;
+  filtroFechaFinal: string;
   Noty: any;
 
   decideClosure(event, datepicker) { const path = event.path.map(p => p.localName); if (!path.includes('ngb-datepicker')) { datepicker.close(); } }
 
-  constructor(private httpClientService: HttpClient,
+  constructor(private apiService: ApiService,
               private routerService: Router,
               private notifierService: NotifierService,
               private confirmDialogService: ConfirmDialogService) {
                 
+  }
+
+  onFiltroFechaChange(newValue) {
+    this.filtroFechaFinal = newValue.day + "/" + newValue.month + "/" + newValue.year;
+    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+      dtInstance.ajax.reload()
+    });
   }
 
   ngOnInit(): void {
@@ -53,60 +66,40 @@ export class CajaFuerteComponent implements OnInit {
         },
       },
       ajax: (dataTablesParameters: any, callback) => {
-        //this.httpClient
-        //  .post<DataTablesResponse>(
-        //    this.connectService.URL + 'read_records_dt.php',
-        //    dataTablesParameters, {}
-        //  ).subscribe(resp => {
-        //    this.Members = resp.data;
-        //    this.NumberOfMembers = resp.data.length;
-        //    $('.dataTables_length>label>select, .dataTables_filter>label>input').addClass('form-control-sm');
-        //    callback({
-        //      recordsTotal: resp.recordsTotal,
-        //      recordsFiltered: resp.recordsFiltered,
-        //      data: []
-        //    });
-        //    if (this.NumberOfMembers > 0) {
-        //      $('.dataTables_empty').css('display', 'none');
-        //    }
-        //  }
-        //  );
-        this.saldoActual = 100.54;
-        this.Movimientos = [
-          {
-            encrypted_id: "asddas123132",
-            fechaHora: new Date('2020-12-28T20:30:54'),
-            usuarioNombre: "German",
-            tipo: "Ingreso",
-            importe: 1030.54,
-            observaciones: "Venta Nro 380289 /// FCB 0001-29804802"
-          },
-          {
-            encrypted_id: "asddas123133",
-            fechaHora: new Date('2020-12-28T22:00:00'),
-            usuarioNombre: "German",
-            tipo: "Egreso",
-            importe: 100.54,
-            observaciones: "Cierre caja /// Transferencia de saldo a caja diaria"
-          },
-        ];
-        callback({
-          recordsTotal: this.Movimientos.length,
-          recordsFiltered: this.Movimientos.length,
-          data: [] //Siempre vacío para delegarle el render a Angular
-        });
-        if (this.Movimientos.length > 0) {
-          $('.dataTables_empty').hide();
-        }
-        else {
-          $('.dataTables_empty').show();
-        }
-        setTimeout(function() {
-          (<any>$("tbody tr").find('[data-toggle="tooltip"]')).tooltip();
-        }, 300);
+        this.apiService.DoPOST<ApiResult<DataTableDTO<MovimientoCajaFuerteDTO>>>("cajas/fuerte/list" + (this.filtroFechaFinal === undefined ? "" : "?filterDate=" + encodeURIComponent(this.filtroFechaFinal)), dataTablesParameters, /*headers*/ null,
+                      (response) => {
+                        if (!response.success) {
+                          this.confirmDialogService.showError(response.message);
+                        }
+                        else {
+                          callback({
+                            recordsTotal: response.data.recordsTotal,
+                            recordsFiltered: response.data.recordsFiltered,
+                            data: [] //Siempre vacío para delegarle el render a Angular
+                          });
+                          this.Movimientos = response.data.records;
+                          this.saldoActual =response.data.extraData.saldoActual;
+                          if (this.Movimientos.length > 0) {
+                            $('.dataTables_empty').hide();
+                          }
+                          else {
+                            $('.dataTables_empty').show();
+                          }
+                          setTimeout(function() {
+                            (<any>$("tbody tr").find('[data-toggle="tooltip"]')).tooltip();
+                          }, 300);
+                        }
+                      },
+                      (errorMessage) => {
+                        this.confirmDialogService.showError(errorMessage);
+                      });
       },
       columns: [
-        { data: 'name' }
+        { data: 'fechaHora' },
+        { data: 'usuario' },
+        { data: 'tipo' },
+        { data: 'importe' },
+        { data: 'observaciones', orderable: false }
       ]
     };
   }
