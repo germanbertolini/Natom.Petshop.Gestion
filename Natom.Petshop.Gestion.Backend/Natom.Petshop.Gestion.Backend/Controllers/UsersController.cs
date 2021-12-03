@@ -5,6 +5,7 @@ using Natom.Petshop.Gestion.Biz.Managers;
 using Natom.Petshop.Gestion.Entities.DTO;
 using Natom.Petshop.Gestion.Entities.DTO.Auth;
 using Natom.Petshop.Gestion.Entities.DTO.DataTable;
+using Natom.Petshop.Gestion.Entities.Model;
 using Natom.Petshop.Gestion.Entities.Services;
 using Newtonsoft.Json;
 using System;
@@ -51,7 +52,7 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
             }
             catch (Exception ex)
             {
-                await LoggingService.LogExceptionAsync(_db, ex, usuarioId: null, _userAgent);
+                await LoggingService.LogExceptionAsync(_db, ex, usuarioId: (int?)_token?.UserId, _userAgent);
                 return Ok(new ApiResultDTO { Success = false, Message = "Se ha producido un error interno." });
             }
         }
@@ -91,7 +92,7 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
             }
             catch (Exception ex)
             {
-                await LoggingService.LogExceptionAsync(_db, ex, usuarioId: null, _userAgent);
+                await LoggingService.LogExceptionAsync(_db, ex, usuarioId: (int?)_token?.UserId, _userAgent);
                 return Ok(new ApiResultDTO { Success = false, Message = "Se ha producido un error interno." });
             }
         }
@@ -106,6 +107,8 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
                 var manager = new UsuariosManager(_serviceProvider);
                 var usuario = await manager.GuardarUsuarioAsync(_configuration, user);
 
+                await RegistrarAccionAsync(usuario.UsuarioId, nameof(Usuario), string.IsNullOrEmpty(user.EncryptedId) ? "Alta" : "Edición");
+
                 return Ok(new ApiResultDTO<UserDTO>
                 {
                     Success = true,
@@ -118,7 +121,7 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
             }
             catch (Exception ex)
             {
-                await LoggingService.LogExceptionAsync(_db, ex, usuarioId: null, _userAgent);
+                await LoggingService.LogExceptionAsync(_db, ex, usuarioId: (int?)_token?.UserId, _userAgent);
                 return Ok(new ApiResultDTO { Success = false, Message = "Se ha producido un error interno." });
             }
         }
@@ -135,6 +138,8 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
                 var manager = new UsuariosManager(_serviceProvider);
                 await manager.EliminarUsuarioAsync(usuarioId);
 
+                await RegistrarAccionAsync(usuarioId, nameof(Usuario), "Baja");
+
                 return Ok(new ApiResultDTO
                 {
                     Success = true
@@ -146,7 +151,7 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
             }
             catch (Exception ex)
             {
-                await LoggingService.LogExceptionAsync(_db, ex, usuarioId: null, _userAgent);
+                await LoggingService.LogExceptionAsync(_db, ex, usuarioId: (int?)_token?.UserId, _userAgent);
                 return Ok(new ApiResultDTO { Success = false, Message = "Se ha producido un error interno." });
             }
         }
@@ -179,7 +184,7 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
             }
             catch (Exception ex)
             {
-                await LoggingService.LogExceptionAsync(_db, ex, usuarioId: null, _userAgent);
+                await LoggingService.LogExceptionAsync(_db, ex, usuarioId: (int?)_token?.UserId, _userAgent);
                 return Ok(new ApiResultDTO { Success = false, Message = "Se ha producido un error interno." });
             }
         }
@@ -196,6 +201,8 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
                 var manager = new UsuariosManager(_serviceProvider);
                 await manager.RecuperarUsuarioAsync(_configuration, usuarioId);
 
+                await RegistrarAccionAsync(usuarioId, nameof(Usuario), "Solicita recuperación de clave");
+
                 return Ok(new ApiResultDTO
                 {
                     Success = true
@@ -207,7 +214,7 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
             }
             catch (Exception ex)
             {
-                await LoggingService.LogExceptionAsync(_db, ex, usuarioId: null, _userAgent);
+                await LoggingService.LogExceptionAsync(_db, ex, usuarioId: (int?)_token?.UserId, _userAgent);
                 return Ok(new ApiResultDTO { Success = false, Message = "Se ha producido un error interno." });
             }
         }

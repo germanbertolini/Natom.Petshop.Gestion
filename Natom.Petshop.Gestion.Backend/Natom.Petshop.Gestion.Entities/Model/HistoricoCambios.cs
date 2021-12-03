@@ -21,5 +21,7 @@ namespace Natom.Petshop.Gestion.Entities.Model
 		public string EntityName { get; set; }
 		public int? EntityId { get; set; }
 		public string Accion { get; set; }
+
+		public List<HistoricoCambiosMotivo> Motivos { get; set; }
 	}
 }

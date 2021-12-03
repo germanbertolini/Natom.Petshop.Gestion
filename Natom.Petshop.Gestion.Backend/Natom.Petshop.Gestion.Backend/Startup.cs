@@ -6,6 +6,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Natom.Petshop.Gestion.Backend.Filters;
+using Natom.Petshop.Gestion.Backend.Services;
 using Natom.Petshop.Gestion.Biz;
 using System;
 using System.Collections.Generic;
@@ -29,7 +31,9 @@ namespace Natom.Petshop.Gestion.Backend
             services.AddDbContext<BizDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")
             ));
-            
+
+            services.AddScoped<TransactionService>();
+
             services.AddHttpContextAccessor();
 
             services.AddCors(o => o.AddPolicy("CorsPolicy", builder =>
@@ -40,7 +44,10 @@ namespace Natom.Petshop.Gestion.Backend
             }));
 
             services
-                .AddControllers()
+                .AddControllers(options => {
+                    options.Filters.Add(typeof(AuthorizationFilter));
+                    options.Filters.Add(typeof(ResultFilter));
+                })
                 .AddNewtonsoftJson();
         }
 

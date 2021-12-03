@@ -5,6 +5,7 @@ using Natom.Petshop.Gestion.Biz.Managers;
 using Natom.Petshop.Gestion.Entities.DTO;
 using Natom.Petshop.Gestion.Entities.DTO.DataTable;
 using Natom.Petshop.Gestion.Entities.DTO.Marcas;
+using Natom.Petshop.Gestion.Entities.Model;
 using Natom.Petshop.Gestion.Entities.Services;
 using System;
 using System.Collections.Generic;
@@ -102,6 +103,8 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
                 var manager = new MarcasManager(_serviceProvider);
                 var marca = await manager.GuardarMarcaAsync(marcaDto);
 
+                await RegistrarAccionAsync(marca.MarcaId, nameof(Marca), string.IsNullOrEmpty(marcaDto.EncryptedId) ? "Alta" : "Edición");
+
                 return Ok(new ApiResultDTO<MarcaDTO>
                 {
                     Success = true,
@@ -131,6 +134,8 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
                 var manager = new MarcasManager(_serviceProvider);
                 await manager.DesactivarMarcaAsync(marcaId);
 
+                await RegistrarAccionAsync(marcaId, nameof(Marca), "Baja");
+
                 return Ok(new ApiResultDTO
                 {
                     Success = true
@@ -158,6 +163,8 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
 
                 var manager = new MarcasManager(_serviceProvider);
                 await manager.ActivarMarcaAsync(marcaId);
+
+                await RegistrarAccionAsync(marcaId, nameof(Marca), "Alta");
 
                 return Ok(new ApiResultDTO
                 {

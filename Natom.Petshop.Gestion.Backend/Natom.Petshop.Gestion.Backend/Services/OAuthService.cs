@@ -43,6 +43,13 @@ namespace Natom.Petshop.Gestion.Backend.Services
             return token;
         }
 
+        public static DateTime UnixTimeStampToDateTime(long unixTimeStamp)
+        {
+            DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+            dateTime = dateTime.AddSeconds(unixTimeStamp).ToLocalTime();
+            return dateTime;
+        }
+
         public static string Encode(Token accessToken)
                                 => JWT.Encode(accessToken, secretKey, JwsAlgorithm.HS256);
 

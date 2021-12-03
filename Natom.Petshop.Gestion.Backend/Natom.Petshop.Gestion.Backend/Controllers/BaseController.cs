@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Primitives;
 using Natom.Petshop.Gestion.Biz;
+using Natom.Petshop.Gestion.Biz.Managers;
+using Natom.Petshop.Gestion.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,8 +16,12 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
     {
         protected IServiceProvider _serviceProvider;
         protected IConfiguration _configuration;
+        protected Token _token;
         protected BizDbContext _db;
         protected string _userAgent;
+
+        protected Task RegistrarAccionAsync(int entityId, string entityName, string accion, string motivo = null)
+                        => new BaseManager(_serviceProvider).RegistrarEnHistoricoCambiosAsync(entityId, entityName, accion, (int?)_token?.UserId ?? 0, motivo);
 
         public BaseController(IServiceProvider serviceProvider)
         {
@@ -23,6 +29,7 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
             _serviceProvider = serviceProvider;
             _db = (BizDbContext)serviceProvider.GetService(typeof(BizDbContext));
             _configuration = (IConfiguration)serviceProvider.GetService(typeof(IConfiguration));
+            _token = (Token)serviceProvider.GetService(typeof(Token));
             _userAgent = httpContextAccessor.HttpContext.Request.Headers["User-Agent"];
         }
 
