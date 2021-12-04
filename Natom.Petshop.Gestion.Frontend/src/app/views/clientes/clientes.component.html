@@ -33,12 +33,13 @@
         </thead>
         <tbody>
           <tr *ngFor="let cliente of Clientes">
-            <td>{{ cliente.nombre }}</td>
+            <td>{{ cliente.razonSocial || cliente.nombre }}</td>
             <td>{{ cliente.tipoDocumento }} {{ cliente.numeroDocumento }}</td>
             <td>{{ cliente.localidad }}</td>
             <td>
               <a class="btn btn-primary btn-sm edit-smt-btn" (click)="onEditClick(cliente.encrypted_id)" data-toggle="tooltip" data-placement="top" title="Editar"><i class="fa fa-edit" aria-hidden="true"></i></a>
-              <a class="btn btn-danger btn-sm delete-smt-btn spacingLeft" (click)="onDeleteClick(cliente.encrypted_id)" data-toggle="tooltip" data-placement="top" title="Dar de baja"><i class="fa fa-times" aria-hidden="true"></i></a>
+              <a *ngIf="cliente.activo" class="btn btn-danger btn-sm disable-smt-btn spacingLeft" (click)="onDisableClick(cliente.encrypted_id)" data-toggle="tooltip" data-placement="top" title="Dar de baja"><i class="fa fa-times" aria-hidden="true"></i></a>
+              <a *ngIf="!cliente.activo" class="btn btn-success btn-sm enable-smt-btn spacingLeft" (click)="onEnableClick(cliente.encrypted_id)" data-toggle="tooltip" data-placement="top" title="Dar de alta"><i class="fa fa-check" aria-hidden="true"></i></a>
             </td>
           </tr>
         </tbody>

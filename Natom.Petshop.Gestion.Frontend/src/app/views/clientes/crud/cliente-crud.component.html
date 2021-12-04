@@ -63,7 +63,7 @@
         </div>
         <div class="col-md-2">
           <div class="form-group">
-            <label for="formGroupExampleInput">DNI</label>
+            <label for="formGroupExampleInput">DNI (sin puntos)</label>
             <div class="input-group">
               <div class="input-group-prepend">
                 <span class="input-group-text"><i class="fa fa-user" aria-hidden="true"></i></span>
@@ -71,7 +71,8 @@
               <input
                 type="text"
                 class="form-control"
-                placeholder="XX.XXX.XXX"
+                placeholder="XXXXXXXX"
+                onkeypress="return (event.charCode >= 48 && event.charCode <= 57)"
                 required
                 [(ngModel)]="crud.model.numeroDocumento" />
             </div>
@@ -82,7 +83,7 @@
       <div class="row" [style.display]="crud.model.esEmpresa ? 'flex' : 'none'">
         <div class="col-md-5">
           <div class="form-group">
-            <label for="formGroupExampleInput">Razon Social</label>
+            <label for="formGroupExampleInput">Razón Social</label>
             <div class="input-group">
               <div class="input-group-prepend">
                 <span class="input-group-text"><i class="fa fa-building" aria-hidden="true"></i></span>
@@ -106,7 +107,7 @@
               <input
                 type="text"
                 class="form-control"
-                placeholder="Razon social"
+                placeholder="Nombre fantasía"
                 required
                 [(ngModel)]="crud.model.nombreFantasia" />
             </div>
@@ -114,7 +115,7 @@
         </div>
         <div class="col-md-2">
           <div class="form-group">
-            <label for="formGroupExampleInput">CUIT</label>
+            <label for="formGroupExampleInput">CUIT (con guiones)</label>
             <div class="input-group">
               <div class="input-group-prepend">
                 <span class="input-group-text"><i class="fa fa-building" aria-hidden="true"></i></span>
@@ -123,6 +124,7 @@
                 type="text"
                 class="form-control"
                 placeholder="XX-XXXXXXXX-X"
+                onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode === 45"
                 required
                 [(ngModel)]="crud.model.numeroDocumento" />
             </div>

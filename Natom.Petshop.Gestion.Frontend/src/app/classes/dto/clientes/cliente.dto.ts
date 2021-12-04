@@ -5,6 +5,7 @@ export class ClienteDTO {
 	public razonSocial: string;
 	public nombreFantasia: string;
 	public tipoDocumento_encrypted_id: string;
+	public tipoDocumento: string;
 	public numeroDocumento: string;
 	public domicilio: string;
 	public entreCalles: string;
