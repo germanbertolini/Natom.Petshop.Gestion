@@ -37,13 +37,13 @@ export class UserCrudComponent implements OnInit {
   }
 
   onSaveClick() {
-    if (this.crud.model.first_name === undefined)
+    if (this.crud.model.first_name === undefined || this.crud.model.first_name === "")
     {
       this.confirmDialogService.showError("Debes ingresar un Nombre.");
       return;
     }
 
-    if (this.crud.model.last_name === undefined)
+    if (this.crud.model.last_name === undefined || this.crud.model.last_name === "")
     {
       this.confirmDialogService.showError("Debes ingresar un Apellido.");
       return;
