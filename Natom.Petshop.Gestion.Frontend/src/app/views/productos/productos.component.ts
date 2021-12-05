@@ -126,7 +126,7 @@ export class ProductosComponent implements OnInit {
                             data: [] //Siempre vacío para delegarle el render a Angular
                           });
                           this.Productos = response.data.records;
-                          console.log(this.Productos);
+                          
                           if (this.Productos.length > 0) {
                             $('.dataTables_empty').hide();
                           }
