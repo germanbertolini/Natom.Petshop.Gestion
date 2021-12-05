@@ -1,8 +1,11 @@
 import { HttpClient } from "@angular/common/http";
 import { Component, Input, OnInit, ViewChild } from "@angular/core";
 import { Router } from "@angular/router";
+import { DataTableDirective } from "angular-datatables/src/angular-datatables.directive";
 import { NotifierService } from "angular-notifier";
 import { ProductoListDTO } from "src/app/classes/dto/productos/producto-list.dto";
+import { ApiResult } from "src/app/classes/dto/shared/api-result.dto";
+import { ApiService } from "src/app/services/api.service";
 import { DataTableDTO } from '../../classes/data-table-dto';
 import { ConfirmDialogService } from "../../components/confirm-dialog/confirm-dialog.service";
 
@@ -11,12 +14,15 @@ import { ConfirmDialogService } from "../../components/confirm-dialog/confirm-di
   templateUrl: './productos.component.html'
 })
 export class ProductosComponent implements OnInit {
-
+  @ViewChild(DataTableDirective, { static: false })
+  dtElement: DataTableDirective;
+  dtInstance: Promise<DataTables.Api>;
   dtIndex: DataTables.Settings = {};
+  filterStatusValue: string;
   Productos: ProductoListDTO[];
   Noty: any;
 
-  constructor(private httpClientService: HttpClient,
+  constructor(private apiService: ApiService,
               private routerService: Router,
               private notifierService: NotifierService,
               private confirmDialogService: ConfirmDialogService) {
@@ -24,19 +30,64 @@ export class ProductosComponent implements OnInit {
   }
 
   onFiltroEstadoChange(newValue: string) {
-    console.log(newValue);
+    this.filterStatusValue = newValue;
+    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+      dtInstance.ajax.reload()
+    });
   }
 
   onEditClick(id: string) {
     this.routerService.navigate(['/productos/edit/' + id]);
   }
 
-  onDeleteClick(id: string) {
-    console.log(id);
+  onEnableClick(id: string) {
     let notifier = this.notifierService;
+    let confirmDialogService = this.confirmDialogService;
+    let apiService = this.apiService;
+    let dataTableInstance = this.dtElement.dtInstance;
+
+    this.confirmDialogService.showConfirm("Desea dar de alta nuevamente al producto?", function () {  
+      apiService.DoPOST<ApiResult<any>>("productos/enable?encryptedId=" + encodeURIComponent(id), {}, /*headers*/ null,
+                                            (response) => {
+                                              if (!response.success) {
+                                                confirmDialogService.showError(response.message);
+                                              }
+                                              else {
+                                                notifier.notify('success', 'Producto dado de alta con éxito.');
+                                                dataTableInstance.then((dtInstance: DataTables.Api) => {
+                                                  dtInstance.ajax.reload()
+                                                });
+                                              }
+                                            },
+                                            (errorMessage) => {
+                                              confirmDialogService.showError(errorMessage);
+                                            });
+                                          });
+  }
+
+  onDisableClick(id: string) {
+    let notifier = this.notifierService;
+    let confirmDialogService = this.confirmDialogService;
+    let apiService = this.apiService;
+    let dataTableInstance = this.dtElement.dtInstance;
+
     this.confirmDialogService.showConfirm("Desea dar de baja al producto?", function () {  
-      notifier.notify('success', 'Producto dado de baja con éxito.');
-    });
+      apiService.DoDELETE<ApiResult<any>>("productos/disable?encryptedId=" + encodeURIComponent(id), /*headers*/ null,
+                                            (response) => {
+                                              if (!response.success) {
+                                                confirmDialogService.showError(response.message);
+                                              }
+                                              else {
+                                                notifier.notify('success', 'Producto dado de baja con éxito.');
+                                                dataTableInstance.then((dtInstance: DataTables.Api) => {
+                                                  dtInstance.ajax.reload()
+                                                });
+                                              }
+                                            },
+                                            (errorMessage) => {
+                                              confirmDialogService.showError(errorMessage);
+                                            });
+                                          });
   }
 
   ngOnInit(): void {
@@ -63,55 +114,39 @@ export class ProductosComponent implements OnInit {
         },
       },
       ajax: (dataTablesParameters: any, callback) => {
-        //this.httpClient
-        //  .post<DataTablesResponse>(
-        //    this.connectService.URL + 'read_records_dt.php',
-        //    dataTablesParameters, {}
-        //  ).subscribe(resp => {
-        //    this.Members = resp.data;
-        //    this.NumberOfMembers = resp.data.length;
-        //    $('.dataTables_length>label>select, .dataTables_filter>label>input').addClass('form-control-sm');
-        //    callback({
-        //      recordsTotal: resp.recordsTotal,
-        //      recordsFiltered: resp.recordsFiltered,
-        //      data: []
-        //    });
-        //    if (this.NumberOfMembers > 0) {
-        //      $('.dataTables_empty').css('display', 'none');
-        //    }
-        //  }
-        //  );
-        this.Productos = [
-          {
-            encrypted_id: "asddas123132",
-            codigo: "PC-12354",
-            descripcion: "Alimento balanceado 15KG",
-            marca: "Royal Canin"
-          },
-          {
-            encrypted_id: "324c234c3cx",
-            codigo: "PC-13123",
-            descripcion: "Alimento balanceado 3KG",
-            marca: "Royal Canin"
-          }
-        ];
-        callback({
-          recordsTotal: this.Productos.length,
-          recordsFiltered: this.Productos.length,
-          data: [] //Siempre vacío para delegarle el render a Angular
-        });
-        if (this.Productos.length > 0) {
-          $('.dataTables_empty').hide();
-        }
-        else {
-          $('.dataTables_empty').show();
-        }
-        setTimeout(function() {
-          (<any>$("tbody tr").find('[data-toggle="tooltip"]')).tooltip();
-        }, 300);
+        this.apiService.DoPOST<ApiResult<DataTableDTO<ProductoListDTO>>>("productos/list?status=" + this.filterStatusValue, dataTablesParameters, /*headers*/ null,
+                      (response) => {
+                        if (!response.success) {
+                          this.confirmDialogService.showError(response.message);
+                        }
+                        else {
+                          callback({
+                            recordsTotal: response.data.recordsTotal,
+                            recordsFiltered: response.data.recordsFiltered,
+                            data: [] //Siempre vacío para delegarle el render a Angular
+                          });
+                          this.Productos = response.data.records;
+                          console.log(this.Productos);
+                          if (this.Productos.length > 0) {
+                            $('.dataTables_empty').hide();
+                          }
+                          else {
+                            $('.dataTables_empty').show();
+                          }
+                          setTimeout(function() {
+                            (<any>$("tbody tr").find('[data-toggle="tooltip"]')).tooltip();
+                          }, 300);
+                        }
+                      },
+                      (errorMessage) => {
+                        this.confirmDialogService.showError(errorMessage);
+                      });
       },
       columns: [
-        { data: 'name' }
+        { data: 'codigo' },
+        { data: 'descripcion' },
+        { data: 'marca' },
+        { data: '' } //BOTONERA
       ]
     };
   }

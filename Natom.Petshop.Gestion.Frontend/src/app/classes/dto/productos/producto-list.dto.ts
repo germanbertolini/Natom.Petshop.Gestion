@@ -3,4 +3,5 @@ export class ProductoListDTO {
 	public codigo: string;
 	public descripcion: string;
 	public marca: string;
+	public activo: boolean;
 }

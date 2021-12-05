@@ -87,6 +87,11 @@ namespace Natom.Petshop.Gestion.Biz.Managers
             return marca;
         }
 
+        public Task<List<Marca>> ObtenerMarcasActivasAsync()
+        {
+            return _db.Marcas.Where(m => m.Activo).ToListAsync();
+        }
+
         public async Task DesactivarMarcaAsync(int marcaId)
         {
             var marca = await _db.Marcas

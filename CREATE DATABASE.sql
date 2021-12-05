@@ -169,6 +169,7 @@ INSERT INTO UnidadPeso (Descripcion, Gramos) VALUES
 						('Gr', 1),
 						('Kg', 1000);
 
+						
 CREATE TABLE Producto
 (
 	ProductoId INT NOT NULL IDENTITY(1,1),
@@ -177,8 +178,9 @@ CREATE TABLE Producto
 	DescripcionCorta NVARCHAR(50),
 	DescripcionLarga NVARCHAR(200),
 	UnidadPesoId INT NOT NULL,
-	PesoUnitario INT NOT NULL DEFAULT 0,
+	PesoUnitario DECIMAL(18,2) NOT NULL DEFAULT 0,
 	MueveStock BIT NOT NULL DEFAULT 1,
+	Activo BIT NOT NULL DEFAULT 1,
 	PRIMARY KEY (ProductoId),
 	FOREIGN KEY (MarcaId) REFERENCES Marca(MarcaId),
 	FOREIGN KEY (UnidadPesoId) REFERENCES UnidadPeso(UnidadPesoId)

@@ -24,9 +24,11 @@ namespace Natom.Petshop.Gestion.Entities.Model
 		
 		public int UnidadPesoId { get; set; }
 		public UnidadPeso UnidadPeso { get; set; }
-		public int PesoUnitario { get; set; }
+		public decimal PesoUnitario { get; set; }
 
 		public bool MueveStock { get; set; }
+
+		public bool Activo { get; set; }
 
 	}
 }
