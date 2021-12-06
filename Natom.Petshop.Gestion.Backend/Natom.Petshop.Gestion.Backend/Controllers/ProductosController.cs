@@ -3,6 +3,7 @@ using Natom.Petshop.Gestion.Backend.Services;
 using Natom.Petshop.Gestion.Biz.Exceptions;
 using Natom.Petshop.Gestion.Biz.Managers;
 using Natom.Petshop.Gestion.Entities.DTO;
+using Natom.Petshop.Gestion.Entities.DTO.Autocomplete;
 using Natom.Petshop.Gestion.Entities.DTO.DataTable;
 using Natom.Petshop.Gestion.Entities.DTO.Marcas;
 using Natom.Petshop.Gestion.Entities.DTO.Productos;
@@ -41,7 +42,39 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
                     {
                         RecordsTotal = productosCount,
                         RecordsFiltered = productos.Count,
-                        Records = productos.Select(usuario => new ProductoListDTO().From(usuario)).ToList()
+                        Records = productos.Select(producto => new ProductoListDTO().From(producto)).ToList()
+                    }
+                });
+            }
+            catch (HandledException ex)
+            {
+                return Ok(new ApiResultDTO { Success = false, Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                await LoggingService.LogExceptionAsync(_db, ex, usuarioId: null, _userAgent);
+                return Ok(new ApiResultDTO { Success = false, Message = "Se ha producido un error interno." });
+            }
+        }
+
+        // GET: productos/search?filter={filter}
+        [HttpGet]
+        [ActionName("search")]
+        public async Task<IActionResult> GetSearchAsync([FromQuery] string filter = null)
+        {
+            try
+            {
+                var manager = new ProductosManager(_serviceProvider);
+                var productosCount = await manager.ObtenerProductosCountAsync();
+                var productos = await manager.BuscarProductosAsync(size: 20, filter);
+
+                return Ok(new ApiResultDTO<AutocompleteResponseDTO<ProductoListDTO>>
+                {
+                    Success = true,
+                    Data = new AutocompleteResponseDTO<ProductoListDTO>
+                    {
+                        Total = productos.Count,
+                        Results = productos.Select(producto => new ProductoListDTO().From(producto)).ToList()
                     }
                 });
             }

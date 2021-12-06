@@ -15,9 +15,27 @@
             <span *ngIf="crud.isRenewMode" class="input-group-text" id="basic-addon1"><i class="fa fa-archive" aria-hidden="true"></i></span>
           </div>
           <input
+            id="productoSearch"
             type="text"
             class="form-control"
+            [(ngModel)]="crud.model.producto"
+            (keyup)='onProductoSearchKeyUp($event)'
+            (blur)='closeProductoSearchPopUp()'
             placeholder="Buscar por código o palabra clave..." />
+          <ul class="input-autocomplete-options">
+            <li
+              class="no-results"
+              *ngIf="productosSearch !== undefined && productosSearch.length === 0"
+              >
+                <small>SIN RESULTADOS</small>
+            </li>
+            <li
+              *ngFor="let producto of productosSearch; let i = index"
+              (click)="onProductoSearchSelectItem(producto)"
+              >
+                <small>{{ producto.marca }} {{ producto.descripcion }}</small>
+            </li>
+          </ul>
         </div>
       </div>
     </div>

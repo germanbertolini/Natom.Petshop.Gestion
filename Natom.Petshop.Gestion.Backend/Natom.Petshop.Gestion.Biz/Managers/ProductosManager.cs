@@ -20,6 +20,27 @@ namespace Natom.Petshop.Gestion.Biz.Managers
                     => _db.Productos
                             .CountAsync();
 
+        public Task<List<Producto>> BuscarProductosAsync(int size, string filter)
+        {
+            var queryable = _db.Productos.Include(p => p.Marca).Where(u => true);
+
+            //FILTROS
+            if (!string.IsNullOrEmpty(filter))
+            {
+                queryable = queryable.Where(p => p.Codigo.ToLower().Contains(filter.ToLower())
+                                                    || p.DescripcionCorta.ToLower().Contains(filter.ToLower())
+                                                    || p.Marca.Descripcion.ToLower().Contains(filter.ToLower()));
+            }
+
+            //ORDEN
+            var queryableOrdered = queryable.OrderBy(c => c.Codigo);
+
+            //TAKE
+            return queryableOrdered
+                    .Take(size)
+                    .ToListAsync();
+        }
+
         public Task<List<Producto>> ObtenerProductosDataTableAsync(int start, int size, string filter, int sortColumnIndex, string sortDirection, string statusFilter)
         {
             var queryable = _db.Productos.Include(p => p.Marca).Where(u => true);

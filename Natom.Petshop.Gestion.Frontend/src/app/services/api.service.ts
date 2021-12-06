@@ -14,10 +14,14 @@ export class ApiService {
 
     }
 
+    public DoGETWithObservable(relativeUrl: string, headers: HttpHeaders = null) : Observable<Object> {
+        headers = this.SetAPIHeaders(headers);
+        return this.httpClient.get(this.jsonAppConfig.baseURL + relativeUrl, { headers: headers });
+    }
+    
     public DoGET<TResponse>(relativeUrl: string, headers: HttpHeaders = null, onSuccess: (response: TResponse) => void, onError: (errorMessage: string) => void) {
         headers = this.SetAPIHeaders(headers);
-        this.httpClient
-                .get(this.jsonAppConfig.baseURL + relativeUrl, { headers: headers })
+        this.DoGETWithObservable(relativeUrl, headers)
                 .subscribe({
                     next: response => {
                         onSuccess(<TResponse>response);
