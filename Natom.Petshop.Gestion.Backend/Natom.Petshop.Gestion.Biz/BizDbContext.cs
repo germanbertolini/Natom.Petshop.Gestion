@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Natom.Petshop.Gestion.Entities.Model;
+using Natom.Petshop.Gestion.Entities.Model.Results;
 using System;
 
 namespace Natom.Petshop.Gestion.Biz
@@ -30,6 +31,10 @@ namespace Natom.Petshop.Gestion.Biz
         public DbSet<UsuarioPermiso> UsuariosPermisos { get; set; }
         public DbSet<Venta> Ventas { get; set; }
         public DbSet<VentaDetalle> VentasDetalle { get; set; }
+
+
+        public DbSet<spPreciosListResult> spPreciosListResult { get; set; }
+
 
         public BizDbContext(DbContextOptions<BizDbContext> options) : base(options)
         {

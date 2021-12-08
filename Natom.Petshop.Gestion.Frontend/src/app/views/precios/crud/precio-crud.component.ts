@@ -12,6 +12,7 @@ import { DataTableDTO } from "../../../classes/data-table-dto";
 import { ApiService } from "src/app/services/api.service";
 import { ApiResult } from "src/app/classes/dto/shared/api-result.dto";
 import { AutocompleteResultDTO } from "src/app/classes/dto/shared/autocomplete-result.dto";
+import { ListaDePreciosDTO } from "src/app/classes/dto/precios/lista-de-precios.dto";
 
 @Component({
   selector: 'app-precio-crud',
@@ -23,8 +24,8 @@ export class PrecioCrudComponent implements OnInit {
 
   crud: CRUDView<PrecioDTO>;
   productosSearch: ProductoListDTO[];
+  ListasDePrecios: Array<ListaDePreciosDTO>;
 
-  decideClosure(event, datepicker) { const path = event.path.map(p => p.localName); if (!path.includes('ngb-datepicker')) { datepicker.close(); } }
 
   constructor(private apiService: ApiService,
               private routerService: Router,
@@ -44,8 +45,37 @@ export class PrecioCrudComponent implements OnInit {
   }
 
   onSaveClick() {
-    this.notifierService.notify('success', 'Precio guardado correctamente.');
-    this.routerService.navigate(['/precios']);
+    if (this.crud.model.producto_encrypted_id === undefined || this.crud.model.producto_encrypted_id.length === 0)
+    {
+      this.confirmDialogService.showError("Debes seleccionar un Producto.");
+      return;
+    }
+
+    if (this.crud.model.listaDePrecios_encrypted_id === undefined || this.crud.model.listaDePrecios_encrypted_id.length === 0)
+    {
+      this.confirmDialogService.showError("Debes seleccionar una Lista de precios.");
+      return;
+    }
+
+    if (this.crud.model.precio === undefined || this.crud.model.precio <= 0)
+    {
+      this.confirmDialogService.showError("Debes ingresar un Precio válido.");
+      return;
+    }
+
+    this.apiService.DoPOST<ApiResult<PrecioDTO>>("precios/save", this.crud.model, /*headers*/ null,
+      (response) => {
+        if (!response.success) {
+          this.confirmDialogService.showError(response.message);
+        }
+        else {
+          this.notifierService.notify('success', 'Precio guardado correctamente.');
+          this.routerService.navigate(['/precios']);
+        }
+      },
+      (errorMessage) => {
+        this.confirmDialogService.showError(errorMessage);
+      });
   }
 
   onProductoSearchSelectItem (producto: ProductoListDTO) {
@@ -81,9 +111,25 @@ export class PrecioCrudComponent implements OnInit {
 
   ngOnInit(): void {
 
-    setTimeout(function() {
-      (<any>$("#title-crud").find('[data-toggle="tooltip"]')).tooltip();
-    }, 300);
+    this.apiService.DoGET<ApiResult<any>>("precios/basics/data" + (this.crud.isRenewMode ? "?encryptedId=" + encodeURIComponent(this.crud.id) : ""), /*headers*/ null,
+      (response) => {
+        if (!response.success) {
+          this.confirmDialogService.showError(response.message);
+        }
+        else {
+          if (response.data.entity !== null)
+            this.crud.model = response.data.entity;
+          
+          this.ListasDePrecios = <Array<ListaDePreciosDTO>>response.data.listasDePrecios;
+
+          setTimeout(function() {
+            (<any>$("#title-crud").find('[data-toggle="tooltip"]')).tooltip();
+          }, 300);
+        }
+      },
+      (errorMessage) => {
+        this.confirmDialogService.showError(errorMessage);
+      });
     
   }
 

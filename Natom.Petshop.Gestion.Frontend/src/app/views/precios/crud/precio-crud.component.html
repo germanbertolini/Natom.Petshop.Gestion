@@ -46,11 +46,8 @@
               class="form-control"
               size="1"
               [(ngModel)]="crud.model.listaDePrecios_encrypted_id">
-          <option value="" selected>Seleccione...</option>
-          <option value="0">Todas</option>
-          <option value="1">Lista de precios 1</option>
-          <option value="2">Lista de precios 2</option>
-          <option value="3">Lista de precios 3</option>
+          <option value="">Seleccione...</option>
+          <option *ngFor="let lista of ListasDePrecios" value="{{ lista.encrypted_id }}">{{ lista.descripcion }}</option>
         </select>
       </div>
     </div>
@@ -61,7 +58,7 @@
           <div class="input-group-prepend">
             <span class="input-group-text">$</span>
           </div>
-          <input type="text"
+          <input type="number"
             class="form-control"
             placeholder="0,00"
             onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode === 44"
@@ -69,26 +66,6 @@
         </div>
       </div>
     </div>
-    <div class="col-md-2">
-      <div class="form-group">
-        <label for="formGroupExampleInput">Aplica desde</label>
-        <div class="input-group">
-          <div class="input-group-prepend">
-            <span class="input-group-text"><i class="fa fa-calendar" aria-hidden="true"></i></span>
-          </div>
-          <input class="form-control"
-              placeholder="Ahora"
-              name="dp"
-              [(ngModel)]="crud.model.aplicaDesdeFechaHora"
-              ngbDatepicker
-              #d="ngbDatepicker"
-              restoreFocus="false"
-              (click)="d.toggle(); $event.stopPropagation()"
-              (document:click)="decideClosure($event, d)"
-              readonly>
-        </div>
-      </div>
-    </div>  
   </div>
 
   <div class="row crud-footer">

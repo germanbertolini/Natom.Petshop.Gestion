@@ -27,9 +27,13 @@ namespace Natom.Petshop.Gestion.Biz.Managers
             //FILTROS
             if (!string.IsNullOrEmpty(filter))
             {
-                queryable = queryable.Where(p => p.Codigo.ToLower().Contains(filter.ToLower())
-                                                    || p.DescripcionCorta.ToLower().Contains(filter.ToLower())
-                                                    || p.Marca.Descripcion.ToLower().Contains(filter.ToLower()));
+                var words = filter.Split(' ').Select(w => w.Trim().ToLower());
+                foreach (var word in words)
+                {
+                    queryable = queryable.Where(p => p.Codigo.ToLower().Contains(word)
+                                                    || p.DescripcionCorta.ToLower().Contains(word)
+                                                    || p.Marca.Descripcion.ToLower().Contains(word));
+                }
             }
 
             //ORDEN

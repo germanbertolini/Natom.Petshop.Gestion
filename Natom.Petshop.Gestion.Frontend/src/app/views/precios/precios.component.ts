@@ -1,8 +1,12 @@
 import { HttpClient } from "@angular/common/http";
 import { Component, Input, OnInit, ViewChild } from "@angular/core";
 import { Router } from "@angular/router";
+import { DataTableDirective } from "angular-datatables/src/angular-datatables.directive";
 import { NotifierService } from "angular-notifier";
+import { ListaDePreciosDTO } from "src/app/classes/dto/precios/lista-de-precios.dto";
 import { PrecioListDTO } from "src/app/classes/dto/precios/precio-list.dto";
+import { ApiResult } from "src/app/classes/dto/shared/api-result.dto";
+import { ApiService } from "src/app/services/api.service";
 import { DataTableDTO } from '../../classes/data-table-dto';
 import { ConfirmDialogService } from "../../components/confirm-dialog/confirm-dialog.service";
 
@@ -12,28 +16,31 @@ import { ConfirmDialogService } from "../../components/confirm-dialog/confirm-di
   templateUrl: './precios.component.html'
 })
 export class PreciosComponent implements OnInit {
-
+  @ViewChild(DataTableDirective, { static: false })
+  dtElement: DataTableDirective;
+  dtInstance: Promise<DataTables.Api>;
   dtIndex: DataTables.Settings = {};
   Precios: PrecioListDTO[];
+  ListasDePrecios: Array<ListaDePreciosDTO>;
   Noty: any;
+  filterListaValue: string;
 
-  constructor(private httpClientService: HttpClient,
+  constructor(private apiService: ApiService,
               private routerService: Router,
               private notifierService: NotifierService,
               private confirmDialogService: ConfirmDialogService) {
-                
-  }
-
-  onFiltroEstadoChange(newValue: string) {
-    console.log(newValue);
+    this.filterListaValue = "";
   }
 
   onFiltroListaDePreciosChange(newValue: string) {
-    console.log(newValue);
+    this.filterListaValue = newValue;
+    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+      dtInstance.ajax.reload()
+    });
   }
 
   onRenewClick(id: string) {
-    this.routerService.navigate(['/precios/renew/' + id]);
+    this.routerService.navigate(['/precios/renew/' + encodeURIComponent(id)]);
   }
 
   ngOnInit(): void {
@@ -60,61 +67,40 @@ export class PreciosComponent implements OnInit {
         },
       },
       ajax: (dataTablesParameters: any, callback) => {
-        //this.httpClient
-        //  .post<DataTablesResponse>(
-        //    this.connectService.URL + 'read_records_dt.php',
-        //    dataTablesParameters, {}
-        //  ).subscribe(resp => {
-        //    this.Members = resp.data;
-        //    this.NumberOfMembers = resp.data.length;
-        //    $('.dataTables_length>label>select, .dataTables_filter>label>input').addClass('form-control-sm');
-        //    callback({
-        //      recordsTotal: resp.recordsTotal,
-        //      recordsFiltered: resp.recordsFiltered,
-        //      data: []
-        //    });
-        //    if (this.NumberOfMembers > 0) {
-        //      $('.dataTables_empty').css('display', 'none');
-        //    }
-        //  }
-        //  );
-        this.Precios = [
-          {
-            encrypted_id: "asddas123132",
-            codigo: "RCA2983",
-            descripcion: "Royal Canin Weight Control 15KG",
-            precio: 5706.23,
-            listaDePrecios: "Lista de precios 1",
-            aplicaDesdeFechaHora: new Date('2020-12-28T20:30:54'),
-            aplicaDesdeDias: 315
-          },
-          {
-            encrypted_id: "asddas123132",
-            codigo: "RCA2983",
-            descripcion: "VitalCan mordida pequeña 3KG",
-            precio: 2305.40,
-            listaDePrecios: "Lista de precios 3",
-            aplicaDesdeFechaHora: new Date('2021-11-02T20:30:54'),
-            aplicaDesdeDias: 7
-          }
-        ];
-        callback({
-          recordsTotal: this.Precios.length,
-          recordsFiltered: this.Precios.length,
-          data: [] //Siempre vacío para delegarle el render a Angular
-        });
-        if (this.Precios.length > 0) {
-          $('.dataTables_empty').hide();
-        }
-        else {
-          $('.dataTables_empty').show();
-        }
-        setTimeout(function() {
-          (<any>$("tbody tr").find('[data-toggle="tooltip"]')).tooltip();
-        }, 300);
+        this.apiService.DoPOST<ApiResult<DataTableDTO<PrecioListDTO>>>("precios/list?lista=" + encodeURIComponent(this.filterListaValue), dataTablesParameters, /*headers*/ null,
+                      (response) => {
+                        if (!response.success) {
+                          this.confirmDialogService.showError(response.message);
+                        }
+                        else {
+                          callback({
+                            recordsTotal: response.data.recordsTotal,
+                            recordsFiltered: response.data.recordsFiltered,
+                            data: [] //Siempre vacío para delegarle el render a Angular
+                          });
+                          this.Precios = response.data.records;
+                          this.ListasDePrecios = <Array<ListaDePreciosDTO>>response.data.extraData.listasDePrecios;
+                          if (this.Precios.length > 0) {
+                            $('.dataTables_empty').hide();
+                          }
+                          else {
+                            $('.dataTables_empty').show();
+                          }
+                          setTimeout(function() {
+                            (<any>$("tbody tr").find('[data-toggle="tooltip"]')).tooltip();
+                          }, 300);
+                        }
+                      },
+                      (errorMessage) => {
+                        this.confirmDialogService.showError(errorMessage);
+                      });
       },
       columns: [
-        { data: 'name' }
+        { data: 'articulo' },
+        { data: 'listaDePrecios' },
+        { data: 'aplicaDesde' },
+        { data: 'precio' },
+        { data: '', orderable: false } //BOTONERA
       ]
     };
   }

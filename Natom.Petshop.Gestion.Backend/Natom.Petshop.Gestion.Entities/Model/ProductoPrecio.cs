@@ -23,6 +23,8 @@ namespace Natom.Petshop.Gestion.Entities.Model
 		public decimal Precio { get; set; }
 		public DateTime AplicaDesdeFechaHora { get; set; }
 
+		public DateTime? FechaHoraBaja { get; set; }
+
 		public int? HistoricoReajustePrecioId { get; set; } //POR SI FUE PRODUCTO DE UN REAJUSTE POR MARCA CON PORCENTAJE
 		public HistoricoReajustePrecio HistoricoReajustePrecio { get; set; }
 	}

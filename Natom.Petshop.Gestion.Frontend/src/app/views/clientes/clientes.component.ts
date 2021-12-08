@@ -37,7 +37,7 @@ export class ClientesComponent implements OnInit {
   }
 
   onEditClick(id: string) {
-    this.routerService.navigate(['/clientes/edit/' + id]);
+    this.routerService.navigate(['/clientes/edit/' + encodeURIComponent(id)]);
   }
 
   onEnableClick(id: string) {

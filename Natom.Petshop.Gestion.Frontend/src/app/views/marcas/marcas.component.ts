@@ -37,7 +37,7 @@ export class MarcasComponent implements OnInit {
   }
 
   onEditClick(id: string) {
-    this.routerService.navigate(['/marcas/edit/' + id]);
+    this.routerService.navigate(['/marcas/edit/' + encodeURIComponent(id)]);
   }
 
   onEnableClick(id: string) {

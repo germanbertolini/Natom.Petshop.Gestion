@@ -17,7 +17,6 @@ export class PrecioReajusteCrudComponent implements OnInit {
 
   crud: CRUDView<PrecioReajusteDTO>;
 
-  decideClosure(event, datepicker) { const path = event.path.map(p => p.localName); if (!path.includes('ngb-datepicker')) { datepicker.close(); } }
 
   constructor(private httpClientService: HttpClient,
               private routerService: Router,

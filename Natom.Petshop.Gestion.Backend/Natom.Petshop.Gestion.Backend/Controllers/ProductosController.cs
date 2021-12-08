@@ -65,7 +65,6 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
             try
             {
                 var manager = new ProductosManager(_serviceProvider);
-                var productosCount = await manager.ObtenerProductosCountAsync();
                 var productos = await manager.BuscarProductosAsync(size: 20, filter);
 
                 return Ok(new ApiResultDTO<AutocompleteResponseDTO<ProductoListDTO>>

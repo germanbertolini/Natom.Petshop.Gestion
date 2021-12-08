@@ -6,5 +6,4 @@ export class PrecioReajusteDTO {
 	public valor: number;
 	public aplicoMarca_encrypted_id: string;
 	public aplicoListaDePrecios_encrypted_id: string;
-	public aplicaDesdeFechaHora: Date;
 }

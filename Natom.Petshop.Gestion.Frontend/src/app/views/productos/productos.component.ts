@@ -37,7 +37,7 @@ export class ProductosComponent implements OnInit {
   }
 
   onEditClick(id: string) {
-    this.routerService.navigate(['/productos/edit/' + id]);
+    this.routerService.navigate(['/productos/edit/' + encodeURIComponent(id)]);
   }
 
   onEnableClick(id: string) {

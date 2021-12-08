@@ -209,6 +209,7 @@ CREATE TABLE ProductoPrecio
 	ListaDePreciosId INT,
 	Precio DECIMAL(18,2) NOT NULL,
 	AplicaDesdeFechaHora DATETIME NOT NULL,
+	FechaHoraBaja DATETIME NULL,
 	HistoricoReajustePrecioId INT,	--POR SI FUE PRODUCTO DE UN REAJUSTE POR MARCA CON PORCENTAJE
 	PRIMARY KEY (ProductoPrecioId),
 	FOREIGN KEY (ProductoId) REFERENCES Producto(ProductoId),
@@ -349,3 +350,43 @@ INSERT INTO Permiso (PermisoId, Descripcion) VALUES
 							('VENTAS_VER', 'Ventas: Ver ventas'),
 							('VENTAS_NUEVO', 'Ventas: Carga nueva venta'),
 							('VENTAS_ANULAR', 'Ventas: Anular venta');
+
+GO
+
+CREATE VIEW vwPreciosVigentes
+AS
+	SELECT
+		*
+	FROM
+		ProductoPrecio
+	WHERE
+		ProductoPrecioId IN (SELECT MAX(ProductoPrecioId) FROM ProductoPrecio WHERE	FechaHoraBaja IS NULL GROUP BY ProductoId, ListaDePreciosId);
+
+GO
+
+CREATE PROCEDURE spPreciosList
+(
+	@ListaDePreciosId INT
+)
+AS
+BEGIN
+
+	DECLARE @Cantidad INT = (SELECT COUNT(*) FROM vwPreciosVigentes WHERE ListaDePreciosId = COALESCE(@ListaDePreciosId, ListaDePreciosId));
+
+	SELECT
+		PV.ProductoPrecioId,
+		P.ProductoId,
+		'(' + P.Codigo + ') ' + P.DescripcionCorta AS ProductoDescripcion,
+		L.ListaDePreciosId,
+		L.Descripcion AS ListaDePrecioDescripcion,
+		PV.AplicaDesdeFechaHora,
+		PV.Precio,
+		@Cantidad AS CantidadRegistros
+	FROM
+		vwPreciosVigentes PV
+		INNER JOIN Producto P ON P.ProductoId = PV.ProductoId
+		INNER JOIN ListaDePrecios L ON L.ListaDePreciosId = PV.ListaDePreciosId
+	WHERE
+		PV.ListaDePreciosId = COALESCE(@ListaDePreciosId, PV.ListaDePreciosId);
+
+END

@@ -4,5 +4,4 @@ export class PrecioDTO {
 	public producto_encrypted_id: string;
     public listaDePrecios_encrypted_id: string;
     public precio: number;
-    public aplicaDesdeFechaHora: Date;
 }
