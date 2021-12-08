@@ -197,9 +197,9 @@ CREATE TABLE HistoricoReajustePrecio
 	AplicoMarcaId INT NOT NULL,
 	AplicoListaDePreciosId INT,
 	AplicaDesdeFechaHora DATETIME NOT NULL,
+	FechaHoraBaja DATETIME,
 	PRIMARY KEY (HistoricoReajustePrecioId),
-	FOREIGN KEY (AplicoMarcaId) REFERENCES Marca(MarcaId),
-	FOREIGN KEY (AplicoListaDePreciosId) REFERENCES ListaDePrecios(ListaDePreciosId)
+	FOREIGN KEY (AplicoMarcaId) REFERENCES Marca(MarcaId)
 );
 
 CREATE TABLE ProductoPrecio
@@ -376,7 +376,7 @@ BEGIN
 	SELECT
 		PV.ProductoPrecioId,
 		P.ProductoId,
-		'(' + P.Codigo + ') ' + P.DescripcionCorta AS ProductoDescripcion,
+		'(' + P.Codigo + ') ' + M.Descripcion + ' ' + P.DescripcionCorta AS ProductoDescripcion,
 		L.ListaDePreciosId,
 		L.Descripcion AS ListaDePrecioDescripcion,
 		PV.AplicaDesdeFechaHora,
@@ -385,6 +385,7 @@ BEGIN
 	FROM
 		vwPreciosVigentes PV
 		INNER JOIN Producto P ON P.ProductoId = PV.ProductoId
+		INNER JOIN Marca M ON M.MarcaId = P.MarcaId
 		INNER JOIN ListaDePrecios L ON L.ListaDePreciosId = PV.ListaDePreciosId
 	WHERE
 		PV.ListaDePreciosId = COALESCE(@ListaDePreciosId, PV.ListaDePreciosId);

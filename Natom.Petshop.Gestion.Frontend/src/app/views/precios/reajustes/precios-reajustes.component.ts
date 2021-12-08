@@ -1,8 +1,12 @@
 import { HttpClient } from "@angular/common/http";
 import { Component, Input, OnInit, ViewChild } from "@angular/core";
 import { Router } from "@angular/router";
+import { DataTableDirective } from "angular-datatables/src/angular-datatables.directive";
 import { NotifierService } from "angular-notifier";
+import { ListaDePreciosDTO } from "src/app/classes/dto/precios/lista-de-precios.dto";
 import { PrecioReajusteListDTO } from "src/app/classes/dto/precios/precio-reajuste-list.dto";
+import { ApiResult } from "src/app/classes/dto/shared/api-result.dto";
+import { ApiService } from "src/app/services/api.service";
 import { DataTableDTO } from '../../../classes/data-table-dto';
 import { ConfirmDialogService } from "../../../components/confirm-dialog/confirm-dialog.service";
 
@@ -13,30 +17,60 @@ import { ConfirmDialogService } from "../../../components/confirm-dialog/confirm
 })
 export class PreciosReajustesComponent implements OnInit {
 
+  @ViewChild(DataTableDirective, { static: false })
+  dtElement: DataTableDirective;
+  dtInstance: Promise<DataTables.Api>;
   dtIndex: DataTables.Settings = {};
   Reajustes: PrecioReajusteListDTO[];
+  ListasDePrecios: Array<ListaDePreciosDTO>;
   Noty: any;
+  filterListaValue: string;
+  filterStatusValue: string;
 
-  constructor(private httpClientService: HttpClient,
+  constructor(private apiService: ApiService,
               private routerService: Router,
               private notifierService: NotifierService,
               private confirmDialogService: ConfirmDialogService) {
-                
+    this.filterStatusValue = "ACTIVOS";
+    this.filterListaValue = "";
   }
 
   onFiltroEstadoChange(newValue: string) {
-    console.log(newValue);
+    this.filterStatusValue = newValue;
+    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+      dtInstance.ajax.reload()
+    });
   }
 
   onFiltroListaDePreciosChange(newValue: string) {
-    console.log(newValue);
+    this.filterListaValue = newValue;
+    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+      dtInstance.ajax.reload()
+    });
   }
 
   onDeleteClick(id: string) {
-    console.log(id);
     let notifier = this.notifierService;
+    let confirmDialogService = this.confirmDialogService;
+    let apiService = this.apiService;
+    let dataTableInstance = this.dtElement.dtInstance;
+
     this.confirmDialogService.showConfirm("¿Desea anular el reajuste? Esta acción restaurará los precios anteriores.", function () {  
-      notifier.notify('success', 'Reajuste anulado con éxito.');
+      apiService.DoDELETE<ApiResult<any>>("precios/reajustes/disable?encryptedId=" + encodeURIComponent(id), /*headers*/ null,
+                                            (response) => {
+                                              if (!response.success) {
+                                                confirmDialogService.showError(response.message);
+                                              }
+                                              else {
+                                                notifier.notify('success', 'Reajuste anulado con éxito.');
+                                                dataTableInstance.then((dtInstance: DataTables.Api) => {
+                                                  dtInstance.ajax.reload()
+                                                });
+                                              }
+                                            },
+                                            (errorMessage) => {
+                                              confirmDialogService.showError(errorMessage);
+                                            });
     });
   }
 
@@ -64,63 +98,42 @@ export class PreciosReajustesComponent implements OnInit {
         },
       },
       ajax: (dataTablesParameters: any, callback) => {
-        //this.httpClient
-        //  .post<DataTablesResponse>(
-        //    this.connectService.URL + 'read_records_dt.php',
-        //    dataTablesParameters, {}
-        //  ).subscribe(resp => {
-        //    this.Members = resp.data;
-        //    this.NumberOfMembers = resp.data.length;
-        //    $('.dataTables_length>label>select, .dataTables_filter>label>input').addClass('form-control-sm');
-        //    callback({
-        //      recordsTotal: resp.recordsTotal,
-        //      recordsFiltered: resp.recordsFiltered,
-        //      data: []
-        //    });
-        //    if (this.NumberOfMembers > 0) {
-        //      $('.dataTables_empty').css('display', 'none');
-        //    }
-        //  }
-        //  );
-        this.Reajustes = [
-          {
-            encrypted_id: "asddas123132",
-	          usuario: "German",
-	          tipoReajuste: "Aumento - Porcentaje",
-            esPorcentual: true,
-	          valorReajuste: 3.25,
-            aplicoMarca: "Royal Canin",
-            aplicoListaDePrecios: "Lista de precios 1",
-            aplicaDesdeFechaHora: new Date('2022-01-01T20:30:54')
-          },
-          {
-            encrypted_id: "asddas123132",
-	          usuario: "German",
-	          tipoReajuste: "Decremento - Monto",
-            esPorcentual: false,
-	          valorReajuste: 10,
-            aplicoMarca: "Vital can",
-            aplicoListaDePrecios: "Todas",
-            aplicaDesdeFechaHora: new Date('2022-01-01T20:30:54')
-          }
-        ];
-        callback({
-          recordsTotal: this.Reajustes.length,
-          recordsFiltered: this.Reajustes.length,
-          data: [] //Siempre vacío para delegarle el render a Angular
-        });
-        if (this.Reajustes.length > 0) {
-          $('.dataTables_empty').hide();
-        }
-        else {
-          $('.dataTables_empty').show();
-        }
-        setTimeout(function() {
-          (<any>$("tbody tr").find('[data-toggle="tooltip"]')).tooltip();
-        }, 300);
+        this.apiService.DoPOST<ApiResult<DataTableDTO<PrecioReajusteListDTO>>>("precios/reajustes/list?status=" + encodeURIComponent(this.filterStatusValue) + "&lista=" + encodeURIComponent(this.filterListaValue), dataTablesParameters, /*headers*/ null,
+                      (response) => {
+                        if (!response.success) {
+                          this.confirmDialogService.showError(response.message);
+                        }
+                        else {
+                          callback({
+                            recordsTotal: response.data.recordsTotal,
+                            recordsFiltered: response.data.recordsFiltered,
+                            data: [] //Siempre vacío para delegarle el render a Angular
+                          });
+                          this.Reajustes = response.data.records;
+                          this.ListasDePrecios = <Array<ListaDePreciosDTO>>response.data.extraData.listasDePrecios;
+                          if (this.Reajustes.length > 0) {
+                            $('.dataTables_empty').hide();
+                          }
+                          else {
+                            $('.dataTables_empty').show();
+                          }
+                          setTimeout(function() {
+                            (<any>$("tbody tr").find('[data-toggle="tooltip"]')).tooltip();
+                          }, 300);
+                        }
+                      },
+                      (errorMessage) => {
+                        this.confirmDialogService.showError(errorMessage);
+                      });
       },
       columns: [
-        { data: 'name' }
+        { data: 'marca' },
+        { data: 'tipo' },
+        { data: 'valor' },
+        { data: 'listaDePrecios' },
+        { data: 'aplicaDesde' },
+        { data: 'reajustadoPor', orderable: false },
+        { data: '', orderable: false } //BOTONERA
       ]
     };
   }

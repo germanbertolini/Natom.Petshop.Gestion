@@ -15,7 +15,7 @@ namespace Natom.Petshop.Gestion.Entities.Model
 		public int HistoricoReajustePrecioId { get; set; }
 		public DateTime FechaHora { get; set; }
 
-		public int UsuarioId { get; set; }
+		public int? UsuarioId { get; set; }
 		public Usuario Usuario { get; set; }
 
 		public bool EsIncremento { get; set; }
@@ -24,11 +24,13 @@ namespace Natom.Petshop.Gestion.Entities.Model
 
 		public int AplicoMarcaId { get; set; }
 		[ForeignKey("AplicoMarcaId")]
-		public Marca AplicoMarca { get; set; }
+		public virtual Marca AplicoMarca { get; set; }
+
+		public DateTime? FechaHoraBaja { get; set; }
 
 		public int? AplicoListaDePreciosId { get; set; }
 		[ForeignKey("AplicoListaDePreciosId")]
-		public ListaDePrecios AplicoListaDePrecios { get; set; }
+		public virtual ListaDePrecios AplicoListaDePrecios { get; set; }
 		public DateTime AplicaDesdeFechaHora { get; set; }
     }
 }

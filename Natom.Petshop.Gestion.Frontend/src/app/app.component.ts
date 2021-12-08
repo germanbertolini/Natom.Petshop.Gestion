@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Title } from '@angular/platform-browser';
 import { NavigationEnd, Router } from '@angular/router';
 import { AuthService } from './services/auth.service';
 
@@ -13,11 +14,15 @@ export class AppComponent {
   isLoggedIn = false;
   
   constructor(private router: Router,
+              private titleService: Title,
               private authService: AuthService) {
 
     router.events.subscribe((val) => {
 
         this.isLoggedIn = authService.getCurrentUser() !== null;
+
+        //SETEAMOS EL TITULO DEL TAB
+        this.titleService.setTitle("MundoMascota .:. Gestión");
 
         //SI HAY CAMBIO DE URL
         (<any>$('[data-toggle="tooltip"]')).tooltip('dispose');

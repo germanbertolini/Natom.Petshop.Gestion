@@ -51,8 +51,8 @@
           <tr *ngFor="let reajuste of Reajustes">
             <td>{{ reajuste.aplicoMarca }}</td>
             <td>{{ reajuste.tipoReajuste }}</td>
-            <td class="monto" *ngIf="reajuste.esPorcentual">{{ reajuste.valorReajuste | currency:'ARS':'symbol':'1.2-2':'es-AR' }}</td>
-            <td class="monto" *ngIf="!reajuste.esPorcentual">{{ reajuste.valorReajuste | currency:'%':'symbol':'1.2-2':'es-AR' }}</td>
+            <td class="monto" *ngIf="!reajuste.esPorcentual">{{ reajuste.valorReajuste | currency:'ARS':'symbol':'1.2-2':'es-AR' }}</td>
+            <td class="monto" *ngIf="reajuste.esPorcentual">{{ reajuste.valorReajuste | currency:'%':'symbol':'1.2-2':'es-AR' }}</td>
             <td>{{ reajuste.aplicoListaDePrecios }}</td>
             <td>{{ reajuste.aplicaDesdeFechaHora  |  date:'dd/MM/yyyy' }}</td>
             <td>{{ reajuste.usuario }}</td>

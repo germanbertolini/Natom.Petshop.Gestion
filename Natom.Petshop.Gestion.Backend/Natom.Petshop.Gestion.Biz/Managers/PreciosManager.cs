@@ -91,5 +91,148 @@ namespace Natom.Petshop.Gestion.Biz.Managers
         {
             return _db.ListasDePrecios.ToListAsync();
         }
+
+        public Task<List<HistoricoReajustePrecio>> ObtenerPreciosReajustesDataTableAsync(int start, int size, string filter, int sortColumnIndex, string sortDirection, string statusFilter, string listaFilter)
+        {
+            var queryable = _db.HistoricosReajustePrecios
+                                    .Include(r => r.AplicoMarca)
+                                    .Include(r => r.AplicoListaDePrecios)
+                                    .Include(r => r.Usuario)
+                                    .Where(u => true);
+
+            //FILTROS
+            if (!string.IsNullOrEmpty(filter))
+            {
+                queryable = queryable.Where(p => p.AplicoMarca.Descripcion.ToLower().Contains(filter.ToLower())
+                                                    || p.AplicoListaDePrecios.Descripcion.ToLower().Contains(filter.ToLower())
+                                                    || p.Usuario.Nombre.ToLower().Contains(filter.ToLower()));
+            }
+
+            //FILTRO DE ESTADO
+            if (!string.IsNullOrEmpty(statusFilter))
+            {
+                if (statusFilter.ToUpper().Equals("ACTIVOS")) queryable = queryable.Where(q => !q.FechaHoraBaja.HasValue);
+                else if (statusFilter.ToUpper().Equals("INACTIVOS")) queryable = queryable.Where(q => q.FechaHoraBaja.HasValue);
+            }
+
+            //FILTRO DE LISTA DE PRECIOS
+            if (!string.IsNullOrEmpty(listaFilter))
+            {
+                int listaDePreciosId = EncryptionService.Decrypt<int>(listaFilter);
+                queryable = queryable.Where(p => p.AplicoListaDePreciosId.Equals(listaDePreciosId));
+            }
+
+            //ORDEN
+            IOrderedQueryable<HistoricoReajustePrecio> queryableOrdered;
+            if (sortColumnIndex == 2)
+            {
+                queryableOrdered = sortDirection.ToLower().Equals("asc")
+                                        ? queryable.OrderBy(c => c.EsPorcentual).ThenBy(c => c.Valor)
+                                        : queryable.OrderByDescending(c => c.EsPorcentual).ThenByDescending(c => c.Valor);
+            }
+            else if (sortColumnIndex == 4)
+            {
+                queryableOrdered = sortDirection.ToLower().Equals("asc")
+                                        ? queryable.OrderBy(c => c.AplicaDesdeFechaHora)
+                                        : queryable.OrderByDescending(c => c.AplicaDesdeFechaHora);
+            }
+            else
+            {
+                queryableOrdered = sortDirection.ToLower().Equals("asc")
+                                        ? queryable.OrderBy(c => sortColumnIndex == 0 ? c.AplicoMarca.Descripcion :
+                                                                    sortColumnIndex == 3 ? c.AplicoListaDePrecios.Descripcion :
+                                                                    sortColumnIndex == 5 ? c.Usuario.Nombre :
+                                                            "")
+                                        : queryable.OrderByDescending(c => sortColumnIndex == 0 ? c.AplicoMarca.Descripcion :
+                                                                    sortColumnIndex == 3 ? c.AplicoListaDePrecios.Descripcion :
+                                                                    sortColumnIndex == 5 ? c.Usuario.Nombre :
+                                                            "");
+            }
+            
+
+            //SKIP Y TAKE
+            return queryableOrdered
+                    .Skip(start)
+                    .Take(size)
+                    .ToListAsync();
+        }
+
+        public Task<int> ObtenerPreciosReajustesCountAsync()
+        {
+            return _db.HistoricosReajustePrecios.CountAsync();
+        }
+
+        public Task<HistoricoReajustePrecio> ObtenerPreciosReajusteAsync(int reajustePrecioId)
+        {
+            return _db.HistoricosReajustePrecios
+                        .FirstAsync(r => r.HistoricoReajustePrecioId == reajustePrecioId);
+        }
+
+        public async Task<HistoricoReajustePrecio> GuardarReajustePrecioAsync(int usuarioId, PrecioReajusteDTO precioReajusteDto)
+        {
+            var listaDePreciosId = precioReajusteDto.AplicoListaDePreciosEncryptedId == "-1" ? (int?)null : EncryptionService.Decrypt<int>(precioReajusteDto.AplicoListaDePreciosEncryptedId);
+            var marcaId = EncryptionService.Decrypt<int>(precioReajusteDto.AplicoMarcaEncryptedId);
+            var preciosActuales = await _db.ProductosPrecios
+                                            .Where(p => (listaDePreciosId == null || p.ListaDePreciosId == listaDePreciosId)
+                                                            && p.Producto.MarcaId == marcaId
+                                                            && !p.FechaHoraBaja.HasValue)
+                                            .ToListAsync();
+
+            var reajustePrecio = new HistoricoReajustePrecio
+            {
+                AplicaDesdeFechaHora = DateTime.Now,
+                AplicoListaDePreciosId = listaDePreciosId,
+                AplicoMarcaId = marcaId,
+                EsIncremento = precioReajusteDto.EsIncremento,
+                EsPorcentual = precioReajusteDto.EsPorcentual,
+                FechaHora = DateTime.Now,
+                UsuarioId = usuarioId,
+                Valor = precioReajusteDto.Valor
+            };
+            _db.HistoricosReajustePrecios.Add(reajustePrecio);
+            await _db.SaveChangesAsync();
+
+            foreach (var actual in preciosActuales)
+            {
+                var nuevoPrecio = new ProductoPrecio
+                {
+                    AplicaDesdeFechaHora = reajustePrecio.AplicaDesdeFechaHora,
+                    ListaDePreciosId = actual.ListaDePreciosId,
+                    ProductoId = actual.ProductoId,
+                    HistoricoReajustePrecioId = reajustePrecio.HistoricoReajustePrecioId
+                };
+
+                if (reajustePrecio.EsIncremento && reajustePrecio.EsPorcentual)
+                    nuevoPrecio.Precio = actual.Precio * ((reajustePrecio.Valor / 100) + 1);
+                else if (reajustePrecio.EsIncremento && !reajustePrecio.EsPorcentual)
+                    nuevoPrecio.Precio = actual.Precio + reajustePrecio.Valor;
+                else if (!reajustePrecio.EsIncremento && reajustePrecio.EsPorcentual)
+                    nuevoPrecio.Precio = actual.Precio / ((reajustePrecio.Valor / 100) + 1);
+                else if (!reajustePrecio.EsIncremento && !reajustePrecio.EsPorcentual)
+                    nuevoPrecio.Precio = actual.Precio - reajustePrecio.Valor;
+
+                _db.ProductosPrecios.Add(nuevoPrecio);
+            }
+            await _db.SaveChangesAsync();
+
+            return reajustePrecio;
+        }
+
+        public async Task EliminarReajusteAsync(int reajustePreciosId)
+        {
+            var reajuste = await _db.HistoricosReajustePrecios.FindAsync(reajustePreciosId);
+            var precios = await _db.ProductosPrecios.Where(p => p.HistoricoReajustePrecioId == reajustePreciosId).ToListAsync();
+
+            _db.Entry(reajuste).State = EntityState.Modified;
+            reajuste.FechaHoraBaja = DateTime.Now;
+
+            foreach (var precio in precios)
+            {
+                _db.Entry(precio).State = EntityState.Modified;
+                precio.FechaHoraBaja = reajuste.FechaHoraBaja;
+            }
+
+            await _db.SaveChangesAsync();
+        }
     }
 }

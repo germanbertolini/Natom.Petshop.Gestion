@@ -4,6 +4,7 @@ using Natom.Petshop.Gestion.Biz.Exceptions;
 using Natom.Petshop.Gestion.Biz.Managers;
 using Natom.Petshop.Gestion.Entities.DTO;
 using Natom.Petshop.Gestion.Entities.DTO.DataTable;
+using Natom.Petshop.Gestion.Entities.DTO.Marcas;
 using Natom.Petshop.Gestion.Entities.DTO.Precios;
 using Natom.Petshop.Gestion.Entities.Model;
 using Natom.Petshop.Gestion.Entities.Services;
@@ -121,6 +122,147 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
                 {
                     Success = true,
                     Data = new PrecioDTO().From(precio)
+                });
+            }
+            catch (HandledException ex)
+            {
+                return Ok(new ApiResultDTO { Success = false, Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                await LoggingService.LogExceptionAsync(_db, ex, usuarioId: null, _userAgent);
+                return Ok(new ApiResultDTO { Success = false, Message = "Se ha producido un error interno." });
+            }
+        }
+
+        // POST: precios/reajustes/list?status={status}&lista={lista}
+        [HttpPost]
+        [ActionName("reajustes/list")]
+        public async Task<IActionResult> PostReajustesListAsync([FromBody] DataTableRequestDTO request, [FromQuery] string status = null, [FromQuery] string lista = null)
+        {
+            try
+            {
+                var manager = new PreciosManager(_serviceProvider);
+                var preciosCount = await manager.ObtenerPreciosReajustesCountAsync();
+                var precios = await manager.ObtenerPreciosReajustesDataTableAsync(request.Start, request.Length, request.Search.Value, request.Order.First().ColumnIndex, request.Order.First().Direction, statusFilter: status, lista);
+
+                var listasDePrecios = await manager.ObtenerListasDePreciosAsync();
+
+                return Ok(new ApiResultDTO<DataTableResponseDTO<PrecioReajusteListDTO>>
+                {
+                    Success = true,
+                    Data = new DataTableResponseDTO<PrecioReajusteListDTO>
+                    {
+                        RecordsTotal = preciosCount,
+                        RecordsFiltered = precios.Count,
+                        Records = precios.Select(precio => new PrecioReajusteListDTO().From(precio)).ToList(),
+                        ExtraData = new
+                        {
+                            listasDePrecios = listasDePrecios.Select(lista => new ListaDePreciosDTO().From(lista))
+                        }
+                    }
+                });
+            }
+            catch (HandledException ex)
+            {
+                return Ok(new ApiResultDTO { Success = false, Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                await LoggingService.LogExceptionAsync(_db, ex, usuarioId: null, _userAgent);
+                return Ok(new ApiResultDTO { Success = false, Message = "Se ha producido un error interno." });
+            }
+        }
+
+        // GET: precios/reajustes/basics/data
+        // GET: precios/reajustes/basics/data?encryptedId={encryptedId}
+        [HttpGet]
+        [ActionName("reajustes/basics/data")]
+        public async Task<IActionResult> GetReajustesBasicsDataAsync([FromQuery] string encryptedId = null)
+        {
+            try
+            {
+                var manager = new PreciosManager(_serviceProvider);
+                PrecioReajusteDTO entity = null;
+
+                if (!string.IsNullOrEmpty(encryptedId))
+                {
+                    var marcaId = EncryptionService.Decrypt<int>(Uri.UnescapeDataString(encryptedId));
+                    var precioReajuste = await manager.ObtenerPreciosReajusteAsync(marcaId);
+                    entity = new PrecioReajusteDTO().From(precioReajuste);
+                }
+
+                var listasDePrecios = await manager.ObtenerListasDePreciosAsync();
+                var marcas = await new MarcasManager(_serviceProvider).ObtenerMarcasActivasAsync();
+
+                return Ok(new ApiResultDTO<dynamic>
+                {
+                    Success = true,
+                    Data = new
+                    {
+                        entity = entity,
+                        listasDePrecios = listasDePrecios.Select(lista => new ListaDePreciosDTO().From(lista)),
+                        marcas = marcas.Select(marca => new MarcaDTO().From(marca))
+                    }
+                });
+            }
+            catch (HandledException ex)
+            {
+                return Ok(new ApiResultDTO { Success = false, Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                await LoggingService.LogExceptionAsync(_db, ex, usuarioId: null, _userAgent);
+                return Ok(new ApiResultDTO { Success = false, Message = "Se ha producido un error interno." });
+            }
+        }
+
+        // POST: precios/reajustes/save
+        [HttpPost]
+        [ActionName("reajustes/save")]
+        public async Task<IActionResult> PostReajustesSaveAsync([FromBody] PrecioReajusteDTO precioReajusteDto)
+        {
+            try
+            {
+                var manager = new PreciosManager(_serviceProvider);
+                var reajuste = await manager.GuardarReajustePrecioAsync((int)(_token?.UserId ?? 0), precioReajusteDto);
+
+                await RegistrarAccionAsync(reajuste.HistoricoReajustePrecioId, nameof(HistoricoReajustePrecio), string.IsNullOrEmpty(precioReajusteDto.EncryptedId) ? "Alta" : "Edición");
+
+                return Ok(new ApiResultDTO<PrecioReajusteDTO>
+                {
+                    Success = true,
+                    Data = new PrecioReajusteDTO().From(reajuste)
+                });
+            }
+            catch (HandledException ex)
+            {
+                return Ok(new ApiResultDTO { Success = false, Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                await LoggingService.LogExceptionAsync(_db, ex, usuarioId: null, _userAgent);
+                return Ok(new ApiResultDTO { Success = false, Message = "Se ha producido un error interno." });
+            }
+        }
+
+        // DELETE: precios/reajustes/disable?encryptedId={encryptedId}
+        [HttpDelete]
+        [ActionName("reajustes/disable")]
+        public async Task<IActionResult> DeleteReajustesAsync([FromQuery] string encryptedId)
+        {
+            try
+            {
+                var reajusteId = EncryptionService.Decrypt<int>(Uri.UnescapeDataString(encryptedId));
+
+                var manager = new PreciosManager(_serviceProvider);
+                await manager.EliminarReajusteAsync(reajusteId);
+
+                await RegistrarAccionAsync(reajusteId, nameof(HistoricoReajustePrecio), "Baja");
+
+                return Ok(new ApiResultDTO
+                {
+                    Success = true
                 });
             }
             catch (HandledException ex)
