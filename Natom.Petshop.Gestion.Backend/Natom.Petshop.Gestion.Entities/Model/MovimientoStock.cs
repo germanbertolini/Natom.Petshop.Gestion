@@ -29,5 +29,10 @@ namespace Natom.Petshop.Gestion.Entities.Model
 		public Deposito Deposito { get; set; }
 
 		public string Observaciones { get; set; }
+
+		public DateTime? ConfirmacionFechaHora { get; set; }
+		public int? ConfirmacionUsuarioId { get; set; }
+		[ForeignKey("ConfirmacionUsuarioId")]
+		public Usuario ConfirmacionUsuario { get; set; }
 	}
 }

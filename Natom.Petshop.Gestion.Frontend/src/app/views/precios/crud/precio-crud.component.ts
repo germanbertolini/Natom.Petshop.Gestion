@@ -95,7 +95,7 @@ export class PrecioCrudComponent implements OnInit {
         debounceTime(1000),
         distinctUntilChanged(),
         mergeMap((search) => {
-          return this.apiService.DoGETWithObservable("productos/search?filter=" + search, /* headers */ null);
+          return this.apiService.DoGETWithObservable("productos/search?filter=" + encodeURIComponent(search), /* headers */ null);
         })
       )
    observable.subscribe((data) => {

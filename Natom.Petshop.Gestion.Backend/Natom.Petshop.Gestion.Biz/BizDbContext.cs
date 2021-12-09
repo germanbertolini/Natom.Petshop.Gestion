@@ -34,6 +34,7 @@ namespace Natom.Petshop.Gestion.Biz
 
 
         public DbSet<spPreciosListResult> spPreciosListResult { get; set; }
+        public DbSet<spMovimientosStockListResult> spMovimientosStockListResult { get; set; }
 
 
         public BizDbContext(DbContextOptions<BizDbContext> options) : base(options)

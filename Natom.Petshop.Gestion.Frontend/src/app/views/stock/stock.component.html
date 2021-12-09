@@ -8,11 +8,9 @@
         <div class="input-group-prepend">
           <span class="input-group-text" id="basic-addon1">Depósito</span>
         </div>
-        <select class="form-control" size="1" #filtroDeposito (change)="onFiltroDepositoChange(filtroDeposito.value)">
-          <option value="" selected>Todos</option>
-          <option value="1">Depósito 1</option>
-          <option value="2">Depósito 2</option>
-          <option value="3">Depósito 3</option>
+        <select class="form-control" size="1" [(ngModel)]="depositoFilterValue" #filtroDeposito (change)="onFiltroDepositoChange(filtroDeposito.value)">
+          <option value="">Todos</option>
+          <option *ngFor="let deposito of Depositos" value="{{ deposito.encrypted_id }}">{{ deposito.descripcion }}</option>
         </select>
       </div>
     </div>
@@ -21,10 +19,29 @@
         <div class="input-group-prepend">
           <span class="input-group-text" id="basic-addon1">Producto</span>
         </div>
-        <input class="form-control"
-            placeholder="- todos -"
-            #filtroProducto
-            (change)="onFiltroProductoChange(filtroProducto.value)">
+        <input
+            id="productoSearch"
+            type="text"
+            class="form-control"
+            [(ngModel)]="productoFilterText"
+            (keyup)='onProductoSearchKeyUp($event)'
+            (blur)='closeProductoSearchPopUp()'
+            (change)='onProductoSearchChange()'
+            placeholder="- todos -" />
+        <ul class="input-autocomplete-options">
+          <li
+            class="no-results"
+            *ngIf="productosSearch !== undefined && productosSearch.length === 0"
+            >
+              <small>SIN RESULTADOS</small>
+          </li>
+          <li
+            *ngFor="let producto of productosSearch; let i = index"
+            (click)="onProductoSearchSelectItem(producto)"
+            >
+              <small>{{ producto.marca }} {{ producto.descripcion }}</small>
+          </li>
+        </ul>
       </div>
     </div>
     <div class="col-md-2">
@@ -35,7 +52,8 @@
         <input class="form-control"
             placeholder="- todas -"
             name="dp"
-            [(ngModel)]="filtroFecha"
+            [(ngModel)]="filtroFechaText"
+            (ngModelChange)="onFiltroFechaChange($event)"
             ngbDatepicker
             #d="ngbDatepicker"
             restoreFocus="false"
@@ -58,6 +76,7 @@
             <th>Depósito</th>
             <th>Producto</th>
             <th>Tipo</th>
+            <th>Reservado</th>
             <th>Movido</th>
             <th>Stock</th>
             <th>Observaciones</th>
@@ -69,8 +88,15 @@
             <td>{{ movimiento.deposito }}</td>
             <td>{{ movimiento.producto }}</td>
             <td>{{ movimiento.tipo }}</td>
-            <td class="cantidad ingreso" *ngIf="movimiento.tipo !== 'Egreso'">+ {{ movimiento.cantidad }}</td>
-            <td class="cantidad egreso" *ngIf="movimiento.tipo === 'Egreso'">- {{ movimiento.cantidad }}</td>
+
+            <td class="cantidad ingreso" *ngIf="movimiento.reservado !== null && movimiento.tipo !== 'Egreso'">+ {{ movimiento.reservado }}</td>
+            <td class="cantidad egreso" *ngIf="movimiento.reservado !== null && movimiento.tipo === 'Egreso'">- {{ movimiento.reservado * -1 }}</td>
+            <td class="cantidad" *ngIf="movimiento.reservado === null"></td>
+
+            <td class="cantidad ingreso" *ngIf="movimiento.movido !== null && movimiento.tipo !== 'Egreso'">+ {{ movimiento.movido }}</td>
+            <td class="cantidad egreso" *ngIf="movimiento.movido !== null && movimiento.tipo === 'Egreso'">- {{ movimiento.movido * -1 }}</td>
+            <td class="cantidad" *ngIf="movimiento.movido === null"></td>
+
             <td class="cantidad">{{ movimiento.stock }}</td>
             <td><small>{{ movimiento.observaciones }}</small></td>
           </tr>

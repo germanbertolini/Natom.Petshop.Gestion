@@ -237,6 +237,8 @@ CREATE TABLE MovimientoStock
 	UsuarioId INT,
 	Tipo CHAR(1) NOT NULL,	--(I)NGRESO / (E)GRESO
 	Cantidad INT NOT NULL,
+	ConfirmacionFechaHora DATETIME,
+	ConfirmacionUsuarioId INT,
 	DepositoId INT NOT NULL,
 	Observaciones NVARCHAR(200),
 	PRIMARY KEY (MovimientoStockId),
@@ -358,9 +360,9 @@ AS
 	SELECT
 		*
 	FROM
-		ProductoPrecio
+		ProductoPrecio WITH(NOLOCK)
 	WHERE
-		ProductoPrecioId IN (SELECT MAX(ProductoPrecioId) FROM ProductoPrecio WHERE	FechaHoraBaja IS NULL GROUP BY ProductoId, ListaDePreciosId);
+		ProductoPrecioId IN (SELECT MAX(ProductoPrecioId) FROM ProductoPrecio WITH(NOLOCK) WHERE	FechaHoraBaja IS NULL GROUP BY ProductoId, ListaDePreciosId);
 
 GO
 
@@ -384,10 +386,127 @@ BEGIN
 		@Cantidad AS CantidadRegistros
 	FROM
 		vwPreciosVigentes PV
-		INNER JOIN Producto P ON P.ProductoId = PV.ProductoId
-		INNER JOIN Marca M ON M.MarcaId = P.MarcaId
-		INNER JOIN ListaDePrecios L ON L.ListaDePreciosId = PV.ListaDePreciosId
+		INNER JOIN Producto P WITH(NOLOCK) ON P.ProductoId = PV.ProductoId
+		INNER JOIN Marca M WITH(NOLOCK) ON M.MarcaId = P.MarcaId
+		INNER JOIN ListaDePrecios L WITH(NOLOCK) ON L.ListaDePreciosId = PV.ListaDePreciosId
 	WHERE
 		PV.ListaDePreciosId = COALESCE(@ListaDePreciosId, PV.ListaDePreciosId);
 
+END
+
+GO
+
+CREATE FUNCTION fnCalcularStockAlMovimiento
+(
+	@MovimientoStockId INT,
+	@DepositoId INT,
+	@ProductoId INT
+)
+RETURNS INT
+AS
+BEGIN
+
+	DECLARE @Cantidad INT = 0;
+
+	SELECT
+		@Cantidad = SUM (CASE WHEN Tipo = 'E' THEN Cantidad * -1 ELSE Cantidad END)
+	FROM
+		MovimientoStock WITH(NOLOCK)
+	WHERE
+		MovimientoStockId <= @MovimientoStockId
+		AND DepositoId = COALESCE(@DepositoId, DepositoId)
+		AND ProductoId = @ProductoId;
+
+	RETURN COALESCE(@Cantidad, 0);
+END
+
+GO
+
+CREATE PROCEDURE spMovimientosStockList
+(
+	@DepositoId INT = NULL,
+	@ProductoId INT = NULL,
+	@Search NVARCHAR(100) = NULL,
+	@Skip INT,
+	@Take INT,
+	@Fecha DATE = NULL
+)
+AS
+BEGIN
+
+	--GENERAMOS LA GRILLA DE MOVIMIENTOS EN UNA TABLA TEMPORAL
+	SELECT
+		M.MovimientoStockId,
+		M.FechaHora,
+		D.Descripcion AS Deposito,
+		P.ProductoId,
+		'(' + P.Codigo + ') ' + MA.Descripcion + ' ' + P.DescripcionCorta AS Producto,
+		M.Tipo,
+		CASE WHEN M.Tipo = 'I' AND M.ConfirmacionFechaHora IS NOT NULL THEN
+			M.Cantidad
+		WHEN M.Tipo = 'E' AND M.ConfirmacionFechaHora IS NOT NULL THEN
+			M.Cantidad * -1
+		ELSE
+			NULL
+		END AS Movido,
+		CASE WHEN M.Tipo = 'I' AND M.ConfirmacionFechaHora IS NULL THEN
+			M.Cantidad
+		WHEN M.Tipo = 'E' AND M.ConfirmacionFechaHora IS NULL THEN
+			M.Cantidad * -1
+		ELSE
+			NULL
+		END AS Reservado,
+		M.Observaciones
+	INTO
+		#MOVIMIENTOS_STOCK
+	FROM
+		MovimientoStock M WITH(NOLOCK)
+		INNER JOIN Deposito D WITH(NOLOCK) ON D.DepositoId = M.DepositoId
+		INNER JOIN Producto P WITH(NOLOCK) ON P.ProductoId = M.ProductoId
+		INNER JOIN Marca MA WITH(NOLOCK) ON MA.MarcaId = P.MarcaId
+	WHERE
+		M.DepositoId = COALESCE(@DepositoId, M.DepositoId)
+		AND M.ProductoId = COALESCE(@ProductoId, M.ProductoId)
+		AND CAST(M.FechaHora AS DATE) = COALESCE(@Fecha, CAST(M.FechaHora AS DATE))
+	ORDER BY
+		M.MovimientoStockId DESC
+		
+
+	--TOMAMOS LA CANTIDAD DE REGISTROS EN LA GRILLA
+	DECLARE @CantidadRegistros INT = COALESCE((SELECT COUNT(*) FROM #MOVIMIENTOS_STOCK), 0);
+
+
+	--AHORA SELECCIONAMOS EL RANGO DE REGISTROS A MOSTRAR APLICANDO FILTROS
+	SELECT
+		M.FechaHora,
+		M.Deposito,
+		M.Producto,
+		M.Tipo,
+		M.Movido,
+		M.Reservado,
+		M.Observaciones,
+		[dbo].[fnCalcularStockAlMovimiento](M.MovimientoStockId, @DepositoId, M.ProductoId) AS Stock,
+		@CantidadRegistros AS CantidadRegistros
+	FROM
+		#MOVIMIENTOS_STOCK M
+	WHERE
+		1 = 1
+		AND
+		(
+			@Search IS NULL
+			OR
+			(
+				@Search IS NOT NULL
+				AND
+				(
+					M.Deposito LIKE '%' + @Search + '%'
+					OR M.Producto LIKE '%' + @Search + '%'
+					OR M.Observaciones LIKE '%' + @Search + '%'
+				)
+			)
+		)
+	ORDER BY
+		M.MovimientoStockId DESC
+	OFFSET @Skip ROWS
+	FETCH NEXT @Take ROWS ONLY;
 END

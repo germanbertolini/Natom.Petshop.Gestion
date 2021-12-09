@@ -2,9 +2,17 @@ import { HttpClient } from "@angular/common/http";
 import { Component, Input, OnInit, ViewChild } from "@angular/core";
 import { Router } from "@angular/router";
 import { NotifierService } from "angular-notifier";
+import { fromEvent } from 'rxjs';
+import { map, distinctUntilChanged, debounceTime, mergeMap } from 'rxjs/operators';
 import { DataTableDTO } from '../../classes/data-table-dto';
 import { ConfirmDialogService } from "../../components/confirm-dialog/confirm-dialog.service";
 import { StockListDTO } from "src/app/classes/dto/stock/stock-list.dto";
+import { ApiResult } from "src/app/classes/dto/shared/api-result.dto";
+import { ApiService } from "src/app/services/api.service";
+import { DepositoDTO } from "src/app/classes/dto/stock/deposito.dto";
+import { DataTableDirective } from "angular-datatables/src/angular-datatables.directive";
+import { ProductoListDTO } from "src/app/classes/dto/productos/producto-list.dto";
+import { AutocompleteResultDTO } from "src/app/classes/dto/shared/autocomplete-result.dto";
 
 @Component({
   selector: 'app-stock',
@@ -12,28 +20,88 @@ import { StockListDTO } from "src/app/classes/dto/stock/stock-list.dto";
   templateUrl: './stock.component.html'
 })
 export class StockComponent implements OnInit {
-
+  @ViewChild(DataTableDirective, { static: false })
+  dtElement: DataTableDirective;
+  dtInstance: Promise<DataTables.Api>;
   dtIndex: DataTables.Settings = {};
   Movimientos: StockListDTO[];
+  Depositos: Array<DepositoDTO>;
   saldoActual: number;
-  filtroFecha: string;
+  filtroFechaValue: string;
+  filtroFechaText: string;
+  depositoFilterValue: string;
+  productoFilterValue: string;
+  productoFilterText: string;
+  productosSearch: ProductoListDTO[];
   Noty: any;
 
   decideClosure(event, datepicker) { const path = event.path.map(p => p.localName); if (!path.includes('ngb-datepicker')) { datepicker.close(); } }
 
-  constructor(private httpClientService: HttpClient,
+  constructor(private apiService: ApiService,
               private routerService: Router,
               private notifierService: NotifierService,
               private confirmDialogService: ConfirmDialogService) {
-                
+    this.depositoFilterValue = "";
+    this.productoFilterValue = "";
+    this.filtroFechaValue = "";
   }
 
   onFiltroDepositoChange(newValue: string) {
-    console.log(newValue);
+    this.depositoFilterValue = newValue;
+    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+      dtInstance.ajax.reload()
+    });
   }
 
-  onFiltroProductoChange(newValue: string) {
-    console.log(newValue);
+  onFiltroFechaChange(newValue) {
+    this.filtroFechaValue = newValue.day + "/" + newValue.month + "/" + newValue.year;
+    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+      dtInstance.ajax.reload()
+    });
+  }
+
+  onProductoSearchSelectItem (producto: ProductoListDTO) {
+    this.productoFilterValue = producto.encrypted_id;
+    this.productoFilterText = producto.marca + " " + producto.descripcion;
+    this.closeProductoSearchPopUp();
+    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+      dtInstance.ajax.reload()
+    });
+  }
+
+  closeProductoSearchPopUp() {
+    setTimeout(() => { this.productosSearch = undefined; }, 200);    
+  }
+
+  onProductoSearchKeyUp(event) {
+    let observable = fromEvent(event.target, 'keyup')
+      .pipe (
+        map(value => event.target.value),
+        debounceTime(1000),
+        distinctUntilChanged(),
+        mergeMap((search) => {
+          return this.apiService.DoGETWithObservable("productos/search?filter=" + encodeURIComponent(search), /* headers */ null);
+        })
+      )
+   observable.subscribe((data) => {
+      var result = <ApiResult<AutocompleteResultDTO<ProductoListDTO>>>data;
+      if (!result.success) {
+        this.confirmDialogService.showError("Se ha producido un error interno.");
+      }
+      else {
+        this.productosSearch = result.data.results;
+      }
+   });
+  }
+
+  onProductoSearchChange() {
+    if (this.productoFilterText == "") {
+      this.productoFilterValue = "";
+      this.closeProductoSearchPopUp();
+      this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+        dtInstance.ajax.reload()
+      });
+    }
   }
 
   ngOnInit(): void {
@@ -60,74 +128,44 @@ export class StockComponent implements OnInit {
         },
       },
       ajax: (dataTablesParameters: any, callback) => {
-        //this.httpClient
-        //  .post<DataTablesResponse>(
-        //    this.connectService.URL + 'read_records_dt.php',
-        //    dataTablesParameters, {}
-        //  ).subscribe(resp => {
-        //    this.Members = resp.data;
-        //    this.NumberOfMembers = resp.data.length;
-        //    $('.dataTables_length>label>select, .dataTables_filter>label>input').addClass('form-control-sm');
-        //    callback({
-        //      recordsTotal: resp.recordsTotal,
-        //      recordsFiltered: resp.recordsFiltered,
-        //      data: []
-        //    });
-        //    if (this.NumberOfMembers > 0) {
-        //      $('.dataTables_empty').css('display', 'none');
-        //    }
-        //  }
-        //  );
-        this.saldoActual = 100.54;
-        this.Movimientos = [
-          {
-            encrypted_id: "asddas123132",
-            deposito: "Deposito 1",
-            producto: "Royal Canin 15Kg mordida pequeña",
-            tipo: "Egreso",
-            cantidad: 15,
-            stock: 185,
-            fechaHora: new Date('2020-12-28T20:30:54'),
-            observaciones: "Pedido Nro 54092 /// Venta Nro 380289"
-          },
-          {
-            encrypted_id: "asddas123132",
-            deposito: "Deposito 1",
-            producto: "Vitalcan Balance 3Kg",
-            tipo: "Egreso",
-            cantidad: 30,
-            stock: 155,
-            fechaHora: new Date('2020-12-28T20:32:02'),
-            observaciones: "Pedido Nro 54092 /// Venta Nro 380289"
-          },
-          {
-            encrypted_id: "asddas123132",
-            deposito: "Deposito 3",
-            producto: "Royal Caning 15Kg mordida pequeña",
-            tipo: "Ingreso",
-            cantidad: 200,
-            stock: 200,
-            fechaHora: new Date('2020-12-28T20:35:42'),
-            observaciones: "Compra Nro 20931"
-          },
-        ];
-        callback({
-          recordsTotal: this.Movimientos.length,
-          recordsFiltered: this.Movimientos.length,
-          data: [] //Siempre vacío para delegarle el render a Angular
-        });
-        if (this.Movimientos.length > 0) {
-          $('.dataTables_empty').hide();
-        }
-        else {
-          $('.dataTables_empty').show();
-        }
-        setTimeout(function() {
-          (<any>$("tbody tr").find('[data-toggle="tooltip"]')).tooltip();
-        }, 300);
+        this.apiService.DoPOST<ApiResult<DataTableDTO<StockListDTO>>>("stock/list?depositoFilter=" + encodeURIComponent(this.depositoFilterValue) + "&productoFilter=" + encodeURIComponent(this.productoFilterValue) + "&filtroFecha=" + encodeURIComponent(this.filtroFechaValue), dataTablesParameters, /*headers*/ null,
+                      (response) => {
+                        if (!response.success) {
+                          this.confirmDialogService.showError(response.message);
+                        }
+                        else {
+                          callback({
+                            recordsTotal: response.data.recordsTotal,
+                            recordsFiltered: response.data.recordsFiltered,
+                            data: [] //Siempre vacío para delegarle el render a Angular
+                          });
+                          this.Movimientos = response.data.records;
+                          this.Depositos = <Array<DepositoDTO>>response.data.extraData.depositos;
+
+                          if (this.Movimientos.length > 0) {
+                            $('.dataTables_empty').hide();
+                          }
+                          else {
+                            $('.dataTables_empty').show();
+                          }
+                          setTimeout(function() {
+                            (<any>$("tbody tr").find('[data-toggle="tooltip"]')).tooltip();
+                          }, 300);
+                        }
+                      },
+                      (errorMessage) => {
+                        this.confirmDialogService.showError(errorMessage);
+                      });
       },
       columns: [
-        { data: 'name' }
+        { data: 'fechaHora', orderable: false },
+        { data: 'deposito', orderable: false },
+        { data: 'producto', orderable: false },
+        { data: 'tipo', orderable: false },
+        { data: 'reservado', orderable: false },
+        { data: 'movido', orderable: false },
+        { data: 'stock', orderable: false },
+        { data: 'observaciones', orderable: false }
       ]
     };
   }
