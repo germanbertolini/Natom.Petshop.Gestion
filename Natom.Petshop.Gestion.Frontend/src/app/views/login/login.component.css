@@ -4,9 +4,17 @@
     height: 100%;
     top: 0;
     left: 0;
-    background: rgb(119,11,188);
-    background: linear-gradient(90deg, rgba(119,11,188,1) 0%, rgba(17,87,157,1) 44%, rgba(11,105,144,1) 75%, rgba(3,127,129,1) 100%, rgba(0,212,255,1) 100%);
+    background: rgb(188, 11, 11);
+    background: linear-gradient(90deg, rgb(188, 11, 11) 0%, rgb(58, 44, 44) 44%, rgb(37, 28, 28) 75%, rgb(24, 24, 24) 100%, rgb(12, 12, 12) 100%);
     position: fixed;
+}
+
+h3, a {
+  color:rgb(223, 223, 223) !important;
+}
+
+.btn {
+  background-color: #c22323 !important;
 }
 
 body {

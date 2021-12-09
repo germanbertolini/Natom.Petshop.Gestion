@@ -96,6 +96,40 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
             }
         }
 
+        // GET: stock/quantity?producto={encryptedProductoId}&deposito={encryptedDepositoId}
+        [HttpGet]
+        [ActionName("quantity")]
+        public async Task<IActionResult> GetQuantityAsync([FromQuery]string producto, [FromQuery]string deposito = null)
+        {
+            try
+            {
+                int productoId = EncryptionService.Decrypt<int>(producto);
+                int? depositoId = null;
+
+                if (!string.IsNullOrEmpty(deposito))
+                    depositoId = EncryptionService.Decrypt<int>(deposito);
+
+
+                var manager = new StockManager(_serviceProvider);
+                var stockActual = await manager.ObtenerStockActualAsync(productoId, depositoId);
+
+                return Ok(new ApiResultDTO<int>
+                {
+                    Success = true,
+                    Data = stockActual
+                });
+            }
+            catch (HandledException ex)
+            {
+                return Ok(new ApiResultDTO { Success = false, Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                await LoggingService.LogExceptionAsync(_db, ex, usuarioId: null, _userAgent);
+                return Ok(new ApiResultDTO { Success = false, Message = "Se ha producido un error interno." });
+            }
+        }
+
         // POST: stock/save
         [HttpPost]
         [ActionName("save")]

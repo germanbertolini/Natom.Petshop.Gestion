@@ -12,6 +12,7 @@ import { ApiService } from "src/app/services/api.service";
 import { AuthService } from "src/app/services/auth.service";
 import { AutocompleteResultDTO } from "src/app/classes/dto/shared/autocomplete-result.dto";
 import { ApiResult } from "src/app/classes/dto/shared/api-result.dto";
+import { DepositoDTO } from "src/app/classes/dto/stock/deposito.dto";
 
 @Component({
   selector: 'app-stock-new-crud',
@@ -21,11 +22,11 @@ import { ApiResult } from "src/app/classes/dto/shared/api-result.dto";
 
 export class StockNewComponent implements OnInit {
   crud: CRUDView<MovimientoStockDTO>;
-  stockActual: 100;
-  valor: 0;
-  productoFilterValue: string;
+  stockActual: number;
+  valor: number;
   productoFilterText: string;
   productosSearch: ProductoListDTO[];
+  Depositos: Array<DepositoDTO>;
 
   constructor(private apiService: ApiService,
               private authService: AuthService,
@@ -42,9 +43,10 @@ export class StockNewComponent implements OnInit {
   }
 
   onProductoSearchSelectItem (producto: ProductoListDTO) {
-    this.productoFilterValue = producto.encrypted_id;
+    this.crud.model.producto_encrypted_id = producto.encrypted_id;
     this.productoFilterText = producto.marca + " " + producto.descripcion;
     this.closeProductoSearchPopUp();
+    this.consultarStock();
   }
 
   closeProductoSearchPopUp() {
@@ -72,6 +74,33 @@ export class StockNewComponent implements OnInit {
    });
   }
 
+  consultarStock() {
+    if (this.crud.model.producto_encrypted_id !== undefined && this.crud.model.producto_encrypted_id !== ""
+        && this.crud.model.deposito_encrypted_id !== undefined && this.crud.model.deposito_encrypted_id !== "") {
+      
+      this.apiService.DoGET<ApiResult<any>>("stock/quantity?producto=" + encodeURIComponent(this.crud.model.producto_encrypted_id) + "&deposito=" + encodeURIComponent(this.crud.model.deposito_encrypted_id), /*headers*/ null,
+          (response) => {
+            if (!response.success) {
+              this.confirmDialogService.showError(response.message);
+            }
+            else {
+              this.stockActual = <number>response.data;
+    
+              setTimeout(function() {
+                (<any>$("#title-crud").find('[data-toggle="tooltip"]')).tooltip();
+              }, 300);
+            }
+          },
+          (errorMessage) => {
+            this.confirmDialogService.showError(errorMessage);
+          });
+
+    }
+    else {
+      this.stockActual = null;
+    }
+  }
+
   onCancelClick() {
     this.confirmDialogService.showConfirm("¿Descartar cambios?", function() {
       window.history.back();
@@ -79,15 +108,69 @@ export class StockNewComponent implements OnInit {
   }
 
   onSaveClick() {
-    this.notifierService.notify('success', 'Movimiento guardado correctamente.');
-    this.routerService.navigate(['/stock']);
+    if (this.crud.model.producto_encrypted_id === undefined || this.crud.model.producto_encrypted_id.length === 0)
+    {
+      this.confirmDialogService.showError("Debes buscar y seleccionar un Producto.");
+      return;
+    }
+  
+    if (this.crud.model.deposito_encrypted_id === undefined || this.crud.model.deposito_encrypted_id.length === 0)
+    {
+      this.confirmDialogService.showError("Debes seleccionar un Depósito.");
+      return;
+    }
+
+    if (this.crud.model.tipo === undefined || this.crud.model.tipo.length === 0)
+    {
+      this.confirmDialogService.showError("Debes seleccionar el Tipo de movimiento.");
+      return;
+    }
+
+    if (this.crud.model.cantidad === undefined || this.crud.model.cantidad <= 0)
+    {
+      this.confirmDialogService.showError("Debes ingresar una cantidad válida.");
+      return;
+    }
+
+    if (this.crud.model.observaciones === undefined || this.crud.model.observaciones.length === 0)
+    {
+      this.confirmDialogService.showError("Debes ingresar una Observación para dejar asentado por qué se hizo este movimiento.");
+      return;
+    }
+
+    this.apiService.DoPOST<ApiResult<MovimientoStockDTO>>("stock/save", this.crud.model, /*headers*/ null,
+      (response) => {
+        if (!response.success) {
+          this.confirmDialogService.showError(response.message);
+        }
+        else {
+          this.notifierService.notify('success', 'Movimiento guardado correctamente.');
+          this.routerService.navigate(['/stock']);
+        }
+      },
+      (errorMessage) => {
+        this.confirmDialogService.showError(errorMessage);
+      });
   }
 
   ngOnInit(): void {
 
-    setTimeout(function() {
-      (<any>$("#title-crud").find('[data-toggle="tooltip"]')).tooltip();
-    }, 300);
+    this.apiService.DoGET<ApiResult<any>>("stock/basics/data", /*headers*/ null,
+      (response) => {
+        if (!response.success) {
+          this.confirmDialogService.showError(response.message);
+        }
+        else {
+          this.Depositos = <Array<DepositoDTO>>response.data.depositos;
+
+          setTimeout(function() {
+            (<any>$("#title-crud").find('[data-toggle="tooltip"]')).tooltip();
+          }, 300);
+        }
+      },
+      (errorMessage) => {
+        this.confirmDialogService.showError(errorMessage);
+      });
     
   }
 

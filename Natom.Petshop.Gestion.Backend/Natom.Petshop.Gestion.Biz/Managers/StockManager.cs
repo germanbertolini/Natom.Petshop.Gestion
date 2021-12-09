@@ -46,5 +46,12 @@ namespace Natom.Petshop.Gestion.Biz.Managers
             _db.MovimientosStock.Add(movimiento);
             await _db.SaveChangesAsync();
         }
+
+        public Task<int> ObtenerStockActualAsync(int productoId, int? depositoId)
+        {
+            return _db.MovimientosStock
+                        .Where(m => m.ProductoId == productoId && m.DepositoId == (depositoId ?? m.DepositoId))
+                        .SumAsync(m => (int?)(m.Tipo == "I" ? m.Cantidad : m.Cantidad * -1) ?? 0);
+        }
     }
 }

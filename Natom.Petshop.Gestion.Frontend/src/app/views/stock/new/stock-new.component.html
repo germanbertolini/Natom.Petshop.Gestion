@@ -45,10 +45,10 @@
         <select size="1"
           class="form-control"
           [(ngModel)]="crud.model.deposito_encrypted_id"
-          #tipoMovimiento>
+          (ngModelChange)="consultarStock()"
+          #cboDeposito>
           <option value="" disabled selected>Seleccione...</option>
-          <option value="I">Ingreso</option>
-          <option value="E">Egreso</option>
+          <option *ngFor="let deposito of Depositos" value="{{ deposito.encrypted_id }}">{{ deposito.descripcion }}</option>
         </select>
       </div>
     </div>
