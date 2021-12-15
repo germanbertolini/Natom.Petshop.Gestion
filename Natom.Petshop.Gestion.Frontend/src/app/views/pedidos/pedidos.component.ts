@@ -203,7 +203,9 @@ export class PedidosComponent implements OnInit {
         { data: 'documento' },
         { data: 'cliente' },
         { data: 'fechaHora' },
+        { data: 'fechaHoraPreparado' },
         { data: 'estado', orderable: false },
+        { data: 'peso_total' },
         { data: '', orderable: false } //BOTONERA
       ]
     };

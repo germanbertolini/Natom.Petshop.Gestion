@@ -35,7 +35,9 @@
             <th>Documento</th>
             <th>Cliente</th>
             <th>Fecha / Hora</th>
+            <th>Preparado</th>
             <th>Estado</th>
+            <th>Peso total</th>
             <th></th>
           </tr>
         </thead>
@@ -51,7 +53,13 @@
             <td>{{ pedido.remito }}<br/><small>{{ pedido.factura }}</small></td>
             <td>{{ pedido.cliente }}</td>
             <td>{{ pedido.fechaHora  |  date:'dd/MM/yyyy HH:mm' }} hs</td>
+            <td>
+              <b *ngIf="!pedido.enPreparacion && !pedido.prepared" style="color:brown;">PENDIENTE<br/></b>
+              <b *ngIf="pedido.enPreparacion" style="color:chocolate">EN PREPARACIÓN<br/></b>
+              <b *ngIf="!pedido.enPreparacion && pedido.prepared">{{ pedido.fechaHoraPreparado  |  date:'dd/MM/yyyy HH:mm' }} hs<br/></b>
+              <small>{{ pedido.preparadoPor }}</small></td>
             <td>{{ pedido.estado }}</td>
+            <td>{{ (pedido.peso_total_gramos / 1000).toFixed(2).replace('.', ',') }} KG</td>
             <td>
               <a *ngIf="pedido.estado === 'Pendiente de preparación'" class="btn btn-warning btn-sm comenzar-smt-btn spacingLeft" (click)="onIniciarOrdenClick(pedido.encrypted_id)" data-toggle="tooltip" data-placement="top" title="Iniciar preparación"><i class="fa fa-play" aria-hidden="true"></i></a>
               
@@ -59,7 +67,7 @@
               <a *ngIf="pedido.estado === 'En preparación'" class="btn btn-warning btn-sm cancelar-preparacion-smt-btn spacingLeft" (click)="onCancelarPreparacionOrdenClick(pedido.encrypted_id)" data-toggle="tooltip" data-placement="top" title="Cancelar preparación"><i class="fa fa-times" aria-hidden="true"></i></a>
 
               <a class="btn btn-secondary btn-sm print-orden-smt-btn spacingLeft" (click)="onPrintOrdenClick(pedido.encrypted_id)" data-toggle="tooltip" data-placement="top" title="Imprimir orden"><i class="fa fa-print" aria-hidden="true"></i></a>
-              <a class="btn btn-primary btn-sm print-remito-smt-btn spacingLeft" (click)="onPrintRemitoClick(pedido.encrypted_id)" data-toggle="tooltip" data-placement="top" title="Imprimir remito"><i class="fa fa-print" aria-hidden="true"></i></a>
+              <a *ngIf="pedido.remito !== null" class="btn btn-primary btn-sm print-remito-smt-btn spacingLeft" (click)="onPrintRemitoClick(pedido.encrypted_id)" data-toggle="tooltip" data-placement="top" title="Imprimir remito"><i class="fa fa-print" aria-hidden="true"></i></a>
               <a *ngIf="pedido.estado === 'Pendiente de preparación' || pedido.estado === 'En preparación'" class="btn btn-danger btn-sm delete-smt-btn spacingLeft" (click)="onDeleteClick(pedido.encrypted_id)" data-toggle="tooltip" data-placement="top" title="Anular"><i class="fa fa-times" aria-hidden="true"></i></a>
             </td>
           </tr>

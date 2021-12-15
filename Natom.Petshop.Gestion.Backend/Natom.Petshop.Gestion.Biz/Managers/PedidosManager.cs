@@ -25,6 +25,7 @@ namespace Natom.Petshop.Gestion.Biz.Managers
             var queryable = _db.OrdenesDePedido
                                     .Include(op => op.Cliente)
                                     .Include(op => op.Usuario)
+                                    .Include(op => op.PreparacionUsuario)
                                     .Where(u => true);
 
             //FILTROS
@@ -72,6 +73,18 @@ namespace Natom.Petshop.Gestion.Biz.Managers
                 queryableOrdered = sortDirection.ToLower().Equals("asc")
                                         ? queryable.OrderBy(c => c.FechaHoraPedido)
                                         : queryable.OrderByDescending(c => c.FechaHoraPedido);
+            }
+            else if (sortColumnIndex == 4)
+            {
+                queryableOrdered = sortDirection.ToLower().Equals("asc")
+                                        ? queryable.OrderBy(c => c.PreparacionFechaHoraFin ?? c.PreparacionFechaHoraInicio)
+                                        : queryable.OrderByDescending(c => c.PreparacionFechaHoraFin ?? c.PreparacionFechaHoraInicio);
+            }
+            else if (sortColumnIndex == 6)
+            {
+                queryableOrdered = sortDirection.ToLower().Equals("asc")
+                                        ? queryable.OrderBy(c => c.PesoTotalEnGramos)
+                                        : queryable.OrderByDescending(c => c.PesoTotalEnGramos);
             }
             else
             {

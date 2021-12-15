@@ -44,6 +44,18 @@ namespace Natom.Petshop.Gestion.Entities.DTO.Pedidos
         [JsonProperty("prepared")]
         public bool Prepared { get; set; }
 
+        [JsonProperty("peso_total_gramos")]
+        public int PesoTotalGramos { get; set; }
+
+        [JsonProperty("fechaHoraPreparado")]
+        public DateTime? FechaHoraPreparado { get; set; }
+
+        [JsonProperty("preparadoPor")]
+        public string PreparadoPor { get; set; }
+
+        [JsonProperty("enPreparacion")]
+        public bool EnPreparacion { get; set; }
+
         public PedidoListDTO From(OrdenDePedido entity)
         {
             EncryptedId = EncryptionService.Encrypt(entity.OrdenDePedidoId);
@@ -57,6 +69,10 @@ namespace Natom.Petshop.Gestion.Entities.DTO.Pedidos
             Usuario = entity.Usuario?.Nombre ?? "Admin";
             Estado = ResolverEstado(entity);
             Prepared = entity.PreparacionFechaHoraFin.HasValue;
+            PesoTotalGramos = entity.PesoTotalEnGramos;
+            EnPreparacion = entity.PreparacionFechaHoraInicio.HasValue && !Prepared;
+            FechaHoraPreparado = entity.PreparacionFechaHoraFin;
+            PreparadoPor = entity.PreparacionUsuario != null ? entity.PreparacionUsuario.Nombre + " " + entity.PreparacionUsuario.Apellido : null;
 
             return this;
         }

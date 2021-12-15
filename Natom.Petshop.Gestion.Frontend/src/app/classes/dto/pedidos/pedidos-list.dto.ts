@@ -7,7 +7,11 @@ export class PedidosListDTO {
     public factura: string;
     public cliente: string;
     public fechaHora: Date;
+    public peso_total_gramos: number;
     public usuario: string;
     public estado: string;
     public prepared: boolean;
+    public fechaHoraPreparado: Date;
+    public preparadoPor: string;
+    public enPreparacion: boolean;
 }
