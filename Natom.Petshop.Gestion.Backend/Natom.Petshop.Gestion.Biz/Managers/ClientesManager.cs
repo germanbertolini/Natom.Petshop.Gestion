@@ -162,5 +162,32 @@ namespace Natom.Petshop.Gestion.Biz.Managers
                         => _db.Clientes
                                 .Include(d => d.TipoDocumento)
                                 .FirstAsync(u => u.ClienteId.Equals(clienteId));
+
+        public Task<List<Cliente>> BuscarClientesAsync(int size, string filter)
+        {
+            var queryable = _db.Clientes.Include(u => u.TipoDocumento).Where(u => u.Activo == true);
+
+            //FILTROS
+            if (!string.IsNullOrEmpty(filter))
+            {
+                var words = filter.Split(' ').Select(w => w.Trim().ToLower());
+                foreach (var word in words)
+                {
+                    queryable = queryable.Where(p => (
+                                                        p.EsEmpresa ? p.RazonSocial.ToLower().Contains(word)
+                                                                    : (p.Nombre + " " + p.Apellido).ToLower().Contains(word)
+                                                    )
+                                                    || p.NumeroDocumento.ToLower().Contains(word));
+                }
+            }
+
+            //ORDEN
+            var queryableOrdered = queryable.OrderBy(c => c.RazonSocial);
+
+            //TAKE
+            return queryableOrdered
+                    .Take(size)
+                    .ToListAsync();
+        }
     }
 }

@@ -11,6 +11,8 @@ namespace Natom.Petshop.Gestion.Entities.Model
 		[Key]
 		public int VentaId { get; set; }
 		
+		public int NumeroVenta { get; set; }
+
 		public int ClienteId { get; set; }
 		public Cliente Cliente { get; set; }
 
@@ -26,9 +28,12 @@ namespace Natom.Petshop.Gestion.Entities.Model
 		public int UsuarioId { get; set; }
 		public Usuario Usuario { get; set; }
 
+		public string TipoFactura { get; set; }
 		public string NumeroFactura { get; set; }
 		public bool Activo { get; set; }
 		public string Observaciones { get; set; }
+
+		public decimal MontoTotal { get; set; }
 
 		public List<VentaDetalle> Detalle { get; set; }
 	}

@@ -12,8 +12,10 @@
           <option value="TODOS" selected>Todos</option>
           <option value="PENDIENTE">Pendiente de preparación</option>
           <option value="EN_PREPARACION" >En preparación</option>
+          <option value="PENDIENTE_FACTURACION" >Pendiente de Venta (Facturación)</option>
+          <option value="PENDIENTE_RETIRO">Listo para retirar por el cliente</option>
           <option value="PENDIENTE_DESPACHO">Pendiente de despacho</option>
-          <option value="PENDIENTE_ENTREGA">Pendiente de entrega</option>
+          <option value="EN_RUTA">En ruta</option>
           <option value="ENTREGADO">Entregado</option>
           <option value="ANULADO">Anulados</option>
         </select>
@@ -41,7 +43,7 @@
           <tr
               *ngFor="let pedido of Pedidos"
               [ngClass]="{
-                  'pending' : pedido.estado === 'Pendiente',
+                  'pending' : pedido.estado === 'Pendiente de preparación',
                   'prepared' : pedido.prepared === true
               }"
             >
@@ -51,11 +53,14 @@
             <td>{{ pedido.fechaHora  |  date:'dd/MM/yyyy HH:mm' }} hs</td>
             <td>{{ pedido.estado }}</td>
             <td>
-              <a *ngIf="pedido.estado === 'Pendiente'" class="btn btn-warning btn-sm comenzar-smt-btn spacingLeft" (click)="onIniciarOrdenClick(pedido.encrypted_id)" data-toggle="tooltip" data-placement="top" title="Iniciar preparación"><i class="fa fa-play" aria-hidden="true"></i></a>
+              <a *ngIf="pedido.estado === 'Pendiente de preparación'" class="btn btn-warning btn-sm comenzar-smt-btn spacingLeft" (click)="onIniciarOrdenClick(pedido.encrypted_id)" data-toggle="tooltip" data-placement="top" title="Iniciar preparación"><i class="fa fa-play" aria-hidden="true"></i></a>
+              
               <a *ngIf="pedido.estado === 'En preparación'" class="btn btn-success btn-sm finalizar-smt-btn spacingLeft" (click)="onCompletarOrdenClick(pedido.encrypted_id)" data-toggle="tooltip" data-placement="top" title="Finalizar orden"><i class="fa fa-check" aria-hidden="true"></i></a>
+              <a *ngIf="pedido.estado === 'En preparación'" class="btn btn-warning btn-sm cancelar-preparacion-smt-btn spacingLeft" (click)="onCancelarPreparacionOrdenClick(pedido.encrypted_id)" data-toggle="tooltip" data-placement="top" title="Cancelar preparación"><i class="fa fa-times" aria-hidden="true"></i></a>
+
               <a class="btn btn-secondary btn-sm print-orden-smt-btn spacingLeft" (click)="onPrintOrdenClick(pedido.encrypted_id)" data-toggle="tooltip" data-placement="top" title="Imprimir orden"><i class="fa fa-print" aria-hidden="true"></i></a>
               <a class="btn btn-primary btn-sm print-remito-smt-btn spacingLeft" (click)="onPrintRemitoClick(pedido.encrypted_id)" data-toggle="tooltip" data-placement="top" title="Imprimir remito"><i class="fa fa-print" aria-hidden="true"></i></a>
-              <a *ngIf="pedido.prepared === false" class="btn btn-danger btn-sm delete-smt-btn spacingLeft" (click)="onDeleteClick(pedido.encrypted_id)" data-toggle="tooltip" data-placement="top" title="Anular"><i class="fa fa-times" aria-hidden="true"></i></a>
+              <a *ngIf="pedido.estado === 'Pendiente de preparación' || pedido.estado === 'En preparación'" class="btn btn-danger btn-sm delete-smt-btn spacingLeft" (click)="onDeleteClick(pedido.encrypted_id)" data-toggle="tooltip" data-placement="top" title="Anular"><i class="fa fa-times" aria-hidden="true"></i></a>
             </td>
           </tr>
         </tbody>

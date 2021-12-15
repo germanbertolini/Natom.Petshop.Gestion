@@ -257,20 +257,36 @@ CREATE TABLE RangoHorario
 INSERT INTO RangoHorario (Descripcion, Activo) VALUES
 							('Por la mañana', 1),
 							('Por la tarde', 1);
-
+							
 CREATE TABLE OrdenDePedido
 (
 	OrdenDePedidoId INT NOT NULL IDENTITY(1,1),
+	NumeroPedido INT NOT NULL,
 	ClienteId INT NOT NULL,
 	FechaHoraPedido DATETIME NOT NULL,
+	RetiraPersonalmente BIT NOT NULL DEFAULT 0,
 	EntregaEstimadaFecha DATE,
 	EntregaEstimadaRangoHorarioId INT,
+	EntregaDomicilio NVARCHAR(50),
+	EntregaEntreCalles NVARCHAR(50),
+	EntregaLocalidad NVARCHAR(50),
+	EntregaTelefono1 NVARCHAR(30),
+	EntregaTelefono2 NVARCHAR(30),
 	EntregaObservaciones NVARCHAR(200),
 	UsuarioId INT,
 	NumeroRemito NVARCHAR(20),
 	VentaId INT,
 	Activo BIT,
 	Observaciones NVARCHAR(200),
+	PreparacionFechaHoraInicio DATETIME,
+	PreparacionFechaHoraFin DATETIME,
+	PreparacionUsuarioId INT,
+	DespachoFechaHora DATETIME,
+	DespachoUsuarioId INT,
+	MarcoEntregaFechaHora DATETIME,
+	MarcoEntregaUsuarioId INT,
+	PesoTotalEnGramos INT NOT NULL,
+	MontoTotal DECIMAL(18,2),
 	PRIMARY KEY (OrdenDePedidoId),
 	FOREIGN KEY (ClienteId) REFERENCES Cliente(ClienteId)
 );
@@ -279,27 +295,36 @@ CREATE TABLE OrdenDePedidoDetalle
 (
 	OrdenDePedidoDetalleId INT NOT NULL IDENTITY(1,1),
 	OrdenDePedidoId INT NOT NULL,
+	MovimientoStockId INT,
 	ProductoId INT NOT NULL,
 	Cantidad INT NOT NULL,
 	DepositoId INT NOT NULL,
+	PesoUnitarioEnGramos INT NOT NULL,
+	ListaDePreciosId INT,
+	Precio DECIMAL(18,2),
 	PRIMARY KEY (OrdenDePedidoDetalleId),
 	FOREIGN KEY (OrdenDePedidoId) REFERENCES OrdenDePedido(OrdenDePedidoId),
 	FOREIGN KEY (ProductoId) REFERENCES Producto(ProductoId),
-	FOREIGN KEY (DepositoId) REFERENCES Deposito(DepositoId)
+	FOREIGN KEY (DepositoId) REFERENCES Deposito(DepositoId),
+	FOREIGN KEY (MovimientoStockId) REFERENCES MovimientoStock(MovimientoStockId),
+	FOREIGN KEY (ListaDePreciosId) REFERENCES ListaDePrecios(ListaDePreciosId)
 );
 
 CREATE TABLE Venta
 (
 	VentaId INT NOT NULL IDENTITY(1,1),
+	NumeroVenta INT NOT NULL,
 	ClienteId INT NOT NULL,
 	FechaHoraVenta DATETIME NOT NULL,
 	EntregaEstimadaFecha DATE,
 	EntregaEstimadaRangoHorarioId INT,
 	EntregaObservaciones NVARCHAR(200),
 	UsuarioId INT,
+	TipoFactura NVARCHAR(10),
 	NumeroFactura NVARCHAR(20),
 	Activo BIT,
 	Observaciones NVARCHAR(200),
+	MontoTotal DECIMAL(18,2) NOT NULL,
 	PRIMARY KEY (VentaId),
 	FOREIGN KEY (ClienteId) REFERENCES Cliente(ClienteId)
 );
@@ -308,15 +333,21 @@ CREATE TABLE VentaDetalle
 (
 	VentaDetalleId INT NOT NULL IDENTITY(1,1),
 	VentaId INT NOT NULL,
+	MovimientoStockId INT,
 	ProductoId INT NOT NULL,
 	Cantidad INT NOT NULL,
 	DepositoId INT NOT NULL,
 	OrdenDePedidoDetalleId INT,
+	PesoUnitarioEnGramos INT,
+	ListaDePreciosId INT,
+	Precio DECIMAL(18,2) NOT NULL,
 	PRIMARY KEY (VentaDetalleId),
 	FOREIGN KEY (VentaId) REFERENCES Venta(VentaId),
 	FOREIGN KEY (ProductoId) REFERENCES Producto(ProductoId),
 	FOREIGN KEY (DepositoId) REFERENCES Deposito(DepositoId),
-	FOREIGN KEY (OrdenDePedidoDetalleId) REFERENCES OrdenDePedidoDetalle(OrdenDePedidoDetalleId)
+	FOREIGN KEY (OrdenDePedidoDetalleId) REFERENCES OrdenDePedidoDetalle(OrdenDePedidoDetalleId),
+	FOREIGN KEY (MovimientoStockId) REFERENCES MovimientoStock(MovimientoStockId),
+	FOREIGN KEY (ListaDePreciosId) REFERENCES ListaDePrecios(ListaDePreciosId)
 );
 
 CREATE TABLE [Log]

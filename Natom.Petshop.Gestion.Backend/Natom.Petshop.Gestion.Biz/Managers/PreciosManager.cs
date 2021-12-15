@@ -79,6 +79,16 @@ namespace Natom.Petshop.Gestion.Biz.Managers
             return precio;
         }
 
+        public async Task<decimal?> ObtenerPrecioActualAsync(int productoId, int listaDePreciosId)
+        {
+            return (await _db.ProductosPrecios
+                                            .Where(p => p.ListaDePreciosId == listaDePreciosId
+                                                            && p.ProductoId == productoId
+                                                            && !p.FechaHoraBaja.HasValue)
+                                            .OrderByDescending(p => p.ProductoPrecioId)
+                                            .FirstOrDefaultAsync())?.Precio;
+        }
+
         public Task<ProductoPrecio> ObtenerPrecioAsync(int productoPrecioId)
         {
             return _db.ProductosPrecios

@@ -3,6 +3,7 @@ using Natom.Petshop.Gestion.Backend.Services;
 using Natom.Petshop.Gestion.Biz.Exceptions;
 using Natom.Petshop.Gestion.Biz.Managers;
 using Natom.Petshop.Gestion.Entities.DTO;
+using Natom.Petshop.Gestion.Entities.DTO.Autocomplete;
 using Natom.Petshop.Gestion.Entities.DTO.Clientes;
 using Natom.Petshop.Gestion.Entities.DTO.DataTable;
 using Natom.Petshop.Gestion.Entities.Model;
@@ -109,6 +110,37 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
                 {
                     Success = true,
                     Data = new ClienteDTO().From(cliente)
+                });
+            }
+            catch (HandledException ex)
+            {
+                return Ok(new ApiResultDTO { Success = false, Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                await LoggingService.LogExceptionAsync(_db, ex, usuarioId: null, _userAgent);
+                return Ok(new ApiResultDTO { Success = false, Message = "Se ha producido un error interno." });
+            }
+        }
+
+        // GET: clientes/search?filter={filter}
+        [HttpGet]
+        [ActionName("search")]
+        public async Task<IActionResult> GetSearchAsync([FromQuery] string filter = null)
+        {
+            try
+            {
+                var manager = new ClientesManager(_serviceProvider);
+                var clientes = await manager.BuscarClientesAsync(size: 20, filter);
+
+                return Ok(new ApiResultDTO<AutocompleteResponseDTO<ClienteDTO>>
+                {
+                    Success = true,
+                    Data = new AutocompleteResponseDTO<ClienteDTO>
+                    {
+                        Total = clientes.Count,
+                        Results = clientes.Select(cliente => new ClienteDTO().From(cliente)).ToList()
+                    }
                 });
             }
             catch (HandledException ex)

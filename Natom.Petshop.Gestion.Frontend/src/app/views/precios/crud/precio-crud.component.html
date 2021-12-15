@@ -33,7 +33,7 @@
               *ngFor="let producto of productosSearch; let i = index"
               (click)="onProductoSearchSelectItem(producto)"
               >
-                <small>{{ producto.marca }} {{ producto.descripcion }}</small>
+                <small>({{ producto.codigo }}) {{ producto.marca }} {{ producto.descripcion }}</small>
             </li>
           </ul>
         </div>

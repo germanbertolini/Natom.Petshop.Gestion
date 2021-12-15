@@ -23,6 +23,9 @@ namespace Natom.Petshop.Gestion.Entities.DTO.Productos
         [JsonProperty("marca")]
         public string Marca { get; set; }
 
+        [JsonProperty("peso_unitario_gramos")]
+        public int PesoUnitarioGramos { get; set; }
+
         [JsonProperty("activo")]
         public bool Activo { get; set; }
 
@@ -33,6 +36,7 @@ namespace Natom.Petshop.Gestion.Entities.DTO.Productos
             Descripcion = entity.DescripcionCorta;
             Marca = entity.Marca?.Descripcion;
             Activo = entity.Activo;
+            PesoUnitarioGramos = Convert.ToInt32(entity.PesoUnitario * entity.UnidadPeso.Gramos);
 
             return this;
         }

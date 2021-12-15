@@ -69,11 +69,14 @@
           </li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Pedidos
+              Pedidos y Ventas
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
               <a class="dropdown-item" [routerLink]="['/pedidos']">Ver ordenes de pedido</a>
               <a class="dropdown-item" [routerLink]="['/pedidos/new']">[+] Nueva orden de pedido</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" [routerLink]="['/ventas']">Ver ventas</a>
+              <a class="dropdown-item" [routerLink]="['/ventas/new']">[+] Nueva venta</a>
             </div>
           </li>
         </ul>

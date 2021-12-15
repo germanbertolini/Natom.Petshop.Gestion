@@ -80,7 +80,7 @@ export class PrecioCrudComponent implements OnInit {
 
   onProductoSearchSelectItem (producto: ProductoListDTO) {
     this.crud.model.producto_encrypted_id = producto.encrypted_id;
-    this.crud.model.producto = producto.marca + " " + producto.descripcion;
+    this.crud.model.producto = "(" + producto.codigo + ") " + producto.marca + " " + producto.descripcion;
     this.closeProductoSearchPopUp();
   }
 

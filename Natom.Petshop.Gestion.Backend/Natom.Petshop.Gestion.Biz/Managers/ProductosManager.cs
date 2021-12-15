@@ -22,7 +22,7 @@ namespace Natom.Petshop.Gestion.Biz.Managers
 
         public Task<List<Producto>> BuscarProductosAsync(int size, string filter)
         {
-            var queryable = _db.Productos.Include(p => p.Marca).Where(u => true);
+            var queryable = _db.Productos.Include(p => p.Marca).Include(p => p.UnidadPeso).Where(u => true);
 
             //FILTROS
             if (!string.IsNullOrEmpty(filter))
@@ -47,7 +47,10 @@ namespace Natom.Petshop.Gestion.Biz.Managers
 
         public Task<List<Producto>> ObtenerProductosDataTableAsync(int start, int size, string filter, int sortColumnIndex, string sortDirection, string statusFilter)
         {
-            var queryable = _db.Productos.Include(p => p.Marca).Where(u => true);
+            var queryable = _db.Productos
+                                    .Include(p => p.Marca)
+                                    .Include(p => p.UnidadPeso)
+                                    .Where(u => true);
 
             //FILTROS
             if (!string.IsNullOrEmpty(filter))

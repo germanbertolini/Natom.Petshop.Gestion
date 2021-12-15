@@ -3,5 +3,6 @@ export class ProductoListDTO {
 	public codigo: string;
 	public descripcion: string;
 	public marca: string;
+	public peso_unitario_gramos: number;
 	public activo: boolean;
 }

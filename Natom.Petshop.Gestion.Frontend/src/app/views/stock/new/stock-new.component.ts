@@ -44,7 +44,7 @@ export class StockNewComponent implements OnInit {
 
   onProductoSearchSelectItem (producto: ProductoListDTO) {
     this.crud.model.producto_encrypted_id = producto.encrypted_id;
-    this.productoFilterText = producto.marca + " " + producto.descripcion;
+    this.productoFilterText = "(" + producto.codigo + ") " + producto.marca + " " + producto.descripcion;
     this.closeProductoSearchPopUp();
     this.consultarStock();
   }

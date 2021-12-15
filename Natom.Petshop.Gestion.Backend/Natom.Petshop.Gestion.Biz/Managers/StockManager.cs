@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Natom.Petshop.Gestion.Biz.Exceptions;
 using Natom.Petshop.Gestion.Entities.DTO.Stock;
 using Natom.Petshop.Gestion.Entities.Model;
 using Natom.Petshop.Gestion.Entities.Model.Results;
@@ -31,10 +32,20 @@ namespace Natom.Petshop.Gestion.Biz.Managers
 
         public async Task GuardarMovimientoAsync(int usuarioId, MovimientoStockDTO movimientoDto)
         {
+            var productoId = EncryptionService.Decrypt<int>(movimientoDto.ProductoEncryptedId);
+            var depositoId = EncryptionService.Decrypt<int>(movimientoDto.DepositoEncryptedId);
+            
+            if (movimientoDto.Tipo == "E")
+            {
+                var cantidadActual = await ObtenerStockActualAsync(productoId, depositoId);
+                if (cantidadActual - movimientoDto.Cantidad < 0)
+                    throw new HandledException($"No es posible realizar el Egreso de Mercadería indicado ya que la cantidad ingresada ({movimientoDto.Cantidad}) es superior al disponible actual ({cantidadActual})");
+            }
+
             var movimiento = new MovimientoStock
             {
-                ProductoId = EncryptionService.Decrypt<int>(movimientoDto.ProductoEncryptedId),
-                DepositoId = EncryptionService.Decrypt<int>(movimientoDto.DepositoEncryptedId),
+                ProductoId = productoId,
+                DepositoId = depositoId,
                 FechaHora = DateTime.Now,
                 Cantidad = movimientoDto.Cantidad,
                 Tipo = movimientoDto.Tipo,

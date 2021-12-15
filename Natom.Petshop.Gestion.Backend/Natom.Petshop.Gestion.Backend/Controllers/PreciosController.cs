@@ -275,5 +275,40 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
                 return Ok(new ApiResultDTO { Success = false, Message = "Se ha producido un error interno." });
             }
         }
+
+        // GET: precios/get?producto={encryptedProductoId}&lista={encryptedDepositoId}
+        [HttpGet]
+        [ActionName("get")]
+        public async Task<IActionResult> GetPrecioActualAsync([FromQuery] string producto, [FromQuery] string lista)
+        {
+            try
+            {
+                int productoId = EncryptionService.Decrypt<int>(producto);
+                int listaDePreciosId = 0;
+
+                if (!string.IsNullOrEmpty(lista))
+                    listaDePreciosId = EncryptionService.Decrypt<int>(lista);
+                else
+                    throw new HandledException("Falta la Lista de precios");
+
+                var manager = new PreciosManager(_serviceProvider);
+                var precioActual = await manager.ObtenerPrecioActualAsync(productoId, listaDePreciosId);
+
+                return Ok(new ApiResultDTO<decimal?>
+                {
+                    Success = true,
+                    Data = precioActual
+                });
+            }
+            catch (HandledException ex)
+            {
+                return Ok(new ApiResultDTO { Success = false, Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                await LoggingService.LogExceptionAsync(_db, ex, usuarioId: null, _userAgent);
+                return Ok(new ApiResultDTO { Success = false, Message = "Se ha producido un error interno." });
+            }
+        }
     }
 }

@@ -1,9 +1,12 @@
 import { HttpClient } from "@angular/common/http";
 import { Component, Input, OnInit, ViewChild } from "@angular/core";
 import { Router } from "@angular/router";
+import { DataTableDirective } from "angular-datatables/src/angular-datatables.directive";
 import { NotifierService } from "angular-notifier";
 import { MarcaDTO } from "src/app/classes/dto/marca.dto";
 import { PedidosListDTO } from "src/app/classes/dto/pedidos/pedidos-list.dto";
+import { ApiResult } from "src/app/classes/dto/shared/api-result.dto";
+import { ApiService } from "src/app/services/api.service";
 import { DataTableDTO } from '../../classes/data-table-dto';
 import { ConfirmDialogService } from "../../components/confirm-dialog/confirm-dialog.service";
 
@@ -13,20 +16,26 @@ import { ConfirmDialogService } from "../../components/confirm-dialog/confirm-di
   templateUrl: './pedidos.component.html'
 })
 export class PedidosComponent implements OnInit {
-
+  @ViewChild(DataTableDirective, { static: false })
+  dtElement: DataTableDirective;
+  dtInstance: Promise<DataTables.Api>;
   dtIndex: DataTables.Settings = {};
   Pedidos: PedidosListDTO[];
   Noty: any;
+  filterStatusValue: string;
 
-  constructor(private httpClientService: HttpClient,
+  constructor(private apiService: ApiService,
               private routerService: Router,
               private notifierService: NotifierService,
               private confirmDialogService: ConfirmDialogService) {
-                
+    this.filterStatusValue = "TODOS";
   }
 
   onFiltroEstadoChange(newValue: string) {
-    console.log(newValue);
+    this.filterStatusValue = newValue;
+    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+      dtInstance.ajax.reload()
+    });
   }
 
   onPrintOrdenClick(id: string) {
@@ -38,27 +47,103 @@ export class PedidosComponent implements OnInit {
   }
 
   onIniciarOrdenClick(id: string) {
-    console.log(id);
     let notifier = this.notifierService;
+    let confirmDialogService = this.confirmDialogService;
+    let apiService = this.apiService;
+    let dataTableInstance = this.dtElement.dtInstance;
+
     this.confirmDialogService.showConfirm("Desea marcar el pedido como 'En preparación'?", function () {  
-      notifier.notify('success', 'Pedido iniciado.');
-    });
+      apiService.DoPOST<ApiResult<any>>("pedidos/preparacion/iniciar?encryptedId=" + encodeURIComponent(id), {}, /*headers*/ null,
+                                            (response) => {
+                                              if (!response.success) {
+                                                confirmDialogService.showError(response.message);
+                                              }
+                                              else {
+                                                notifier.notify('success', 'Pedido iniciado.');
+                                                dataTableInstance.then((dtInstance: DataTables.Api) => {
+                                                  dtInstance.ajax.reload()
+                                                });
+                                              }
+                                            },
+                                            (errorMessage) => {
+                                              confirmDialogService.showError(errorMessage);
+                                            });
+                                          });
   }
 
   onCompletarOrdenClick(id: string) {
-    console.log(id);
     let notifier = this.notifierService;
-    this.confirmDialogService.showConfirm("Desea marcar el pedido como 'Preparado'?", function () {  
-      notifier.notify('success', 'Pedido finalizado.');
-    });
+    let confirmDialogService = this.confirmDialogService;
+    let apiService = this.apiService;
+    let dataTableInstance = this.dtElement.dtInstance;
+
+    this.confirmDialogService.showConfirm("Desea marcar el pedido como 'Preparación completada'?", function () {  
+      apiService.DoPOST<ApiResult<any>>("pedidos/preparacion/finalizacion?encryptedId=" + encodeURIComponent(id), {}, /*headers*/ null,
+                                            (response) => {
+                                              if (!response.success) {
+                                                confirmDialogService.showError(response.message);
+                                              }
+                                              else {
+                                                notifier.notify('success', 'Preparación de pedido completada.');
+                                                dataTableInstance.then((dtInstance: DataTables.Api) => {
+                                                  dtInstance.ajax.reload()
+                                                });
+                                              }
+                                            },
+                                            (errorMessage) => {
+                                              confirmDialogService.showError(errorMessage);
+                                            });
+                                          });
+  }
+
+  onCancelarPreparacionOrdenClick(id: string) {
+    let notifier = this.notifierService;
+    let confirmDialogService = this.confirmDialogService;
+    let apiService = this.apiService;
+    let dataTableInstance = this.dtElement.dtInstance;
+
+    this.confirmDialogService.showConfirm("Desea volver a marcar el pedido como 'Pendiente de preparación'?", function () {  
+      apiService.DoPOST<ApiResult<any>>("pedidos/preparacion/cancelar?encryptedId=" + encodeURIComponent(id), {}, /*headers*/ null,
+                                            (response) => {
+                                              if (!response.success) {
+                                                confirmDialogService.showError(response.message);
+                                              }
+                                              else {
+                                                notifier.notify('success', 'Preparación de pedido cancelada.');
+                                                dataTableInstance.then((dtInstance: DataTables.Api) => {
+                                                  dtInstance.ajax.reload()
+                                                });
+                                              }
+                                            },
+                                            (errorMessage) => {
+                                              confirmDialogService.showError(errorMessage);
+                                            });
+                                          });
   }
 
   onDeleteClick(id: string) {
-    console.log(id);
     let notifier = this.notifierService;
-    this.confirmDialogService.showConfirm("Desea anular el pedido?", function () {  
-      notifier.notify('success', 'Pedido anulado con éxito.');
-    });
+    let confirmDialogService = this.confirmDialogService;
+    let apiService = this.apiService;
+    let dataTableInstance = this.dtElement.dtInstance;
+
+    this.confirmDialogService.showConfirm("IMPORTANTE: Una vez anulado se revertirá el Stock y no se podrá deshacer la acción. ¿Desea continuar?", function () {  
+      apiService.DoPOST<ApiResult<any>>("pedidos/anular?encryptedId=" + encodeURIComponent(id), {}, /*headers*/ null,
+                                            (response) => {
+                                              if (!response.success) {
+                                                confirmDialogService.showError(response.message);
+                                              }
+                                              else {
+                                                notifier.notify('success', 'Pedido anulado con éxito.');
+                                                dataTableInstance.then((dtInstance: DataTables.Api) => {
+                                                  dtInstance.ajax.reload()
+                                                });
+                                              }
+                                            },
+                                            (errorMessage) => {
+                                              confirmDialogService.showError(errorMessage);
+                                            });
+                                          });
   }
 
   ngOnInit(): void {
@@ -82,98 +167,44 @@ export class PedidosComponent implements OnInit {
           last: 'Último',
           next: 'Siguiente',
           previous: 'Anterior'
-        },
+        }
       },
+      order: [[0, "desc"]],
       ajax: (dataTablesParameters: any, callback) => {
-        //this.httpClient
-        //  .post<DataTablesResponse>(
-        //    this.connectService.URL + 'read_records_dt.php',
-        //    dataTablesParameters, {}
-        //  ).subscribe(resp => {
-        //    this.Members = resp.data;
-        //    this.NumberOfMembers = resp.data.length;
-        //    $('.dataTables_length>label>select, .dataTables_filter>label>input').addClass('form-control-sm');
-        //    callback({
-        //      recordsTotal: resp.recordsTotal,
-        //      recordsFiltered: resp.recordsFiltered,
-        //      data: []
-        //    });
-        //    if (this.NumberOfMembers > 0) {
-        //      $('.dataTables_empty').css('display', 'none');
-        //    }
-        //  }
-        //  );
-        this.Pedidos = [
-          {
-            encrypted_id: "asddas123132",
-            numero: "00001928",
-            remito: "RTO 0001-00298894",
-            venta_encrypted_id: "asddas123132",
-            numeroVenta: "VTA 00001204",
-            factura: "FCB 0001-03289200",
-            cliente: "Veterinaria Del Carmen",
-            fechaHora: new Date('2020-12-28T20:30:54'),
-            usuario: "German",
-            estado: "Pendiente",
-            prepared: false
-          },
-          {
-            encrypted_id: "asddas123132",
-            numero: "00001928",
-            remito: "RTO 0001-00298893",
-            venta_encrypted_id: "asddas123132",
-            numeroVenta: "VTA 00001203",
-            factura: "FCB 0001-03289199",
-            cliente: "Veterinaria Del Carmen",
-            fechaHora: new Date('2020-12-28T20:30:54'),
-            usuario: "German",
-            estado: "En preparación",
-            prepared: false
-          },
-          {
-            encrypted_id: "asddas123132",
-            numero: "00001928",
-            remito: "RTO 0001-00298893",
-            venta_encrypted_id: "",
-            numeroVenta: "",
-            factura: "",
-            cliente: "Veterinaria 24hs San Justo",
-            fechaHora: new Date('2020-12-28T20:30:54'),
-            usuario: "German",
-            estado: "En preparación",
-            prepared: false
-          },
-          {
-            encrypted_id: "asddas123132",
-            numero: "00001931",
-            remito: "RTO 0001-00298896",
-            venta_encrypted_id: "",
-            numeroVenta: "",
-            factura: "",
-            cliente: "Veterinaria 24hs San Justo",
-            fechaHora: new Date('2020-12-28T20:30:54'),
-            usuario: "German",
-            estado: "Entregado",
-            prepared: true
-          },
-        ];
-        callback({
-          recordsTotal: this.Pedidos.length,
-          recordsFiltered: this.Pedidos.length,
-          data: [] //Siempre vacío para delegarle el render a Angular
-        });
-        if (this.Pedidos.length > 0) {
-          $('.dataTables_empty').hide();
-        }
-        else {
-          $('.dataTables_empty').show();
-        }
-        setTimeout(function() {
-          (<any>$("tbody tr").find('[data-toggle="tooltip"]')).tooltip();
-        }, 300);
+          this.apiService.DoPOST<ApiResult<DataTableDTO<PedidosListDTO>>>("pedidos/list?status=" + this.filterStatusValue, dataTablesParameters, /*headers*/ null,
+                        (response) => {
+                          if (!response.success) {
+                            this.confirmDialogService.showError(response.message);
+                          }
+                          else {
+                            callback({
+                              recordsTotal: response.data.recordsTotal,
+                              recordsFiltered: response.data.recordsFiltered,
+                              data: [] //Siempre vacío para delegarle el render a Angular
+                            });
+                            this.Pedidos = response.data.records;
+                            if (this.Pedidos.length > 0) {
+                              $('.dataTables_empty').hide();
+                            }
+                            else {
+                              $('.dataTables_empty').show();
+                            }
+                            setTimeout(function() {
+                              (<any>$("tbody tr").find('[data-toggle="tooltip"]')).tooltip();
+                            }, 300);
+                          }
+                        },
+                        (errorMessage) => {
+                          this.confirmDialogService.showError(errorMessage);
+                        });
       },
       columns: [
-        { data: 'name' }
+        { data: 'pedido' },
+        { data: 'documento' },
+        { data: 'cliente' },
+        { data: 'fechaHora' },
+        { data: 'estado', orderable: false },
+        { data: '', orderable: false } //BOTONERA
       ]
     };
   }

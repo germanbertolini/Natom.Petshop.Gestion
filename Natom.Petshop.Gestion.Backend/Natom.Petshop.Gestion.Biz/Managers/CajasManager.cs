@@ -67,7 +67,7 @@ namespace Natom.Petshop.Gestion.Biz.Managers
                     .ToListAsync();
         }
 
-        public Task<decimal> ObtenerSaldoActualCajaDiariaAsync(DateTime? dateTimeFilter)
+        public Task<decimal> ObtenerSaldoActualCajaDiariaAsync(DateTime? dateTimeFilter = null)
         {
             var queryable = _db.MovimientosCajaDiaria.Where(u => true);
 
@@ -82,6 +82,13 @@ namespace Natom.Petshop.Gestion.Biz.Managers
 
         public async Task<MovimientoCajaDiaria> GuardarMovimientoCajaDiariaAsync(MovimientoCajaDiariaDTO movimientoDto, int usuarioId)
         {
+            if (movimientoDto.Tipo == "D")
+            {
+                var saldoActual = await ObtenerSaldoActualCajaDiariaAsync();
+                if (saldoActual - movimientoDto.Importe < 0)
+                    throw new HandledException($"No es posible realizar el Egreso ya que el importe ingresado ({movimientoDto.Importe.ToString("C2")}) es superior al saldo disponible actual ({saldoActual.ToString("C2")})");
+            }
+
             var movimiento = new MovimientoCajaDiaria()
             {
                 FechaHora = DateTime.Now,
@@ -151,7 +158,7 @@ namespace Natom.Petshop.Gestion.Biz.Managers
                     .ToListAsync();
         }
 
-        public Task<decimal> ObtenerSaldoActualCajaFuerteAsync(DateTime? dateTimeFilter)
+        public Task<decimal> ObtenerSaldoActualCajaFuerteAsync(DateTime? dateTimeFilter = null)
         {
             var queryable = _db.MovimientosCajaFuerte.Where(u => true);
 
@@ -166,6 +173,13 @@ namespace Natom.Petshop.Gestion.Biz.Managers
 
         public async Task<MovimientoCajaFuerte> GuardarMovimientoCajaFuerteAsync(MovimientoCajaFuerteDTO movimientoDto, int usuarioId)
         {
+            if (movimientoDto.Tipo == "D")
+            {
+                var saldoActual = await ObtenerSaldoActualCajaFuerteAsync();
+                if (saldoActual - movimientoDto.Importe < 0)
+                    throw new HandledException($"No es posible realizar el Egreso ya que el importe ingresado ({movimientoDto.Importe.ToString("C2")}) es superior al saldo disponible actual ({saldoActual.ToString("C2")})");
+            }
+
             var movimiento = new MovimientoCajaFuerte()
             {
                 FechaHora = DateTime.Now,
@@ -189,8 +203,12 @@ namespace Natom.Petshop.Gestion.Biz.Managers
                 return GuardarTransferenciaFuerteADiariaAsync(movimientoDto, usuarioId);
         }
 
-        private Task GuardarTransferenciaFuerteADiariaAsync(MovimientoEntreCajasDTO movimientoDto, int usuarioId)
+        private async Task GuardarTransferenciaFuerteADiariaAsync(MovimientoEntreCajasDTO movimientoDto, int usuarioId)
         {
+            var saldoActual = await ObtenerSaldoActualCajaFuerteAsync();
+            if (saldoActual - movimientoDto.Importe < 0)
+                throw new HandledException($"No es posible realizar la Transferencia ya que el importe ingresado ({movimientoDto.Importe.ToString("C2")}) es superior al saldo disponible actual en la Caja Fuerte ({saldoActual.ToString("C2")})");
+
             string observaciones = "TRANSFERENCIA CAJA FUERTE A DIARIA";
             if (!string.IsNullOrEmpty(movimientoDto.Observaciones))
                 observaciones += " /// " + movimientoDto.Observaciones;
@@ -215,11 +233,15 @@ namespace Natom.Petshop.Gestion.Biz.Managers
 
             _db.MovimientosCajaFuerte.Add(movimientoDebito);
             _db.MovimientosCajaDiaria.Add(movimientoCredito);
-            return _db.SaveChangesAsync();
+            await _db.SaveChangesAsync();
         }
 
-        private Task GuardarTransferenciaDiariaAFuerteAsync(MovimientoEntreCajasDTO movimientoDto, int usuarioId)
+        private async Task GuardarTransferenciaDiariaAFuerteAsync(MovimientoEntreCajasDTO movimientoDto, int usuarioId)
         {
+            var saldoActual = await ObtenerSaldoActualCajaDiariaAsync();
+            if (saldoActual - movimientoDto.Importe < 0)
+                throw new HandledException($"No es posible realizar la Transferencia ya que el importe ingresado ({movimientoDto.Importe.ToString("C2")}) es superior al saldo disponible actual en la Caja Diaria ({saldoActual.ToString("C2")})");
+
             string observaciones = "TRANSFERENCIA CAJA DIARIA A FUERTE";
             if (!string.IsNullOrEmpty(movimientoDto.Observaciones))
                 observaciones += " /// " + movimientoDto.Observaciones;
@@ -244,7 +266,7 @@ namespace Natom.Petshop.Gestion.Biz.Managers
 
             _db.MovimientosCajaDiaria.Add(movimientoDebito);
             _db.MovimientosCajaFuerte.Add(movimientoCredito);
-            return _db.SaveChangesAsync();
+            _db.SaveChangesAsync();
         }
     }
 }

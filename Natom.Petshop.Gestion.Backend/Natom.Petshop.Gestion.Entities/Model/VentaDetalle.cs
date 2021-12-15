@@ -19,7 +19,18 @@ namespace Natom.Petshop.Gestion.Entities.Model
 
 		public int DepositoId { get; set; }
 		public Deposito Deposito { get; set; }
-	
+
+		public int? MovimientoStockId { get; set; }
+		public MovimientoStock MovimientoStock { get; set; }
+
+		public int? ListaDePreciosId { get; set; }
+		[ForeignKey("ListaDePreciosId")]
+		public ListaDePrecios ListaDePrecios { get; set; }
+
+		public decimal Precio { get; set; }
+
+		public decimal? PesoUnitarioEnGramos { get; set; }
+
 		public int? OrdenDePedidoDetalleId { get; set; }
 		public OrdenDePedidoDetalle OrdenDePedidoDetalle { get; set; }
 	}
