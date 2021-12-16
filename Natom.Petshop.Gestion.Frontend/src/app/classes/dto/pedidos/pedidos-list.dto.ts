@@ -14,4 +14,5 @@ export class PedidosListDTO {
     public fechaHoraPreparado: Date;
     public preparadoPor: string;
     public enPreparacion: boolean;
+    public anulado: boolean;
 }

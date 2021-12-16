@@ -146,6 +146,81 @@ export class PedidosComponent implements OnInit {
                                           });
   }
 
+  onDespacharOrdenClick(id: string) {
+    let notifier = this.notifierService;
+    let confirmDialogService = this.confirmDialogService;
+    let apiService = this.apiService;
+    let dataTableInstance = this.dtElement.dtInstance;
+
+    this.confirmDialogService.showConfirm("Desea marcar el pedido como 'Despachado'?", function () {  
+      apiService.DoPOST<ApiResult<any>>("pedidos/despachar?encryptedId=" + encodeURIComponent(id), {}, /*headers*/ null,
+                                            (response) => {
+                                              if (!response.success) {
+                                                confirmDialogService.showError(response.message);
+                                              }
+                                              else {
+                                                notifier.notify('success', 'Orden despachada correctamente.');
+                                                dataTableInstance.then((dtInstance: DataTables.Api) => {
+                                                  dtInstance.ajax.reload()
+                                                });
+                                              }
+                                            },
+                                            (errorMessage) => {
+                                              confirmDialogService.showError(errorMessage);
+                                            });
+                                          });
+  }
+
+  onEntregadoOrdenClick(id: string) {
+    let notifier = this.notifierService;
+    let confirmDialogService = this.confirmDialogService;
+    let apiService = this.apiService;
+    let dataTableInstance = this.dtElement.dtInstance;
+
+    this.confirmDialogService.showConfirm("Desea marcar el pedido como 'Entregado'?", function () {  
+      apiService.DoPOST<ApiResult<any>>("pedidos/entregado?encryptedId=" + encodeURIComponent(id), {}, /*headers*/ null,
+                                            (response) => {
+                                              if (!response.success) {
+                                                confirmDialogService.showError(response.message);
+                                              }
+                                              else {
+                                                notifier.notify('success', 'Orden entregada correctamente.');
+                                                dataTableInstance.then((dtInstance: DataTables.Api) => {
+                                                  dtInstance.ajax.reload()
+                                                });
+                                              }
+                                            },
+                                            (errorMessage) => {
+                                              confirmDialogService.showError(errorMessage);
+                                            });
+                                          });
+  }
+
+  onNoEntregadoOrdenClick(id: string) {
+    let notifier = this.notifierService;
+    let confirmDialogService = this.confirmDialogService;
+    let apiService = this.apiService;
+    let dataTableInstance = this.dtElement.dtInstance;
+
+    this.confirmDialogService.showConfirm("Desea marcar el pedido nuevamente como 'Pendiente de despacho'?", function () {  
+      apiService.DoPOST<ApiResult<any>>("pedidos/no_entrega?encryptedId=" + encodeURIComponent(id), {}, /*headers*/ null,
+                                            (response) => {
+                                              if (!response.success) {
+                                                confirmDialogService.showError(response.message);
+                                              }
+                                              else {
+                                                notifier.notify('success', 'Orden nuevamente en Pendiente de despacho.');
+                                                dataTableInstance.then((dtInstance: DataTables.Api) => {
+                                                  dtInstance.ajax.reload()
+                                                });
+                                              }
+                                            },
+                                            (errorMessage) => {
+                                              confirmDialogService.showError(errorMessage);
+                                            });
+                                          });
+  }
+
   ngOnInit(): void {
 
     this.dtIndex = {

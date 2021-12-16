@@ -294,5 +294,95 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
                 return Ok(new ApiResultDTO { Success = false, Message = "Se ha producido un error interno." });
             }
         }
+
+        // POST: pedidos/despachar?encryptedId={encryptedId}
+        [HttpPost]
+        [ActionName("despachar")]
+        public async Task<IActionResult> MarcarDespachoAsync([FromQuery] string encryptedId)
+        {
+            try
+            {
+                var ordenDePedidoId = EncryptionService.Decrypt<int>(Uri.UnescapeDataString(encryptedId));
+
+                var manager = new PedidosManager(_serviceProvider);
+                await manager.MarcarDespachoAsync((int)(_token?.UserId ?? 0), ordenDePedidoId);
+
+                await RegistrarAccionAsync(ordenDePedidoId, nameof(OrdenDePedido), "Orden despachada");
+
+                return Ok(new ApiResultDTO
+                {
+                    Success = true
+                });
+            }
+            catch (HandledException ex)
+            {
+                return Ok(new ApiResultDTO { Success = false, Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                await LoggingService.LogExceptionAsync(_db, ex, usuarioId: null, _userAgent);
+                return Ok(new ApiResultDTO { Success = false, Message = "Se ha producido un error interno." });
+            }
+        }
+
+        // POST: pedidos/entregado?encryptedId={encryptedId}
+        [HttpPost]
+        [ActionName("entregado")]
+        public async Task<IActionResult> MarcarEntregadoAsync([FromQuery] string encryptedId)
+        {
+            try
+            {
+                var ordenDePedidoId = EncryptionService.Decrypt<int>(Uri.UnescapeDataString(encryptedId));
+
+                var manager = new PedidosManager(_serviceProvider);
+                await manager.MarcarEntregaAsync((int)(_token?.UserId ?? 0), ordenDePedidoId);
+
+                await RegistrarAccionAsync(ordenDePedidoId, nameof(OrdenDePedido), "Orden entregada al cliente");
+
+                return Ok(new ApiResultDTO
+                {
+                    Success = true
+                });
+            }
+            catch (HandledException ex)
+            {
+                return Ok(new ApiResultDTO { Success = false, Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                await LoggingService.LogExceptionAsync(_db, ex, usuarioId: null, _userAgent);
+                return Ok(new ApiResultDTO { Success = false, Message = "Se ha producido un error interno." });
+            }
+        }
+
+        // POST: pedidos/no_entrega?encryptedId={encryptedId}
+        [HttpPost]
+        [ActionName("no_entrega")]
+        public async Task<IActionResult> MarcarNoEntregaAsync([FromQuery] string encryptedId)
+        {
+            try
+            {
+                var ordenDePedidoId = EncryptionService.Decrypt<int>(Uri.UnescapeDataString(encryptedId));
+
+                var manager = new PedidosManager(_serviceProvider);
+                await manager.MarcarRegresoPedidoAsync((int)(_token?.UserId ?? 0), ordenDePedidoId);
+
+                await RegistrarAccionAsync(ordenDePedidoId, nameof(OrdenDePedido), "Orden no entregada. Reingreso nuevamente a planta.");
+
+                return Ok(new ApiResultDTO
+                {
+                    Success = true
+                });
+            }
+            catch (HandledException ex)
+            {
+                return Ok(new ApiResultDTO { Success = false, Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                await LoggingService.LogExceptionAsync(_db, ex, usuarioId: null, _userAgent);
+                return Ok(new ApiResultDTO { Success = false, Message = "Se ha producido un error interno." });
+            }
+        }
     }
 }

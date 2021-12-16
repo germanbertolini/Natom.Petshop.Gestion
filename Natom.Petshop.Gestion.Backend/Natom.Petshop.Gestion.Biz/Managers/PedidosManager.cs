@@ -52,10 +52,10 @@ namespace Natom.Petshop.Gestion.Biz.Managers
             {
                 if (statusFilter.ToUpper().Equals("PENDIENTE")) queryable = queryable.Where(q => q.Activo == true && q.PreparacionFechaHoraInicio == null && q.PreparacionFechaHoraFin == null);
                 else if (statusFilter.ToUpper().Equals("EN_PREPARACION")) queryable = queryable.Where(q => q.Activo == true && q.PreparacionFechaHoraInicio != null && q.PreparacionFechaHoraFin == null);
-                else if (statusFilter.ToUpper().Equals("PENDIENTE_FACTURACION")) queryable = queryable.Where(q => q.Activo == true && !q.VentaId.HasValue);
-                else if (statusFilter.ToUpper().Equals("PENDIENTE_DESPACHO")) queryable = queryable.Where(q => q.Activo == true && !q.RetiraPersonalmente && q.VentaId.HasValue && q.PreparacionFechaHoraInicio != null && q.PreparacionFechaHoraFin != null && q.DespachoFechaHora == null);
-                else if (statusFilter.ToUpper().Equals("PENDIENTE_RETIRO")) queryable = queryable.Where(q => q.Activo == true && q.RetiraPersonalmente && q.VentaId.HasValue && q.PreparacionFechaHoraInicio != null && q.PreparacionFechaHoraFin != null && q.MarcoEntregaFechaHora == null);
-                else if (statusFilter.ToUpper().Equals("EN_RUTA")) queryable = queryable.Where(q => q.Activo == true && !q.RetiraPersonalmente && q.VentaId.HasValue && q.PreparacionFechaHoraInicio != null && q.PreparacionFechaHoraFin != null && q.DespachoFechaHora != null && q.MarcoEntregaFechaHora == null);
+                else if (statusFilter.ToUpper().Equals("PENDIENTE_FACTURACION")) queryable = queryable.Where(q => q.Activo == true && !q.VentaId.HasValue && q.MarcoEntregaFechaHora.HasValue);
+                else if (statusFilter.ToUpper().Equals("PENDIENTE_DESPACHO")) queryable = queryable.Where(q => q.Activo == true && !q.RetiraPersonalmente && q.PreparacionFechaHoraInicio != null && q.PreparacionFechaHoraFin != null && q.DespachoFechaHora == null);
+                else if (statusFilter.ToUpper().Equals("PENDIENTE_RETIRO")) queryable = queryable.Where(q => q.Activo == true && q.RetiraPersonalmente && q.PreparacionFechaHoraInicio != null && q.PreparacionFechaHoraFin != null && q.MarcoEntregaFechaHora == null);
+                else if (statusFilter.ToUpper().Equals("EN_RUTA")) queryable = queryable.Where(q => q.Activo == true && !q.RetiraPersonalmente && q.PreparacionFechaHoraInicio != null && q.PreparacionFechaHoraFin != null && q.DespachoFechaHora != null && q.MarcoEntregaFechaHora == null);
                 else if (statusFilter.ToUpper().Equals("ENTREGADO")) queryable = queryable = queryable.Where(q => q.Activo == true && !q.RetiraPersonalmente && q.VentaId.HasValue && q.PreparacionFechaHoraInicio != null && q.PreparacionFechaHoraFin != null && q.DespachoFechaHora != null && q.MarcoEntregaFechaHora != null);
                 else if (statusFilter.ToUpper().Equals("ANULADO")) queryable = queryable.Where(q => q.Activo == false);
             }
@@ -242,8 +242,13 @@ namespace Natom.Petshop.Gestion.Biz.Managers
             foreach (var movimiento in movimientosStock)
             {
                 _db.Entry(movimiento).State = EntityState.Modified;
-                movimiento.ConfirmacionUsuarioId = usuarioId;
-                movimiento.ConfirmacionFechaHora = ahora;
+
+                if (movimiento.ConfirmacionUsuarioId == null)
+                {
+                    movimiento.ConfirmacionUsuarioId = usuarioId;
+                    movimiento.ConfirmacionFechaHora = ahora;
+                }
+                
                 movimiento.Observaciones += $" (Anulado el {DateTime.Now.ToString("dd/MM/yy")})";
 
                 var contraMovimiento = new MovimientoStock
@@ -262,6 +267,33 @@ namespace Natom.Petshop.Gestion.Biz.Managers
             }
 
             await _db.SaveChangesAsync();
+        }
+
+        public Task MarcarRegresoPedidoAsync(int usuarioId, int ordenDePedidoId)
+        {
+            var ordenDePedido = this._db.OrdenesDePedido.Find(ordenDePedidoId);
+            _db.Entry(ordenDePedido).State = EntityState.Modified;
+            ordenDePedido.DespachoFechaHora = null;
+            ordenDePedido.DespachoUsuarioId = null;
+            return _db.SaveChangesAsync();
+        }
+
+        public Task MarcarEntregaAsync(int usuarioId, int ordenDePedidoId)
+        {
+            var ordenDePedido = this._db.OrdenesDePedido.Find(ordenDePedidoId);
+            _db.Entry(ordenDePedido).State = EntityState.Modified;
+            ordenDePedido.MarcoEntregaUsuarioId = usuarioId;
+            ordenDePedido.MarcoEntregaFechaHora = DateTime.Now;
+            return _db.SaveChangesAsync();
+        }
+
+        public Task MarcarDespachoAsync(int usuarioId, int ordenDePedidoId)
+        {
+            var ordenDePedido = this._db.OrdenesDePedido.Find(ordenDePedidoId);
+            _db.Entry(ordenDePedido).State = EntityState.Modified;
+            ordenDePedido.DespachoUsuarioId = usuarioId;
+            ordenDePedido.DespachoFechaHora = DateTime.Now;
+            return _db.SaveChangesAsync();
         }
 
         public Task MarcarCancelacionPreparacionAsync(int usuarioId, int ordenDePedidoId)

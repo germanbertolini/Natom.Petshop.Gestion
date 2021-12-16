@@ -56,6 +56,9 @@ namespace Natom.Petshop.Gestion.Entities.DTO.Pedidos
         [JsonProperty("enPreparacion")]
         public bool EnPreparacion { get; set; }
 
+        [JsonProperty("anulado")]
+        public bool Anulado { get; set; }
+
         public PedidoListDTO From(OrdenDePedido entity)
         {
             EncryptedId = EncryptionService.Encrypt(entity.OrdenDePedidoId);
@@ -73,6 +76,7 @@ namespace Natom.Petshop.Gestion.Entities.DTO.Pedidos
             EnPreparacion = entity.PreparacionFechaHoraInicio.HasValue && !Prepared;
             FechaHoraPreparado = entity.PreparacionFechaHoraFin;
             PreparadoPor = entity.PreparacionUsuario != null ? entity.PreparacionUsuario.Nombre + " " + entity.PreparacionUsuario.Apellido : null;
+            Anulado = !entity.Activo.Value;
 
             return this;
         }
@@ -80,13 +84,12 @@ namespace Natom.Petshop.Gestion.Entities.DTO.Pedidos
         private string ResolverEstado(OrdenDePedido entity)
         {
             if (entity.Activo == false) return "Anulado";
-            else if (entity.MarcoEntregaFechaHora.HasValue) return "Entregado";
+            else if (entity.MarcoEntregaFechaHora.HasValue && !entity.VentaId.HasValue) return "Entregado - Pendiente de Facturación";
+            else if (entity.MarcoEntregaFechaHora.HasValue && entity.VentaId.HasValue) return "Entregado - Completado";
             else if (entity.DespachoFechaHora.HasValue) return "En ruta";
             else if (entity.PreparacionFechaHoraInicio.HasValue && !entity.PreparacionFechaHoraFin.HasValue) return "En preparación";
-            else if (entity.PreparacionFechaHoraFin.HasValue && !entity.VentaId.HasValue) return "Pendiente de Venta (Facturación)";
             else if (entity.PreparacionFechaHoraFin.HasValue && entity.RetiraPersonalmente) return "Listo para retirar por el cliente";
             else if (entity.PreparacionFechaHoraFin.HasValue && !entity.RetiraPersonalmente) return "Pendiente de despacho";
-            
             else return "Pendiente de preparación";
         }
     }

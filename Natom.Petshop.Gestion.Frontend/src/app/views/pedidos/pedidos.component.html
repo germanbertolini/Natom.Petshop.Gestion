@@ -12,11 +12,11 @@
           <option value="TODOS" selected>Todos</option>
           <option value="PENDIENTE">Pendiente de preparación</option>
           <option value="EN_PREPARACION" >En preparación</option>
-          <option value="PENDIENTE_FACTURACION" >Pendiente de Venta (Facturación)</option>
           <option value="PENDIENTE_RETIRO">Listo para retirar por el cliente</option>
           <option value="PENDIENTE_DESPACHO">Pendiente de despacho</option>
           <option value="EN_RUTA">En ruta</option>
-          <option value="ENTREGADO">Entregado</option>
+          <option value="PENDIENTE_FACTURACION">Entregado - Pendiente de facturación</option>
+          <option value="ENTREGADO">Entregado - Completado</option>
           <option value="ANULADO">Anulados</option>
         </select>
       </div>
@@ -45,8 +45,8 @@
           <tr
               *ngFor="let pedido of Pedidos"
               [ngClass]="{
-                  'pending' : pedido.estado === 'Pendiente de preparación',
-                  'prepared' : pedido.prepared === true
+                  'pending' : pedido.estado === 'Pendiente de preparación' || pedido.estado === 'Entregado - Pendiente de Facturación',
+                  'prepared' : pedido.estado === 'Entregado - Completado'
               }"
             >
             <td><b>{{ pedido.numero }}</b><br/><small>{{ pedido.numeroVenta }}</small></td>
@@ -54,8 +54,8 @@
             <td>{{ pedido.cliente }}</td>
             <td>{{ pedido.fechaHora  |  date:'dd/MM/yyyy HH:mm' }} hs</td>
             <td>
-              <b *ngIf="!pedido.enPreparacion && !pedido.prepared" style="color:brown;">PENDIENTE<br/></b>
-              <b *ngIf="pedido.enPreparacion" style="color:chocolate">EN PREPARACIÓN<br/></b>
+              <b *ngIf="!pedido.enPreparacion && !pedido.anulado && !pedido.prepared" style="color:brown;">PENDIENTE<br/></b>
+              <b *ngIf="pedido.enPreparacion && !pedido.anulado" style="color:chocolate">EN PREPARACIÓN<br/></b>
               <b *ngIf="!pedido.enPreparacion && pedido.prepared">{{ pedido.fechaHoraPreparado  |  date:'dd/MM/yyyy HH:mm' }} hs<br/></b>
               <small>{{ pedido.preparadoPor }}</small></td>
             <td>{{ pedido.estado }}</td>
@@ -66,9 +66,13 @@
               <a *ngIf="pedido.estado === 'En preparación'" class="btn btn-success btn-sm finalizar-smt-btn spacingLeft" (click)="onCompletarOrdenClick(pedido.encrypted_id)" data-toggle="tooltip" data-placement="top" title="Finalizar orden"><i class="fa fa-check" aria-hidden="true"></i></a>
               <a *ngIf="pedido.estado === 'En preparación'" class="btn btn-warning btn-sm cancelar-preparacion-smt-btn spacingLeft" (click)="onCancelarPreparacionOrdenClick(pedido.encrypted_id)" data-toggle="tooltip" data-placement="top" title="Cancelar preparación"><i class="fa fa-times" aria-hidden="true"></i></a>
 
+              <a *ngIf="pedido.estado === 'Pendiente de despacho'" class="btn btn-warning btn-sm despachar-smt-btn spacingLeft" (click)="onDespacharOrdenClick(pedido.encrypted_id)" data-toggle="tooltip" data-placement="top" title="Despachar orden"><i class="fa fa-truck" aria-hidden="true"></i></a>
+              <a *ngIf="pedido.estado === 'En ruta'" class="btn btn-success btn-sm entregado-smt-btn spacingLeft" (click)="onEntregadoOrdenClick(pedido.encrypted_id)" data-toggle="tooltip" data-placement="top" title="Marcar como entregado"><i class="fa fa-flag-checkered" aria-hidden="true"></i></a>
+              <a *ngIf="pedido.estado === 'En ruta'" class="btn btn-danger btn-sm no-entregado-smt-btn spacingLeft" (click)="onNoEntregadoOrdenClick(pedido.encrypted_id)" data-toggle="tooltip" data-placement="top" title="Marcar como entrega NO CONCRETADA"><i class="fa fa-times" aria-hidden="true"></i>&nbsp;<i class="fa fa-flag-checkered" aria-hidden="true"></i></a>
+
               <a class="btn btn-secondary btn-sm print-orden-smt-btn spacingLeft" (click)="onPrintOrdenClick(pedido.encrypted_id)" data-toggle="tooltip" data-placement="top" title="Imprimir orden"><i class="fa fa-print" aria-hidden="true"></i></a>
               <a *ngIf="pedido.remito !== null" class="btn btn-primary btn-sm print-remito-smt-btn spacingLeft" (click)="onPrintRemitoClick(pedido.encrypted_id)" data-toggle="tooltip" data-placement="top" title="Imprimir remito"><i class="fa fa-print" aria-hidden="true"></i></a>
-              <a *ngIf="pedido.estado === 'Pendiente de preparación' || pedido.estado === 'En preparación'" class="btn btn-danger btn-sm delete-smt-btn spacingLeft" (click)="onDeleteClick(pedido.encrypted_id)" data-toggle="tooltip" data-placement="top" title="Anular"><i class="fa fa-times" aria-hidden="true"></i></a>
+              <a *ngIf="pedido.estado === 'Pendiente de preparación' || pedido.estado === 'En preparación' || pedido.estado === 'Pendiente de despacho'" class="btn btn-danger btn-sm delete-smt-btn spacingLeft" (click)="onDeleteClick(pedido.encrypted_id)" data-toggle="tooltip" data-placement="top" title="Anular"><i class="fa fa-times" aria-hidden="true"></i></a>
             </td>
           </tr>
         </tbody>
