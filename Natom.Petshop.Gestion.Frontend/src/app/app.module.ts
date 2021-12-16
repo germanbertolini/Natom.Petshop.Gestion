@@ -56,6 +56,8 @@ import { ApiService } from './services/api.service';
 import { UserConfirmComponent } from './views/users/confirm/user-confirm.component';
 import { VentasComponent } from './views/ventas/ventas.component';
 import { VentaCrudComponent } from './views/ventas/crud/venta-crud.component';
+import { HistoricoCambiosService } from './components/historico-cambios/historico-cambios.service';
+import { HistoricoCambiosComponent } from './components/historico-cambios/historico-cambios.component';
 
 export function OnInit(jsonAppConfigService: JsonAppConfigService) {
   return () => {
@@ -82,6 +84,7 @@ export function OnInit(jsonAppConfigService: JsonAppConfigService) {
     CajaFuerteNewComponent,
     CajaTransferenciaComponent,
     ConfirmDialogComponent,
+    HistoricoCambiosComponent,
     ClientesComponent,
     ClienteCrudComponent,
     ProductosComponent,
@@ -113,7 +116,8 @@ export function OnInit(jsonAppConfigService: JsonAppConfigService) {
     NgbModule
   ],
   exports: [  
-    ConfirmDialogComponent  
+    ConfirmDialogComponent,
+    HistoricoCambiosComponent
   ], 
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
   providers: [
@@ -136,6 +140,7 @@ export function OnInit(jsonAppConfigService: JsonAppConfigService) {
       useClass: NgbDateCustomParserFormatter
     },
     ConfirmDialogService,
+    HistoricoCambiosService,
     ThemeService,
     CookieService,
     ApiService ],

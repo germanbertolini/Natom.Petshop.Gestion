@@ -73,6 +73,7 @@
               <a class="btn btn-secondary btn-sm print-orden-smt-btn spacingLeft" (click)="onPrintOrdenClick(pedido.encrypted_id)" data-toggle="tooltip" data-placement="top" title="Imprimir orden"><i class="fa fa-print" aria-hidden="true"></i></a>
               <a *ngIf="pedido.remito !== null" class="btn btn-primary btn-sm print-remito-smt-btn spacingLeft" (click)="onPrintRemitoClick(pedido.encrypted_id)" data-toggle="tooltip" data-placement="top" title="Imprimir remito"><i class="fa fa-print" aria-hidden="true"></i></a>
               <a *ngIf="pedido.estado === 'Pendiente de preparación' || pedido.estado === 'En preparación' || pedido.estado === 'Pendiente de despacho'" class="btn btn-danger btn-sm delete-smt-btn spacingLeft" (click)="onDeleteClick(pedido.encrypted_id)" data-toggle="tooltip" data-placement="top" title="Anular"><i class="fa fa-times" aria-hidden="true"></i></a>
+              <a class="btn btn-warning btn-sm historico-smt-btn spacingLeft" (click)="onVerHistoricoCambiosClick(pedido.encrypted_id)" data-toggle="tooltip" data-placement="top" title="Ver histórico de cambios"><i class="fa fa-history" aria-hidden="true"></i></a>              
             </td>
           </tr>
         </tbody>

@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Natom.Petshop.Gestion.Entities.Model;
 using System;
 using System.Collections.Generic;
@@ -41,6 +42,14 @@ namespace Natom.Petshop.Gestion.Biz.Managers
                 };
             _db.HistoricosCambios.Add(historico);
             return _db.SaveChangesAsync();
+        }
+
+        public Task<List<HistoricoCambios>> ConsultarHistoricoCambiosAsync(int entityId, string entityName)
+        {
+            return _db.HistoricosCambios
+                            .Include(h => h.Usuario)
+                            .Where(h => h.EntityName.Equals(entityName) && h.EntityId.Equals(entityId))
+                            .ToListAsync();
         }
     }
 }

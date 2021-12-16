@@ -53,7 +53,7 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
             }
             catch (Exception ex)
             {
-                await LoggingService.LogExceptionAsync(_db, ex, usuarioId: null, _userAgent);
+                await LoggingService.LogExceptionAsync(_db, ex, usuarioId: (int)(_token?.UserId ?? 0), _userAgent);
                 return Ok(new ApiResultDTO { Success = false, Message = "Se ha producido un error interno." });
             }
         }
@@ -109,7 +109,7 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
             }
             catch (Exception ex)
             {
-                await LoggingService.LogExceptionAsync(_db, ex, usuarioId: null, _userAgent);
+                await LoggingService.LogExceptionAsync(_db, ex, usuarioId: (int)(_token?.UserId ?? 0), _userAgent);
                 return Ok(new ApiResultDTO { Success = false, Message = "Se ha producido un error interno." });
             }
         }
@@ -146,7 +146,7 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
             }
             catch (Exception ex)
             {
-                await LoggingService.LogExceptionAsync(_db, ex, usuarioId: null, _userAgent);
+                await LoggingService.LogExceptionAsync(_db, ex, usuarioId: (int)(_token?.UserId ?? 0), _userAgent);
                 return Ok(new ApiResultDTO { Success = false, Message = "Se ha producido un error interno." });
             }
         }
@@ -179,7 +179,7 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
             }
             catch (Exception ex)
             {
-                await LoggingService.LogExceptionAsync(_db, ex, usuarioId: null, _userAgent);
+                await LoggingService.LogExceptionAsync(_db, ex, usuarioId: (int)(_token?.UserId ?? 0), _userAgent);
                 return Ok(new ApiResultDTO { Success = false, Message = "Se ha producido un error interno." });
             }
         }

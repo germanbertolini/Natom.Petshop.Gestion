@@ -6,6 +6,7 @@ import { NotifierService } from "angular-notifier";
 import { MarcaDTO } from "src/app/classes/dto/marca.dto";
 import { PedidosListDTO } from "src/app/classes/dto/pedidos/pedidos-list.dto";
 import { ApiResult } from "src/app/classes/dto/shared/api-result.dto";
+import { HistoricoCambiosService } from "src/app/components/historico-cambios/historico-cambios.service";
 import { ApiService } from "src/app/services/api.service";
 import { DataTableDTO } from '../../classes/data-table-dto';
 import { ConfirmDialogService } from "../../components/confirm-dialog/confirm-dialog.service";
@@ -27,7 +28,8 @@ export class PedidosComponent implements OnInit {
   constructor(private apiService: ApiService,
               private routerService: Router,
               private notifierService: NotifierService,
-              private confirmDialogService: ConfirmDialogService) {
+              private confirmDialogService: ConfirmDialogService,
+              private historicoCambiosService: HistoricoCambiosService) {
     this.filterStatusValue = "TODOS";
   }
 
@@ -44,6 +46,10 @@ export class PedidosComponent implements OnInit {
 
   onPrintRemitoClick(id: string) {
     console.log(id);
+  }
+
+  onVerHistoricoCambiosClick(id: string) {
+    this.historicoCambiosService.show("OrdenDePedido", id);
   }
 
   onIniciarOrdenClick(id: string) {
