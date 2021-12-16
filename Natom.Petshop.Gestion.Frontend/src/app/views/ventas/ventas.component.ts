@@ -7,6 +7,7 @@ import { MarcaDTO } from "src/app/classes/dto/marca.dto";
 import { PedidosListDTO } from "src/app/classes/dto/pedidos/pedidos-list.dto";
 import { ApiResult } from "src/app/classes/dto/shared/api-result.dto";
 import { VentasListDTO } from "src/app/classes/dto/ventas/ventas-list.dto";
+import { HistoricoCambiosService } from "src/app/components/historico-cambios/historico-cambios.service";
 import { ApiService } from "src/app/services/api.service";
 import { DataTableDTO } from '../../classes/data-table-dto';
 import { ConfirmDialogService } from "../../components/confirm-dialog/confirm-dialog.service";
@@ -28,7 +29,8 @@ export class VentasComponent implements OnInit {
   constructor(private apiService: ApiService,
               private routerService: Router,
               private notifierService: NotifierService,
-              private confirmDialogService: ConfirmDialogService) {
+              private confirmDialogService: ConfirmDialogService,
+              private historicoCambiosService: HistoricoCambiosService) {
     this.filterStatusValue = "TODOS";
   }
 
@@ -45,6 +47,10 @@ export class VentasComponent implements OnInit {
 
   onPrintRemitoClick(id: string) {
     console.log(id);
+  }
+
+  onVerHistoricoCambiosClick(id: string) {
+    this.historicoCambiosService.show("Venta", id);
   }
 
   onAnularFacturacionClick(id: string) {

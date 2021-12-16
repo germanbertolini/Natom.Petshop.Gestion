@@ -30,7 +30,7 @@ export class HistoricoCambiosComponent implements OnInit {
             this.Historico = new Array<HistoricoListDTO>();
 
             if (message !== undefined && message !== null) {
-                this.apiService.DoGET<ApiResult<HistoricoListDTO[]>>("historicoCambios/get?entity=" + message.entity + "&encrypted_id=" + message.encrypted_id, /*headers*/ null,
+                this.apiService.DoGET<ApiResult<HistoricoListDTO[]>>("historicoCambios/get?entity=" + message.entity + "&encrypted_id=" + encodeURIComponent(message.encrypted_id), /*headers*/ null,
                 (response) => {
                   if (!response.success) {
                     this.confirmDialogService.showError(response.message);
