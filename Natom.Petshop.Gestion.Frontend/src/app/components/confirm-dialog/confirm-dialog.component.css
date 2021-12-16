@@ -2,6 +2,10 @@
     width:300px;
     top:5rem;
 }  
+
+.modal[role='dialog'] {
+    z-index:99999999999;
+}
   
 .modal-backdrop.in {  
     opacity: 0.9;  

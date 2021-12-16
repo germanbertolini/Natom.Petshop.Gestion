@@ -27,6 +27,8 @@ import { StockNewComponent } from "./views/stock/new/stock-new.component";
 import { PedidosComponent } from "./views/pedidos/pedidos.component";
 import { PedidoCrudComponent } from "./views/pedidos/crud/pedido-crud.component";
 import { UserConfirmComponent } from "./views/users/confirm/user-confirm.component";
+import { VentaCrudComponent } from "./views/ventas/crud/venta-crud.component";
+import { VentasComponent } from "./views/ventas/ventas.component";
 
 const appRoutes: Routes = [
     { path: 'login', component: LoginComponent, pathMatch: 'full' },
@@ -62,6 +64,8 @@ const appRoutes: Routes = [
     { canActivate: [ AuthGuard ], path: "stock/new", component: StockNewComponent },
     { canActivate: [ AuthGuard ], path: "pedidos", component: PedidosComponent },
     { canActivate: [ AuthGuard ], path: "pedidos/new", component: PedidoCrudComponent },
+    { canActivate: [ AuthGuard ], path: "ventas", component: VentasComponent },
+    { canActivate: [ AuthGuard ], path: "ventas/new", component: VentaCrudComponent },
 ]
 
 @NgModule({

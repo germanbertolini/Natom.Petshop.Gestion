@@ -54,6 +54,8 @@ import { JsonAppConfigService } from './services/json-app-config.service';
 import { AppConfig } from './classes/app-config';
 import { ApiService } from './services/api.service';
 import { UserConfirmComponent } from './views/users/confirm/user-confirm.component';
+import { VentasComponent } from './views/ventas/ventas.component';
+import { VentaCrudComponent } from './views/ventas/crud/venta-crud.component';
 
 export function OnInit(jsonAppConfigService: JsonAppConfigService) {
   return () => {
@@ -92,6 +94,8 @@ export function OnInit(jsonAppConfigService: JsonAppConfigService) {
     StockNewComponent,
     PedidosComponent,
     PedidoCrudComponent,
+    VentasComponent,
+    VentaCrudComponent,
     NgbdDatepickerPopup
   ],
   imports: [

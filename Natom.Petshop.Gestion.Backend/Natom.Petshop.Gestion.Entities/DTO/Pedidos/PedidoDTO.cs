@@ -74,7 +74,7 @@ namespace Natom.Petshop.Gestion.Entities.DTO.Pedidos
             Usuario = entity.Usuario?.Nombre ?? "Admin";
             NumeroRemito = entity.NumeroRemito;
             Observaciones = entity.Observaciones;
-            Detalle = entity.Detalle.Select(d => new PedidoDetalleDTO().From(d)).ToList();
+            Detalle = entity.Detalle?.Select(d => new PedidoDetalleDTO().From(d)).ToList();
             EntregaDomicilio = entity.EntregaDomicilio;
             EntregaEntreCalles = entity.EntregaEntreCalles;
             EntregaLocalidad = entity.EntregaLocalidad;

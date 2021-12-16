@@ -113,6 +113,39 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
             }
         }
 
+        // GET: pedidos/list_by_cliente
+        // GET: pedidos/list_by_cliente?encryptedId={encryptedId}
+        [HttpGet]
+        [ActionName("list_by_cliente")]
+        public async Task<IActionResult> GetListByClienteAsync([FromQuery] string encryptedId)
+        {
+            try
+            {
+                var manager = new PedidosManager(_serviceProvider);
+
+                var clienteId = EncryptionService.Decrypt<int>(Uri.UnescapeDataString(encryptedId));
+                var pedidos = await manager.ObtenerPedidosPendientesDeFacturacionAsync(clienteId);
+
+                return Ok(new ApiResultDTO<dynamic>
+                {
+                    Success = true,
+                    Data = new
+                    {
+                        listaDeOrdenes = pedidos.Select(p => new PedidoDTO().From(p))
+                    }
+                });
+            }
+            catch (HandledException ex)
+            {
+                return Ok(new ApiResultDTO { Success = false, Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                await LoggingService.LogExceptionAsync(_db, ex, usuarioId: null, _userAgent);
+                return Ok(new ApiResultDTO { Success = false, Message = "Se ha producido un error interno." });
+            }
+        }
+
         // POST: pedidos/save
         [HttpPost]
         [ActionName("save")]

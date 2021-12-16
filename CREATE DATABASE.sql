@@ -310,21 +310,20 @@ CREATE TABLE OrdenDePedidoDetalle
 	FOREIGN KEY (ListaDePreciosId) REFERENCES ListaDePrecios(ListaDePreciosId)
 );
 
+
 CREATE TABLE Venta
 (
 	VentaId INT NOT NULL IDENTITY(1,1),
 	NumeroVenta INT NOT NULL,
 	ClienteId INT NOT NULL,
 	FechaHoraVenta DATETIME NOT NULL,
-	EntregaEstimadaFecha DATE,
-	EntregaEstimadaRangoHorarioId INT,
-	EntregaObservaciones NVARCHAR(200),
 	UsuarioId INT,
 	TipoFactura NVARCHAR(10),
 	NumeroFactura NVARCHAR(20),
 	Activo BIT,
 	Observaciones NVARCHAR(200),
 	MontoTotal DECIMAL(18,2) NOT NULL,
+	PesoTotalEnGramos INT NOT NULL,
 	PRIMARY KEY (VentaId),
 	FOREIGN KEY (ClienteId) REFERENCES Cliente(ClienteId)
 );
@@ -333,11 +332,12 @@ CREATE TABLE VentaDetalle
 (
 	VentaDetalleId INT NOT NULL IDENTITY(1,1),
 	VentaId INT NOT NULL,
-	MovimientoStockId INT,
 	ProductoId INT NOT NULL,
 	Cantidad INT NOT NULL,
 	DepositoId INT NOT NULL,
+	OrdenDePedidoId INT,
 	OrdenDePedidoDetalleId INT,
+	NumeroRemito NVARCHAR(20),
 	PesoUnitarioEnGramos INT,
 	ListaDePreciosId INT,
 	Precio DECIMAL(18,2) NOT NULL,
@@ -345,8 +345,8 @@ CREATE TABLE VentaDetalle
 	FOREIGN KEY (VentaId) REFERENCES Venta(VentaId),
 	FOREIGN KEY (ProductoId) REFERENCES Producto(ProductoId),
 	FOREIGN KEY (DepositoId) REFERENCES Deposito(DepositoId),
+	FOREIGN KEY (OrdenDePedidoId) REFERENCES OrdenDePedido(OrdenDePedidoId),
 	FOREIGN KEY (OrdenDePedidoDetalleId) REFERENCES OrdenDePedidoDetalle(OrdenDePedidoDetalleId),
-	FOREIGN KEY (MovimientoStockId) REFERENCES MovimientoStock(MovimientoStockId),
 	FOREIGN KEY (ListaDePreciosId) REFERENCES ListaDePrecios(ListaDePreciosId)
 );
 
