@@ -9,6 +9,7 @@ import { ApiResult } from "src/app/classes/dto/shared/api-result.dto";
 import { VentasListDTO } from "src/app/classes/dto/ventas/ventas-list.dto";
 import { HistoricoCambiosService } from "src/app/components/historico-cambios/historico-cambios.service";
 import { ApiService } from "src/app/services/api.service";
+import { AuthService } from "src/app/services/auth.service";
 import { DataTableDTO } from '../../classes/data-table-dto';
 import { ConfirmDialogService } from "../../components/confirm-dialog/confirm-dialog.service";
 
@@ -27,6 +28,7 @@ export class VentasComponent implements OnInit {
   filterStatusValue: string;
 
   constructor(private apiService: ApiService,
+              private authService: AuthService,
               private routerService: Router,
               private notifierService: NotifierService,
               private confirmDialogService: ConfirmDialogService,

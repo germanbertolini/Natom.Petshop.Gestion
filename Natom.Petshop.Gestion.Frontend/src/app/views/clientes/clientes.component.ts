@@ -6,6 +6,7 @@ import { NotifierService } from "angular-notifier";
 import { ClienteDTO } from "src/app/classes/dto/clientes/cliente.dto";
 import { ApiResult } from "src/app/classes/dto/shared/api-result.dto";
 import { ApiService } from "src/app/services/api.service";
+import { AuthService } from "src/app/services/auth.service";
 import { DataTableDTO } from '../../classes/data-table-dto';
 import { ConfirmDialogService } from "../../components/confirm-dialog/confirm-dialog.service";
 
@@ -23,6 +24,7 @@ export class ClientesComponent implements OnInit {
   Noty: any;
 
   constructor(private apiService: ApiService,
+              private authService: AuthService,
               private routerService: Router,
               private notifierService: NotifierService,
               private confirmDialogService: ConfirmDialogService) {

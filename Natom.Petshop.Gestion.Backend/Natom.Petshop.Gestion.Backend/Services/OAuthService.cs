@@ -29,7 +29,7 @@ namespace Natom.Petshop.Gestion.Backend.Services
                 token.Duration = tokenDurationInSeconds;
                 token.ExpirationTime = new DateTimeOffset(DateTime.Now.AddSeconds(tokenDurationInSeconds)).ToUnixTimeSeconds();
                 token.WaitingEmailConfirmation = false;
-                token.Permissions = permisos?.Select(p => p.PermisoId).ToList();
+                token.Permissions = permisos?.Select(p => p.PermisoId).ToList() ?? new List<string>();
             }
             else
             {
@@ -37,7 +37,7 @@ namespace Natom.Petshop.Gestion.Backend.Services
                 token.Duration = durationTemp;
                 token.ExpirationTime = new DateTimeOffset(DateTime.Now.AddSeconds(durationTemp)).ToUnixTimeSeconds();
                 token.WaitingEmailConfirmation = true;
-                token.Permissions = new List<string>();
+                token.Permissions = permisos?.Select(p => p.PermisoId).ToList() ?? new List<string>();
             }
 
             return token;

@@ -7,6 +7,7 @@ import { ListaDePreciosDTO } from "src/app/classes/dto/precios/lista-de-precios.
 import { PrecioListDTO } from "src/app/classes/dto/precios/precio-list.dto";
 import { ApiResult } from "src/app/classes/dto/shared/api-result.dto";
 import { ApiService } from "src/app/services/api.service";
+import { AuthService } from "src/app/services/auth.service";
 import { DataTableDTO } from '../../classes/data-table-dto';
 import { ConfirmDialogService } from "../../components/confirm-dialog/confirm-dialog.service";
 
@@ -26,6 +27,7 @@ export class PreciosComponent implements OnInit {
   filterListaValue: string;
 
   constructor(private apiService: ApiService,
+              private authService: AuthService,
               private routerService: Router,
               private notifierService: NotifierService,
               private confirmDialogService: ConfirmDialogService) {

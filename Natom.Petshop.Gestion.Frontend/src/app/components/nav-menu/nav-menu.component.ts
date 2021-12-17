@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Output, EventEmitter } from '@angular/core'; 
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-nav-menu',
@@ -8,4 +9,8 @@ import { Output, EventEmitter } from '@angular/core';
 })
 export class NavMenuComponent {
   
+  constructor(private authService: AuthService) {
+    
+  }
+
 }

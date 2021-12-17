@@ -39,7 +39,7 @@
             <td>{{ precio.aplicaDesdeFechaHora  |  date:'dd/MM/yyyy' }} <small *ngIf="precio.aplicaDesdeDias > 0">({{ precio.aplicaDesdeDias }} dias)</small><small *ngIf="precio.aplicaDesdeDias === 0">(hoy)</small></td>
             <td class="monto">{{ precio.precio | currency:'ARS':'symbol':'1.2-2':'es-AR' }}</td>
             <td>
-              <a class="btn btn-success btn-sm renew-smt-btn" (click)="onRenewClick(precio.encrypted_id)" data-toggle="tooltip" data-placement="top" title="Modificar / Actualizar"><i class="fa fa-refresh" aria-hidden="true"></i></a>
+              <a *ngIf="authService.can('precios_crud')" class="btn btn-success btn-sm renew-smt-btn" (click)="onRenewClick(precio.encrypted_id)" data-toggle="tooltip" data-placement="top" title="Modificar / Actualizar"><i class="fa fa-refresh" aria-hidden="true"></i></a>
             </td>
           </tr>
         </tbody>

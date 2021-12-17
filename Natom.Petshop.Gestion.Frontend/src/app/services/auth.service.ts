@@ -22,13 +22,13 @@ export class AuthService {
     this._current_permissions = null;
 
     let userCookieData = this.cookieService.get('Auth.Current.User');
-    if (userCookieData.length > 0) this._current_user = JSON.parse(userCookieData);
+    if (userCookieData.length > 0) this._current_user = JSON.parse(atob(userCookieData));
     
     let tokenCookieData = this.cookieService.get('Auth.Current.Token');
-    if (tokenCookieData.length > 0) this._current_token = JSON.parse(tokenCookieData);
+    if (tokenCookieData.length > 0) this._current_token = JSON.parse(atob(tokenCookieData));
 
     let permissionsCookieData = this.cookieService.get('Auth.Current.Permissions');
-    if (permissionsCookieData.length > 0) this._current_permissions = JSON.parse(permissionsCookieData);
+    if (permissionsCookieData.length > 0) this._current_permissions = JSON.parse(atob(permissionsCookieData));
   }
 
   public getCurrentUser() {
@@ -43,6 +43,10 @@ export class AuthService {
     return this._current_permissions;
   }
 
+  public can(permission: string) {
+    return this.getCurrentPermissions().indexOf(permission.toLowerCase()) >= 0;
+  }
+  
   public Login(email: string, password: string, onSuccess: () => void, onError: (errorMessage: string) => void) {
     let response = new ApiResult<LoginResult>();
     let headers = new HttpHeaders();
@@ -60,9 +64,9 @@ export class AuthService {
                             return permission.toLowerCase();
                           });
 
-                          this.cookieService.set('Auth.Current.User', JSON.stringify(this._current_user));
-                          this.cookieService.set('Auth.Current.Token', JSON.stringify(this._current_token));
-                          this.cookieService.set('Auth.Current.Permissions', JSON.stringify(this._current_permissions));
+                          this.cookieService.set('Auth.Current.User', btoa(JSON.stringify(this._current_user)));
+                          this.cookieService.set('Auth.Current.Token', btoa(JSON.stringify(this._current_token)));
+                          this.cookieService.set('Auth.Current.Permissions', btoa(JSON.stringify(this._current_permissions)));
 
                           onSuccess();
                         }

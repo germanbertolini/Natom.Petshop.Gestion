@@ -57,8 +57,8 @@
             </td>
             <td>{{ (venta.peso_total_gramos / 1000).toFixed(2).replace('.', ',') }} KG</td>
             <td>
-              <a *ngIf="!venta.anulado" class="btn btn-danger btn-sm anular-smt-btn spacingLeft" (click)="onAnularFacturacionClick(venta.encrypted_id)" data-toggle="tooltip" data-placement="top" title="Anular facturación"><i class="fa fa-times" aria-hidden="true"></i></a>
-              <a class="btn btn-warning btn-sm historico-smt-btn spacingLeft" (click)="onVerHistoricoCambiosClick(venta.encrypted_id)" data-toggle="tooltip" data-placement="top" title="Ver histórico de cambios"><i class="fa fa-history" aria-hidden="true"></i></a>
+              <a *ngIf="authService.can('ventas_anular') && !venta.anulado" class="btn btn-danger btn-sm anular-smt-btn spacingLeft" (click)="onAnularFacturacionClick(venta.encrypted_id)" data-toggle="tooltip" data-placement="top" title="Anular facturación"><i class="fa fa-times" aria-hidden="true"></i></a>
+              <a *ngIf="authService.can('ventas_ver')" class="btn btn-warning btn-sm historico-smt-btn spacingLeft" (click)="onVerHistoricoCambiosClick(venta.encrypted_id)" data-toggle="tooltip" data-placement="top" title="Ver histórico de cambios"><i class="fa fa-history" aria-hidden="true"></i></a>
             </td>
           </tr>
         </tbody>

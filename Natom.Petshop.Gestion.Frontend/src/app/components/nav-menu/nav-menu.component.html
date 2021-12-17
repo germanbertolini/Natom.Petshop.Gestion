@@ -11,72 +11,81 @@
           <!-- <li class="nav-item nav-item-now">
             <a class="nav-link" [routerLink]="['/']"><b>Ahora</b></a>
           </li> -->
-          <li class="nav-item dropdown">
+
+          <li *ngIf="authService.can('abm_marcas') || authService.can('abm_usuarios')" class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               ABM
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" [routerLink]="['/marcas']">Marcas</a>
-              <a class="dropdown-item" [routerLink]="['/marcas/new']">[+] Nueva Marca</a>
+              <a readonly *ngIf="authService.can('abm_marcas')" class="dropdown-item" [routerLink]="['/marcas']">Marcas</a>
+              <a *ngIf="authService.can('abm_marcas')" class="dropdown-item" [routerLink]="['/marcas/new']">[+] Nueva Marca</a>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" [routerLink]="['/users']">Usuarios</a>
-              <a class="dropdown-item" [routerLink]="['/users/new']">[+] Nuevo Usuario</a>
+              <a *ngIf="authService.can('abm_usuarios')" class="dropdown-item" [routerLink]="['/users']">Usuarios</a>
+              <a *ngIf="authService.can('abm_usuarios')" class="dropdown-item" [routerLink]="['/users/new']">[+] Nuevo Usuario</a>
             </div>
           </li>
-          <li class="nav-item dropdown">
+
+          <li *ngIf="authService.can('caja_diaria_ver') || authService.can('caja_fuerte_ver')" class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               Caja
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" [routerLink]="['/cajas/diaria']">Ver caja diaria</a>
-              <a class="dropdown-item" [routerLink]="['/cajas/diaria/new']">[+] Nuevo movimiento</a>
+              <a *ngIf="authService.can('caja_diaria_ver')" class="dropdown-item" [routerLink]="['/cajas/diaria']">Ver caja diaria</a>
+              <a *ngIf="authService.can('caja_diaria_nuevo_movimiento')" class="dropdown-item" [routerLink]="['/cajas/diaria/new']">[+] Nuevo movimiento</a>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" [routerLink]="['/cajas/fuerte']">Ver caja fuerte</a>
-              <a class="dropdown-item" [routerLink]="['/cajas/fuerte/new']">[+] Nuevo movimiento</a>
+              <a *ngIf="authService.can('caja_fuerte_ver')" class="dropdown-item" [routerLink]="['/cajas/fuerte']">Ver caja fuerte</a>
+              <a *ngIf="authService.can('caja_fuerte_nuevo_movimiento')" class="dropdown-item" [routerLink]="['/cajas/fuerte/new']">[+] Nuevo movimiento</a>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" [routerLink]="['/cajas/transferencia']">[+] Transferencia entre cajas</a>
+              <a *ngIf="authService.can('caja_transferencia')" class="dropdown-item" [routerLink]="['/cajas/transferencia']">[+] Transferencia entre cajas</a>
             </div>
           </li>
-          <li class="nav-item dropdown">
+
+          <li *ngIf="authService.can('clientes_ver')" class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               Clientes
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" [routerLink]="['/clientes']">Ver clientes</a>
-              <a class="dropdown-item" [routerLink]="['/clientes/new']">[+] Nuevo cliente</a>
+              <a *ngIf="authService.can('clientes_ver')" class="dropdown-item" [routerLink]="['/clientes']">Ver clientes</a>
+              <a *ngIf="authService.can('clientes_crud')" class="dropdown-item" [routerLink]="['/clientes/new']">[+] Nuevo cliente</a>
             </div>
           </li>
-          <li class="nav-item dropdown">
+
+          <li *ngIf="authService.can('productos_ver') || authService.can('precios_ver')" class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               Productos
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" [routerLink]="['/productos']">Productos</a>
-              <a class="dropdown-item" [routerLink]="['/productos/new']">[+] Nuevo Producto</a>
+              <a *ngIf="authService.can('productos_ver')" class="dropdown-item" [routerLink]="['/productos']">Productos</a>
+              <a *ngIf="authService.can('productos_crud')" class="dropdown-item" [routerLink]="['/productos/new']">[+] Nuevo Producto</a>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" [routerLink]="['/precios']">Precios</a>
-              <a class="dropdown-item" [routerLink]="['/precios/new']">[+] Nuevo Precio</a>
+              <a *ngIf="authService.can('precios_ver')" class="dropdown-item" [routerLink]="['/precios']">Precios</a>
+              <a *ngIf="authService.can('precios_crud')" class="dropdown-item" [routerLink]="['/precios/new']">[+] Nuevo Precio</a>
             </div>
           </li>
-          <li class="nav-item dropdown">
+
+          <li *ngIf="authService.can('stock_ver')" class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               Stock
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" [routerLink]="['/stock']">Ver movimientos</a>
-              <a class="dropdown-item" [routerLink]="['/stock/new']">[+] Nuevo Ingreso / Egreso</a>
+              <a *ngIf="authService.can('stock_ver')" class="dropdown-item" [routerLink]="['/stock']">Ver movimientos</a>
+              <a *ngIf="authService.can('stock_nuevo_movimiento')" class="dropdown-item" [routerLink]="['/stock/new']">[+] Nuevo Ingreso / Egreso</a>
             </div>
           </li>
-          <li class="nav-item dropdown">
+
+          <li *ngIf="authService.can('pedidos_ver')
+                      || authService.can('ventas_ver')
+                      || authService.can('pedidos_deposito')
+                      || authService.can('pedidos_anular')" class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               Pedidos y Ventas
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" [routerLink]="['/pedidos']">Ver ordenes de pedido</a>
-              <a class="dropdown-item" [routerLink]="['/pedidos/new']">[+] Nueva orden de pedido</a>
+              <a *ngIf="authService.can('pedidos_ver') || authService.can('pedidos_deposito')" class="dropdown-item" [routerLink]="['/pedidos']">Ver ordenes de pedido</a>
+              <a *ngIf="authService.can('pedidos_nuevo')" class="dropdown-item" [routerLink]="['/pedidos/new']">[+] Nueva orden de pedido</a>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" [routerLink]="['/ventas']">Ver facturación</a>
-              <a class="dropdown-item" [routerLink]="['/ventas/new']">[+] Nueva facturación</a>
+              <a *ngIf="authService.can('ventas_ver')" class="dropdown-item" [routerLink]="['/ventas']">Ver facturación</a>
+              <a *ngIf="authService.can('ventas_nuevo')" class="dropdown-item" [routerLink]="['/ventas/new']">[+] Nueva facturación</a>
             </div>
           </li>
         </ul>
@@ -90,8 +99,6 @@
               Usuario
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" [routerLink]="['/me/profile']"><i class="fa fa-user" aria-hidden="true"></i> Mi perfil</a>
-              <div class="dropdown-divider"></div>
               <a class="dropdown-item" [routerLink]="['/logout']"><i class="fa fa-sign-out" aria-hidden="true"></i> Cerrar sesión</a>
             </div>
           </li>

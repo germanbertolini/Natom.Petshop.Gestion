@@ -106,7 +106,7 @@ namespace Natom.Petshop.Gestion.Biz.Managers
 
         public Task<List<OrdenDePedido>> ObtenerPedidosPendientesDeFacturacionAsync(int clienteId)
         {
-            return _db.OrdenesDePedido.Where(op => op.VentaId == null && op.ClienteId == clienteId).OrderBy(op => op.NumeroPedido).ToListAsync();
+            return _db.OrdenesDePedido.Where(op => op.VentaId == null && op.ClienteId == clienteId && op.Activo == true).OrderBy(op => op.NumeroPedido).ToListAsync();
         }
 
         public async Task<int> ObtenerSiguienteNumeroAsync()
