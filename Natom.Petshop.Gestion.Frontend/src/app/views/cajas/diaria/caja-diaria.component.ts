@@ -99,6 +99,7 @@ export class CajaDiariaComponent implements OnInit {
         { data: 'usuario' },
         { data: 'tipo' },
         { data: 'importe' },
+        { data: 'cheque' },
         { data: 'observaciones', orderable: false }
       ]
     };

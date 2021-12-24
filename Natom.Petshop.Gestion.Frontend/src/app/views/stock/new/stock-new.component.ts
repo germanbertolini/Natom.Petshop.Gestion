@@ -13,6 +13,7 @@ import { AuthService } from "src/app/services/auth.service";
 import { AutocompleteResultDTO } from "src/app/classes/dto/shared/autocomplete-result.dto";
 import { ApiResult } from "src/app/classes/dto/shared/api-result.dto";
 import { DepositoDTO } from "src/app/classes/dto/stock/deposito.dto";
+import { ProveedorDTO } from "src/app/classes/dto/proveedores/proveedor.dto";
 
 @Component({
   selector: 'app-stock-new-crud',
@@ -26,7 +27,10 @@ export class StockNewComponent implements OnInit {
   valor: number;
   productoFilterText: string;
   productosSearch: ProductoListDTO[];
+  proveedoresSearch: ProveedorDTO[];
   Depositos: Array<DepositoDTO>;
+  proveedor_search: string;
+  proveedor_encrypted_id: string;
 
   constructor(private apiService: ApiService,
               private authService: AuthService,
@@ -37,6 +41,7 @@ export class StockNewComponent implements OnInit {
                 
     this.crud = new CRUDView<MovimientoStockDTO>(routeService);
     this.crud.model = new MovimientoStockDTO();
+    this.crud.model.esCompra = true;
     this.crud.model.tipo = "";
     this.crud.model.deposito_encrypted_id = "";
     this.crud.model.usuarioNombre = authService.getCurrentUser().first_name;
@@ -138,6 +143,31 @@ export class StockNewComponent implements OnInit {
       return;
     }
 
+    if (this.crud.model.esCompra) {
+      if (this.crud.model.tipo !== "I")
+      {
+        this.confirmDialogService.showError("Si ES COMPRA entonces el movimiento debe ser INGRESO.");
+        return;
+      }
+
+      if (this.crud.model.proveedor_encrypted_id === undefined || this.crud.model.proveedor_encrypted_id.length === 0)
+      {
+        this.confirmDialogService.showError("Debes buscar y seleccionar un Proveedor.");
+        return;
+      }
+
+      if (this.crud.model.costoUnitario === undefined || this.crud.model.costoUnitario <= 0)
+      {
+        this.confirmDialogService.showError("Costo unitario inválido.");
+        return;
+      }
+    }
+    else
+    {
+      this.crud.model.proveedor_encrypted_id = null;
+      this.crud.model.costoUnitario = null;
+    }
+
     this.apiService.DoPOST<ApiResult<MovimientoStockDTO>>("stock/save", this.crud.model, /*headers*/ null,
       (response) => {
         if (!response.success) {
@@ -151,6 +181,37 @@ export class StockNewComponent implements OnInit {
       (errorMessage) => {
         this.confirmDialogService.showError(errorMessage);
       });
+  }
+
+  onProveedorSearchSelectItem (proveedor: ProveedorDTO) {
+    this.proveedor_search = proveedor.tipoDocumento + " " + proveedor.numeroDocumento + " /// " + (proveedor.esEmpresa ? proveedor.razonSocial : proveedor.nombre + " " + proveedor.apellido);
+    this.crud.model.proveedor_encrypted_id = proveedor.encrypted_id;
+    this.closeProveedorSearchPopUp();
+  }
+
+  closeProveedorSearchPopUp() {
+    setTimeout(() => { this.proveedoresSearch = undefined; }, 200);    
+  }
+
+  onProveedorSearchKeyUp(event) {
+    let observable = fromEvent(event.target, 'keyup')
+      .pipe (
+        map(value => event.target.value),
+        debounceTime(500),
+        distinctUntilChanged(),
+        mergeMap((search) => {
+          return this.apiService.DoGETWithObservable("proveedores/search?filter=" + encodeURIComponent(search), /* headers */ null);
+        })
+      )
+    observable.subscribe((data) => {
+      var result = <ApiResult<AutocompleteResultDTO<ProveedorDTO>>>data;
+      if (!result.success) {
+        this.confirmDialogService.showError("Se ha producido un error interno.");
+      }
+      else {
+        this.proveedoresSearch = result.data.results;
+      }
+    });
   }
 
   ngOnInit(): void {

@@ -7,7 +7,7 @@
   <hr class="divider" />
   <br>
   <div class="row">
-    <div class="col-md-3 offset-md-2">
+    <div class="col-md-3 offset-md-1">
       <div class="form-group">
         <label for="formGroupExampleInput">Tipo</label>
         <select size="1"
@@ -44,9 +44,20 @@
             [(ngModel)]="crud.model.usuarioNombre" />
       </div>
     </div>
+    <div class="col-md-2" style="padding-top: 40px;">
+      <div class="material-switch pull-left"><!-- <div class="material-switch pull-right"> -->
+          <input
+            id="switchEsCheque"
+            type="checkbox"
+            [(ngModel)]="crud.model.esCheque"
+            />
+          <label for="switchEsCheque" class="switch-danger"></label>
+      </div>
+      &nbsp;&nbsp;&nbsp;<b>ES CHEQUE</b>
+    </div>
   </div>
   <div class="row">
-    <div class="col-md-8 offset-md-2">
+    <div class="col-md-8 offset-md-1">
       <div class="form-group">
         <label for="formGroupExampleInput">Observaciones</label>
         <textarea type="text"

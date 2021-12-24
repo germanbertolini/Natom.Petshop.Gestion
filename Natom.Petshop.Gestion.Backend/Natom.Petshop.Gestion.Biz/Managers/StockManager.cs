@@ -52,8 +52,20 @@ namespace Natom.Petshop.Gestion.Biz.Managers
                 Observaciones = movimientoDto.Observaciones,
                 UsuarioId = usuarioId,
                 ConfirmacionFechaHora = DateTime.Now,
-                ConfirmacionUsuarioId = usuarioId
+                ConfirmacionUsuarioId = usuarioId,
+                EsCompra = movimientoDto.EsCompra
             };
+
+            if (movimientoDto.EsCompra)
+            {
+                movimiento.ProveedorId = EncryptionService.Decrypt<int>(movimientoDto.ProveedorEncryptedId);
+                movimiento.CostoUnitario = movimientoDto.CostoUnitario;
+
+                var producto = await _db.Productos.FindAsync(productoId);
+                _db.Entry(producto).State = EntityState.Modified;
+                producto.ProveedorId = movimiento.ProveedorId;
+            }
+
             _db.MovimientosStock.Add(movimiento);
             await _db.SaveChangesAsync();
         }

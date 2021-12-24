@@ -34,5 +34,10 @@ namespace Natom.Petshop.Gestion.Entities.Model
 		public int? ConfirmacionUsuarioId { get; set; }
 		[ForeignKey("ConfirmacionUsuarioId")]
 		public Usuario ConfirmacionUsuario { get; set; }
+
+		public bool EsCompra { get; set; }
+		public int ProveedorId { get; set; }
+		public Proveedor Proveedor { get; set; }
+		public decimal? CostoUnitario { get; set; }
 	}
 }

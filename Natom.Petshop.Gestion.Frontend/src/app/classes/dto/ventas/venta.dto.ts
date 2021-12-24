@@ -10,5 +10,6 @@ export class VentaDTO {
     public numero_factura: string;
     public observaciones: string;
 
+    public pedidos: VentaDetalleDTO[];
     public detalle: VentaDetalleDTO[];
 }

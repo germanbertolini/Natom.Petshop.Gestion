@@ -39,6 +39,9 @@ namespace Natom.Petshop.Gestion.Entities.DTO.Ventas
         [JsonProperty("detalle")]
         public List<VentaDetalleDTO> Detalle { get; set; }
 
+        [JsonProperty("pedidos")]
+        public List<VentaDetalleDTO> Pedidos { get; set; }
+
         public VentaDTO From(Venta entity)
         {
             EncryptedId = EncryptionService.Encrypt(entity.VentaId);

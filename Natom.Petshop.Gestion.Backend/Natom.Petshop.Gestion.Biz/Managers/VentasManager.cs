@@ -136,7 +136,7 @@ namespace Natom.Petshop.Gestion.Biz.Managers
                 Observaciones = ventaDto.Observaciones,
                 PesoTotalEnGramos = ventaDto.Detalle.Sum(d => (d.ProductoPesoGramos ?? 0) * d.Cantidad),
                 MontoTotal = ventaDto.Detalle.Sum(d => (d.Precio * d.Cantidad) ?? 0),
-                Detalle = ventaDto.Detalle.Select(d => new VentaDetalle
+                Detalle = ventaDto.Pedidos.Select(d => new VentaDetalle
                                                         {
                                                             ProductoId = EncryptionService.Decrypt<int>(d.ProductoEncryptedId),
                                                             Cantidad = d.Cantidad,
@@ -153,32 +153,81 @@ namespace Natom.Petshop.Gestion.Biz.Managers
                                             ).ToList()
             };
 
+            //AGREGAMOS AL DETALLE LOS ITEMS AGREGADOS SIN PEDIDO
+            if (ventaDto.Detalle != null)
+            {
+                foreach (var d in ventaDto.Detalle)
+                {
+                    venta.Detalle.Add(new VentaDetalle
+                    {
+                        ProductoId = EncryptionService.Decrypt<int>(d.ProductoEncryptedId),
+                        Cantidad = d.Cantidad,
+                        DepositoId = EncryptionService.Decrypt<int>(d.DepositoEncryptedId),
+                        PesoUnitarioEnGramos = d.ProductoPesoGramos,
+                        ListaDePreciosId = EncryptionService.Decrypt<int>(d.PrecioListaEncryptedId),
+                        Precio = (decimal)d.Precio
+                    });
+                }
+            }
+
             _db.Ventas.Add(venta);
 
             await _db.SaveChangesAsync();
 
 
+            ///MOVEMOS EL STOCK DE LOS PRODUCTOS QUE SALIERON SIN ORDEN DE PEDIDO
+            if (ventaDto.Detalle != null)
+            {
+                foreach (var d in ventaDto.Detalle)
+                {
+                    _db.MovimientosStock.Add(new MovimientoStock
+                    {
+                        ProductoId = EncryptionService.Decrypt<int>(d.ProductoEncryptedId),
+                        FechaHora = ahora,
+                        UsuarioId = usuarioId,
+                        Tipo = "E",
+                        Cantidad = d.Cantidad,
+                        ConfirmacionFechaHora = ahora,
+                        ConfirmacionUsuarioId = usuarioId,
+                        DepositoId = EncryptionService.Decrypt<int>(d.DepositoEncryptedId),
+                        Observaciones = $"Venta N°{venta.NumeroVenta.ToString().PadLeft(8, '0')}"
+                    });
+                }
+            }
+
+
             ///VINCULAMOS LAS ORDENES DE PEDIDO A LA VENTA
-            var ordenesDePedidoId = ventaDto.Detalle
+            var ordenesDePedidoId = ventaDto.Pedidos
                                                 .Where(d => !string.IsNullOrEmpty(d.OrdenDePedidoEncryptedId) && d.OrdenDePedidoEncryptedId != "-1")
                                                 .Select(d => EncryptionService.Decrypt<int>(d.OrdenDePedidoEncryptedId))
                                                 .ToList();
-            var ordenesDePedido = await _db.OrdenesDePedido.Where(op => ordenesDePedidoId.Contains(op.OrdenDePedidoId)).ToListAsync();
+            var ordenesDePedido = await _db.OrdenesDePedido
+                                                .Include(op => op.Detalle).ThenInclude(d => d.MovimientoStock)
+                                                .Where(op => ordenesDePedidoId.Contains(op.OrdenDePedidoId))
+                                                .ToListAsync();
+            
             foreach (var pedido in ordenesDePedido)
             {
                 _db.Entry(pedido).State = EntityState.Modified;
                 pedido.VentaId = venta.VentaId;
+
+                foreach (var detalle in pedido.Detalle)
+                {
+                    _db.Entry(detalle.MovimientoStock).State = EntityState.Modified;
+                    detalle.MovimientoStock.Observaciones = detalle.MovimientoStock.Observaciones + " /// " + $"Venta N°{venta.NumeroVenta.ToString().PadLeft(8, '0')}";
+                }
             }
 
             await _db.SaveChangesAsync();
 
+
             return venta;
         }
 
-        public async Task<List<OrdenDePedido>> AnularVentaAsync(int ventaId)
+        public async Task<List<OrdenDePedido>> AnularVentaAsync(int usuarioId, int ventaId)
         {
             var ahora = DateTime.Now;
-            var venta = this._db.Ventas.Find(ventaId);
+            var venta = this._db.Ventas.Include(d => d.Detalle).First(v => v.VentaId == ventaId);
             _db.Entry(venta).State = EntityState.Modified;
             venta.Activo = false;
 
@@ -188,6 +237,24 @@ namespace Natom.Petshop.Gestion.Biz.Managers
             {
                 _db.Entry(pedido).State = EntityState.Modified;
                 pedido.VentaId = null;
+            }
+
+            ///REINGRESAMOS EL STOCK DE LOS PRODUCTOS SIN ORDEN DE PEDIDO
+            foreach (var detalle in venta.Detalle.Where(d => !d.OrdenDePedidoDetalleId.HasValue))
+            {
+                var contraMovimiento = new MovimientoStock
+                {
+                    ProductoId = detalle.ProductoId,
+                    FechaHora = ahora,
+                    UsuarioId = usuarioId,
+                    Tipo = "I",
+                    Cantidad = detalle.Cantidad,
+                    DepositoId = detalle.DepositoId,
+                    Observaciones = "Anulación /// " + $"Venta N°{venta.NumeroVenta.ToString().PadLeft(8, '0')}",
+                    ConfirmacionFechaHora = ahora,
+                    ConfirmacionUsuarioId = usuarioId
+                };
+                _db.MovimientosStock.Add(contraMovimiento);
             }
 
             await _db.SaveChangesAsync();

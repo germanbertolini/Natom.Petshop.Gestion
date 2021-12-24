@@ -12,13 +12,16 @@
             <a class="nav-link" [routerLink]="['/']"><b>Ahora</b></a>
           </li> -->
 
-          <li *ngIf="authService.can('abm_marcas') || authService.can('abm_usuarios')" class="nav-item dropdown">
+          <li *ngIf="authService.can('abm_marcas') || authService.can('abm_usuarios') || authService.can('proveedores_ver') || authService.can('proveedores_crud')" class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               ABM
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
               <a readonly *ngIf="authService.can('abm_marcas')" class="dropdown-item" [routerLink]="['/marcas']">Marcas</a>
               <a *ngIf="authService.can('abm_marcas')" class="dropdown-item" [routerLink]="['/marcas/new']">[+] Nueva Marca</a>
+              <div class="dropdown-divider"></div>
+              <a *ngIf="authService.can('proveedores_ver')" class="dropdown-item" [routerLink]="['/proveedores']">Proveedores</a>
+              <a *ngIf="authService.can('proveedores_crud')" class="dropdown-item" [routerLink]="['/proveedores/new']">[+] Nuevo Proveedor</a>
               <div class="dropdown-divider"></div>
               <a *ngIf="authService.can('abm_usuarios')" class="dropdown-item" [routerLink]="['/users']">Usuarios</a>
               <a *ngIf="authService.can('abm_usuarios')" class="dropdown-item" [routerLink]="['/users/new']">[+] Nuevo Usuario</a>
@@ -33,7 +36,7 @@
               <a *ngIf="authService.can('caja_diaria_ver')" class="dropdown-item" [routerLink]="['/cajas/diaria']">Ver caja diaria</a>
               <a *ngIf="authService.can('caja_diaria_nuevo_movimiento')" class="dropdown-item" [routerLink]="['/cajas/diaria/new']">[+] Nuevo movimiento</a>
               <div class="dropdown-divider"></div>
-              <a *ngIf="authService.can('caja_fuerte_ver')" class="dropdown-item" [routerLink]="['/cajas/fuerte']">Ver caja fuerte</a>
+              <a *ngIf="authService.can('caja_fuerte_ver')" class="dropdown-item" [routerLink]="['/cajas/fuerte']">Ver tesoreria</a>
               <a *ngIf="authService.can('caja_fuerte_nuevo_movimiento')" class="dropdown-item" [routerLink]="['/cajas/fuerte/new']">[+] Nuevo movimiento</a>
               <div class="dropdown-divider"></div>
               <a *ngIf="authService.can('caja_transferencia')" class="dropdown-item" [routerLink]="['/cajas/transferencia']">[+] Transferencia entre cajas</a>

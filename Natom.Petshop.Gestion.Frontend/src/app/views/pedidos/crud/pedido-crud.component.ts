@@ -185,6 +185,7 @@ export class PedidoCrudComponent implements OnInit {
     this.detalle_cantidad = 0;
     this.detalle_deposito_encrypted_id = "";
     this.detalle_deposito = "";
+    this.detalle_precio = null;
     this.detalle_stock_actual = null;
   }
 

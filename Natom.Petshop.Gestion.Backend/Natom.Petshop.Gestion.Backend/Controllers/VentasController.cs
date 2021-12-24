@@ -161,7 +161,7 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
                 var ordenDeVentaId = EncryptionService.Decrypt<int>(Uri.UnescapeDataString(encryptedId));
 
                 var manager = new VentasManager(_serviceProvider);
-                var pedidos = await manager.AnularVentaAsync(ordenDeVentaId);
+                var pedidos = await manager.AnularVentaAsync((int)(_token?.UserId ?? 0), ordenDeVentaId);
 
                 await RegistrarAccionAsync(ordenDeVentaId, nameof(Venta), "Venta anulada");
 

@@ -1,4 +1,4 @@
-import { Component, OnInit, TemplateRef, ViewChild } from "@angular/core";
+import { Component, OnInit, QueryList, TemplateRef, ViewChild, ViewChildren } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { DataTableDirective } from "angular-datatables/src/angular-datatables.directive";
@@ -9,6 +9,7 @@ import { ClienteDTO } from "src/app/classes/dto/clientes/cliente.dto";
 import { PedidoDTO } from "src/app/classes/dto/pedidos/pedido.dto";
 import { RangoHorarioDTO } from "src/app/classes/dto/pedidos/rango-horario.dto";
 import { ListaDePreciosDTO } from "src/app/classes/dto/precios/lista-de-precios.dto";
+import { ProductoListDTO } from "src/app/classes/dto/productos/producto-list.dto";
 import { ApiResult } from "src/app/classes/dto/shared/api-result.dto";
 import { AutocompleteResultDTO } from "src/app/classes/dto/shared/autocomplete-result.dto";
 import { DepositoDTO } from "src/app/classes/dto/stock/deposito.dto";
@@ -27,12 +28,15 @@ import { AuthService } from "src/app/services/auth.service";
 
 export class VentaCrudComponent implements OnInit {
   @ViewChild('cambiarPrecioModal', { static: false }) cambiarPrecioModal : TemplateRef<any>; // Note: TemplateRef
-  @ViewChild(DataTableDirective, { static: false })
-  dtElement: DataTableDirective;
+  @ViewChildren(DataTableDirective)
+  dtElements: QueryList<DataTableDirective>;
   dtInstance: Promise<DataTables.Api>;
+  dtPedidos: DataTables.Settings = {};
   dtDetalle: DataTables.Settings = {};
   crud: CRUDView<VentaDTO>;
+  productosSearch: ProductoListDTO[];
   clientesSearch: ClienteDTO[];
+  depositos: DepositoDTO[];
   listaDeOrdenes: PedidoDTO[];
   listasDePrecios: Array<ListaDePreciosDTO>;
   general_cliente: string;
@@ -43,6 +47,16 @@ export class VentaCrudComponent implements OnInit {
   cambiar_precio_index: number;
   cambiar_precio_lista_encrypted_id: string;
   cambiar_precio_monto: number;
+  detalle_listaDePrecios_encrypted_id: string;
+  detalle_listaDePrecios: string;
+  detalle_precio: number;
+  detalle_deposito_encrypted_id: string;
+  detalle_deposito: string;
+  detalle_producto_encrypted_id: string;
+  detalle_producto: string;
+  detalle_cantidad: number;
+  detalle_stock_actual: number;
+  detalle_peso_unitario_gramos: number;
 
 
   constructor(private modalService: NgbModal,
@@ -58,6 +72,7 @@ export class VentaCrudComponent implements OnInit {
     this.crud.model.tipo_factura = "";
     this.totalizador_monto = 0;
     this.totalizador_peso_gramos = 0;
+    this.crud.model.pedidos = new Array<VentaDetalleDTO>();
     this.crud.model.detalle = new Array<VentaDetalleDTO>();
     this.crud.model.fechaHora = new Date();
     this.crud.model.usuario = authService.getCurrentUser().first_name;
@@ -70,6 +85,7 @@ export class VentaCrudComponent implements OnInit {
     this.crud.model.cliente_encrypted_id = cliente.encrypted_id;
     this.closeClienteSearchPopUp();
     this.obtenerOrdenesDePedido();
+    this.crud.model.pedidos = new Array<VentaDetalleDTO>();
     this.crud.model.detalle = new Array<VentaDetalleDTO>();
     this.detalle_ordenDePedido_encrypted_id = "";
     this.recalcularTotales();
@@ -123,11 +139,17 @@ export class VentaCrudComponent implements OnInit {
     this.dataTableAdjustColumnSizing();
   }
 
+  onPedidosTabClick() {
+    this.dataTableAdjustColumnSizing();
+  }
+
   dataTableAdjustColumnSizing() {
-    let _dtInstance = this.dtElement.dtInstance;
+    let _dtElements = this.dtElements;
     setTimeout(function() {
-      _dtInstance.then((dtInstance: DataTables.Api) => {
-        dtInstance.columns.adjust();
+      _dtElements.forEach((dtElement: DataTableDirective) => {
+        dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+          dtInstance.columns.adjust();
+        });
       });
     }, 300);
   }
@@ -144,8 +166,8 @@ export class VentaCrudComponent implements OnInit {
       return;
     }
 
-    for (let i = 0; i < this.crud.model.detalle.length; i ++) {
-      if (this.crud.model.detalle[i].pedido_encrypted_id === this.detalle_ordenDePedido_encrypted_id) {
+    for (let i = 0; i < this.crud.model.pedidos.length; i ++) {
+      if (this.crud.model.pedidos[i].pedido_encrypted_id === this.detalle_ordenDePedido_encrypted_id) {
         this.confirmDialogService.showError("La Orden de Pedido ya se encuentra agregada.");
         return;
       }
@@ -160,7 +182,7 @@ export class VentaCrudComponent implements OnInit {
         let ordenDePedido = <PedidoDTO>response.data.entity;
 
         for (let i = 0; i < ordenDePedido.detalle.length; i ++) {
-          this.crud.model.detalle.push(<VentaDetalleDTO>{
+          this.crud.model.pedidos.push(<VentaDetalleDTO>{
             encrypted_id: "",
             pedido_encrypted_id: ordenDePedido.encrypted_id,
             pedido_detalle_encrypted_id: ordenDePedido.detalle[i].encrypted_id,
@@ -197,6 +219,13 @@ export class VentaCrudComponent implements OnInit {
     this.totalizador_monto = 0;
     this.totalizador_peso_gramos = 0;
 
+    if (this.crud.model.pedidos.length > 0) {
+      for (let i = 0; i < this.crud.model.pedidos.length; i ++) {
+        this.totalizador_monto = this.totalizador_monto + (this.crud.model.pedidos[i].precio * this.crud.model.pedidos[i].cantidad);
+        this.totalizador_peso_gramos = this.totalizador_peso_gramos + (this.crud.model.pedidos[i].producto_peso_gramos * this.crud.model.pedidos[i].cantidad);
+      }
+    }
+
     if (this.crud.model.detalle.length > 0) {
       for (let i = 0; i < this.crud.model.detalle.length; i ++) {
         this.totalizador_monto = this.totalizador_monto + (this.crud.model.detalle[i].precio * this.crud.model.detalle[i].cantidad);
@@ -230,15 +259,15 @@ export class VentaCrudComponent implements OnInit {
       return;
     }
     
-    if (this.crud.model.detalle === undefined || this.crud.model.detalle.length === 0)
+    if ((this.crud.model.pedidos === undefined || this.crud.model.pedidos.length === 0) && (this.crud.model.detalle === undefined || this.crud.model.detalle.length === 0))
     {
-      this.confirmDialogService.showError("Debes agregar al menos una Orden de Pedido en 'Detalle'.");
+      this.confirmDialogService.showError("Debes agregar al menos una Orden de Pedido en 'Pedidos' o un producto en 'Detalle'.");
       return;
     }
 
-    for (let i = 0; i < this.crud.model.detalle.length; i ++) {
-      if (this.crud.model.detalle[i].precio === null) {
-        this.confirmDialogService.showError("Quedan precios sin definir en 'Detalle'.");
+    for (let i = 0; i < this.crud.model.pedidos.length; i ++) {
+      if (this.crud.model.pedidos[i].precio === null) {
+        this.confirmDialogService.showError("Quedan precios sin definir en 'Pedidos'.");
         return;
       }
     }
@@ -261,6 +290,56 @@ export class VentaCrudComponent implements OnInit {
   }
 
   ngOnInit(): void {
+
+    this.dtPedidos = {
+      pagingType: 'simple_numbers',
+      pageLength: 100,
+      serverSide: false,
+      processing: false,
+      info: false,
+      paging: false,
+      searching: false,
+      scrollY: "270px",
+      language: {
+        emptyTable: '',
+        zeroRecords: 'No hay registros',
+        lengthMenu: 'Mostrar _MENU_ registros',
+        search: 'Buscar:',
+        info: 'Mostrando _START_ a _END_ de _TOTAL_ registros',
+        infoEmpty: 'De 0 a 0 de 0 registros',
+        infoFiltered: '(filtrados de _MAX_ registros totales)',
+        paginate: {
+          first: 'Primero',
+          last: 'Último',
+          next: 'Siguiente',
+          previous: 'Anterior'
+        },
+      },
+      ajax: (dataTablesParameters: any, callback) => {
+        callback({
+          recordsTotal: this.crud.model.pedidos.length,
+          recordsFiltered: this.crud.model.pedidos.length,
+          data: [] //Siempre vacío para delegarle el render a Angular
+        });
+        
+        $('.dataTables_empty').hide();
+        
+        setTimeout(function() {
+          (<any>$("tbody tr").find('[data-toggle="tooltip"]')).tooltip();
+        }, 300);
+      },
+      columns: [
+        { data: 'pedido', orderable: false },
+        { data: 'producto', orderable: false },
+        { data: 'cantidad', orderable: false },
+        { data: 'peso', orderable: false },
+        { data: 'lista', orderable: false },
+        { data: 'precio_unitario', orderable: false },
+        { data: 'monto_total', orderable: false },
+        { data: '', orderable: false } //BOTONERA
+      ]
+    };
+
 
     this.dtDetalle = {
       pagingType: 'simple_numbers',
@@ -300,8 +379,8 @@ export class VentaCrudComponent implements OnInit {
         }, 300);
       },
       columns: [
-        { data: 'pedido', orderable: false },
         { data: 'producto', orderable: false },
+        { data: 'deposito', orderable: false },
         { data: 'cantidad', orderable: false },
         { data: 'peso', orderable: false },
         { data: 'lista', orderable: false },
@@ -310,6 +389,7 @@ export class VentaCrudComponent implements OnInit {
         { data: '', orderable: false } //BOTONERA
       ]
     };
+
     
     this.apiService.DoGET<ApiResult<any>>("ventas/basics/data", /*headers*/ null,
       (response) => {
@@ -319,6 +399,7 @@ export class VentaCrudComponent implements OnInit {
         else {
             this.crud.model.numero = response.data.numero_venta;
             this.listasDePrecios = <Array<ListaDePreciosDTO>>response.data.listasDePrecios;
+            this.depositos = <DepositoDTO[]>response.data.depositos;
 
             setTimeout(function() {
               (<any>$("#title-crud").find('[data-toggle="tooltip"]')).tooltip();
@@ -331,8 +412,202 @@ export class VentaCrudComponent implements OnInit {
 
   }
 
+  onAgregarDetalleClick() {
+    if (this.detalle_listaDePrecios_encrypted_id === undefined || this.detalle_listaDePrecios_encrypted_id.length === 0)
+    {
+      this.confirmDialogService.showError("Debes seleccionar una Lista de precios.");
+      return;
+    }
+
+    if (this.detalle_producto_encrypted_id === undefined || this.detalle_producto_encrypted_id.length === 0)
+    {
+      this.confirmDialogService.showError("Debes buscar un Producto.");
+      return;
+    }
+
+    if (this.detalle_listaDePrecios_encrypted_id === undefined || this.detalle_listaDePrecios_encrypted_id.length === 0)
+    {
+      this.confirmDialogService.showError("Debes seleccionar una Lista de precios.");
+      return;
+    }
+
+    if (this.detalle_precio === null && this.detalle_listaDePrecios_encrypted_id !== "-1")
+    {
+      this.confirmDialogService.showError("El precio es inválido.");
+      return;
+    }
+
+    if (this.detalle_deposito_encrypted_id === undefined || this.detalle_deposito_encrypted_id.length === 0)
+    {
+      this.confirmDialogService.showError("Debes seleccionar un Depósito.");
+      return;
+    }
+
+    if (this.detalle_cantidad === undefined || this.detalle_cantidad <= 0)
+    {
+      this.confirmDialogService.showError("Debes ingresar una Cantidad válida.");
+      return;
+    }
+
+    if (this.detalle_cantidad > this.detalle_stock_actual)
+    {
+      this.confirmDialogService.showError("No hay stock disponible para esa cantidad.");
+      return;
+    }
+
+    this.crud.model.detalle.push(<VentaDetalleDTO>{
+      encrypted_id: "",
+      pedido_encrypted_id: "",
+      pedido_detalle_encrypted_id: "",
+      pedido_numero: "",
+      producto_encrypted_id: this.detalle_producto_encrypted_id,
+      producto_descripcion: this.detalle_producto,
+      producto_peso_gramos: this.detalle_peso_unitario_gramos,
+      cantidad: this.detalle_cantidad,
+      deposito_encrypted_id: this.detalle_deposito_encrypted_id,
+      deposito_descripcion: this.detalle_deposito,
+      precio_lista_encrypted_id: this.detalle_listaDePrecios_encrypted_id,
+      precio_descripcion: this.detalle_listaDePrecios,
+      precio: this.detalle_precio,
+      numero_remito: ""
+    });
+
+    this.recalcularTotales();
+
+    this.dataTableAdjustColumnSizing();
+
+    this.detalle_producto_encrypted_id = "";
+    this.detalle_producto = "";
+    this.detalle_peso_unitario_gramos = 0;
+    this.detalle_cantidad = 0;
+    this.detalle_deposito_encrypted_id = "";
+    this.detalle_deposito = "";
+    this.detalle_precio = null;
+    this.detalle_stock_actual = null;
+  }
+
+  closeProductoSearchPopUp() {
+    setTimeout(() => { this.productosSearch = undefined; }, 200);    
+  }
+
+  onProductoSearchSelectItem (producto: ProductoListDTO) {
+    this.detalle_producto_encrypted_id = producto.encrypted_id;
+    this.detalle_producto = "(" + producto.codigo + ") " + producto.marca + " " + producto.descripcion;
+    this.detalle_peso_unitario_gramos = producto.peso_unitario_gramos;
+    this.closeProductoSearchPopUp();
+    this.consultarStock();
+    this.consultarPrecio();
+  }
+
+  onProductoSearchKeyUp(event) {
+    let observable = fromEvent(event.target, 'keyup')
+      .pipe (
+        map(value => event.target.value),
+        debounceTime(500),
+        distinctUntilChanged(),
+        mergeMap((search) => {
+          return this.apiService.DoGETWithObservable("productos/search?filter=" + encodeURIComponent(search), /* headers */ null);
+        })
+      )
+   observable.subscribe((data) => {
+      var result = <ApiResult<AutocompleteResultDTO<ProductoListDTO>>>data;
+      if (!result.success) {
+        this.confirmDialogService.showError("Se ha producido un error interno.");
+      }
+      else {
+        this.productosSearch = result.data.results;
+      }
+   });
+  }
+
+  onQuitarDetalleClick(index) {
+    let detalleIndex = index;
+    let detalleCollection = this.crud.model.detalle;
+    let _this = this;
+
+    this.confirmDialogService.showConfirm("¿Quitar?", function() {
+      detalleCollection.splice(detalleIndex, 1);
+      _this.recalcularTotales();
+    });
+  }
+
+  consultarPrecio() {
+    if (this.detalle_producto_encrypted_id !== undefined && this.detalle_producto_encrypted_id.length !== 0 
+      && this.detalle_listaDePrecios_encrypted_id !== undefined && this.detalle_listaDePrecios_encrypted_id.length !== 0 && this.detalle_listaDePrecios_encrypted_id !== "-1")
+    {
+      if (this.detalle_listaDePrecios_encrypted_id === "-1")
+      {
+        this.detalle_listaDePrecios = "< a definir en Venta >";
+      }
+      else
+      {
+        for (var i = 0; i < this.depositos.length; i++) {
+          if (this.listasDePrecios[i].encrypted_id === this.detalle_listaDePrecios_encrypted_id) {
+            this.detalle_listaDePrecios = this.listasDePrecios[i].descripcion;
+          }
+        }
+      }
+      
+
+      this.apiService.DoGET<ApiResult<any>>("precios/get?producto=" + encodeURIComponent(this.detalle_producto_encrypted_id) + "&lista=" + encodeURIComponent(this.detalle_listaDePrecios_encrypted_id), /*headers*/ null,
+          (response) => {
+            if (!response.success) {
+              this.confirmDialogService.showError(response.message);
+            }
+            else {
+              this.detalle_precio = <number>response.data;
+    
+              setTimeout(function() {
+                (<any>$("#title-crud").find('[data-toggle="tooltip"]')).tooltip();
+              }, 300);
+            }
+          },
+          (errorMessage) => {
+            this.confirmDialogService.showError(errorMessage);
+          });
+
+    }
+    else {
+      this.detalle_precio = null;
+    }
+  }
+  
+  consultarStock() {
+    if (this.detalle_producto_encrypted_id !== undefined && this.detalle_producto_encrypted_id.length !== 0 
+      && this.detalle_deposito_encrypted_id !== undefined && this.detalle_deposito_encrypted_id.length !== 0)
+    {
+      for (var i = 0; i < this.depositos.length; i++) {
+        if (this.depositos[i].encrypted_id === this.detalle_deposito_encrypted_id) {
+          this.detalle_deposito = this.depositos[i].descripcion;
+        }
+      }
+
+      this.apiService.DoGET<ApiResult<any>>("stock/quantity?producto=" + encodeURIComponent(this.detalle_producto_encrypted_id) + "&deposito=" + encodeURIComponent(this.detalle_deposito_encrypted_id), /*headers*/ null,
+          (response) => {
+            if (!response.success) {
+              this.confirmDialogService.showError(response.message);
+            }
+            else {
+              this.detalle_stock_actual = <number>response.data;
+    
+              setTimeout(function() {
+                (<any>$("#title-crud").find('[data-toggle="tooltip"]')).tooltip();
+              }, 300);
+            }
+          },
+          (errorMessage) => {
+            this.confirmDialogService.showError(errorMessage);
+          });
+
+    }
+    else {
+      this.detalle_stock_actual = null;
+    }
+  }
+
+
   consultarPrecioCambiarMontoModal() {
-      this.apiService.DoGET<ApiResult<any>>("precios/get?producto=" + encodeURIComponent(this.crud.model.detalle[this.cambiar_precio_index].producto_encrypted_id) + "&lista=" + encodeURIComponent(this.cambiar_precio_lista_encrypted_id), /*headers*/ null,
+      this.apiService.DoGET<ApiResult<any>>("precios/get?producto=" + encodeURIComponent(this.crud.model.pedidos[this.cambiar_precio_index].producto_encrypted_id) + "&lista=" + encodeURIComponent(this.cambiar_precio_lista_encrypted_id), /*headers*/ null,
           (response) => {
             if (!response.success) {
               this.confirmDialogService.showError(response.message);
@@ -357,8 +632,8 @@ export class VentaCrudComponent implements OnInit {
     }
 
     if (this.cambiar_precio_lista_encrypted_id === undefined || this.cambiar_precio_lista_encrypted_id.length === 0) {
-      this.crud.model.detalle[this.cambiar_precio_index].precio_descripcion = "";
-      this.crud.model.detalle[this.cambiar_precio_index].precio = this.cambiar_precio_monto;
+      this.crud.model.pedidos[this.cambiar_precio_index].precio_descripcion = "";
+      this.crud.model.pedidos[this.cambiar_precio_index].precio = this.cambiar_precio_monto;
     }
     else {
       let precio_descripcion = "";
@@ -368,8 +643,8 @@ export class VentaCrudComponent implements OnInit {
           break;
         }
       }
-      this.crud.model.detalle[this.cambiar_precio_index].precio_descripcion = precio_descripcion;
-      this.crud.model.detalle[this.cambiar_precio_index].precio = this.cambiar_precio_monto;
+      this.crud.model.pedidos[this.cambiar_precio_index].precio_descripcion = precio_descripcion;
+      this.crud.model.pedidos[this.cambiar_precio_index].precio = this.cambiar_precio_monto;
     }
     this.recalcularTotales();
     this.cambiar_precio_modal.close();

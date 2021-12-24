@@ -49,6 +49,10 @@ import { VerProductosGuard } from "./guards/productos/ver.productos.guards";
 import { CRUDProductosGuard } from "./guards/productos/crud.productos.guards";
 import { VerVentasGuard } from "./guards/ventas/ver.ventas.guards";
 import { NuevoVentasGuard } from "./guards/ventas/nuevo.ventas.guards";
+import { ProveedorCrudComponent } from "./views/proveedores/crud/proveedor-crud.component";
+import { VerProveedoresGuard } from "./guards/proveedores/proveedores.ver.guards";
+import { CRUDProveedoresGuard } from "./guards/proveedores/proveedores.crud.guards";
+import { ProveedoresComponent } from "./views/proveedores/proveedores.component";
 
 const appRoutes: Routes = [
     { path: 'login', component: LoginComponent, pathMatch: 'full' },
@@ -72,6 +76,9 @@ const appRoutes: Routes = [
     { canActivate: [ AuthGuard, VerClientesGuard ], path: 'clientes', component: ClientesComponent },
     { canActivate: [ AuthGuard, CRUDClientesGuard ], path: "clientes/new", component: ClienteCrudComponent },
     { canActivate: [ AuthGuard, CRUDClientesGuard ], path: "clientes/edit/:id", component: ClienteCrudComponent },
+    { canActivate: [ AuthGuard, VerProveedoresGuard ], path: 'proveedores', component: ProveedoresComponent },
+    { canActivate: [ AuthGuard, CRUDProveedoresGuard ], path: "proveedores/new", component: ProveedorCrudComponent },
+    { canActivate: [ AuthGuard, CRUDProveedoresGuard ], path: "proveedores/edit/:id", component: ProveedorCrudComponent },
     { canActivate: [ AuthGuard, VerProductosGuard ], path: 'productos', component: ProductosComponent },
     { canActivate: [ AuthGuard, CRUDProductosGuard ], path: "productos/new", component: ProductoCrudComponent },
     { canActivate: [ AuthGuard, CRUDProductosGuard ], path: "productos/edit/:id", component: ProductoCrudComponent },

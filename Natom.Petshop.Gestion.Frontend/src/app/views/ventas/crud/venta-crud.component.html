@@ -49,6 +49,7 @@
   <nav>
     <div class="nav nav-tabs" id="nav-tab" role="tablist">
       <a class="nav-item nav-link active" id="nav-general-tab" data-toggle="tab" href="#nav-general" role="tab" aria-controls="nav-home" aria-selected="true">General</a>
+      <a class="nav-item nav-link" id="nav-pedidos-tab" (click)="onPedidosTabClick()" data-toggle="tab" href="#nav-pedidos" role="tab" aria-controls="nav-pedidos" aria-selected="false">Pedidos</a>
       <a class="nav-item nav-link" id="nav-detalle-tab" (click)="onDetalleTabClick()" data-toggle="tab" href="#nav-detalle" role="tab" aria-controls="nav-detalle" aria-selected="false">Detalle</a>
     </div>
   </nav>
@@ -126,7 +127,7 @@
       </div>
     </div>
 
-    <div class="tab-pane fade" id="nav-detalle" role="tabpanel" aria-labelledby="nav-detalle-tab">
+    <div class="tab-pane fade" id="nav-pedidos" role="tabpanel" aria-labelledby="nav-pedidos-tab">
       <div class="row">
         <div class="col-md-3">
           <div class="input-group input-group-sm">
@@ -150,7 +151,7 @@
       <hr>
       <div class="row">
         <div class="col-md-12">
-          <table datatable [dtOptions]="dtDetalle" class="table table-striped table-bordered dt-responsive nowrap">
+          <table datatable [dtOptions]="dtPedidos" class="table table-striped table-bordered dt-responsive nowrap">
             <thead>
               <tr>
                 <th>Orden de Pedido</th>
@@ -164,19 +165,19 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let detalle of crud.model.detalle; let i = index">
-                <td><b># {{ detalle.pedido_numero }}</b><br/><small *ngIf='detalle.numero_remito !== ""'>RTO {{ detalle.numero_remito }}</small></td>
-                <td>{{ detalle.producto_descripcion }}</td>
-                <td>{{ detalle.cantidad }}</td>
-                <td>{{ ((detalle.producto_peso_gramos * detalle.cantidad) / 1000).toFixed(2).replace('.', ',') }} KG</td>
+              <tr *ngFor="let pedido of crud.model.pedidos; let i = index">
+                <td><b># {{ pedido.pedido_numero }}</b><br/><small *ngIf='pedido.numero_remito !== ""'>RTO {{ pedido.numero_remito }}</small></td>
+                <td>{{ pedido.producto_descripcion }}</td>
+                <td>{{ pedido.cantidad }}</td>
+                <td>{{ ((pedido.producto_peso_gramos * pedido.cantidad) / 1000).toFixed(2).replace('.', ',') }} KG</td>
 
-                <td *ngIf="detalle.precio !== null">{{ detalle.precio_descripcion }}</td>
-                <td *ngIf="detalle.precio === null"></td>
+                <td *ngIf="pedido.precio !== null">{{ pedido.precio_descripcion }}</td>
+                <td *ngIf="pedido.precio === null"></td>
 
-                <td *ngIf="detalle.precio !== null">{{ detalle.precio | currency:'ARS':'symbol':'1.2-2':'es-AR' }}</td>
-                <td *ngIf="detalle.precio === null"><b style="color:brown">DEFINIR PRECIO</b></td>
+                <td *ngIf="pedido.precio !== null">{{ pedido.precio | currency:'ARS':'symbol':'1.2-2':'es-AR' }}</td>
+                <td *ngIf="pedido.precio === null"><b style="color:brown">DEFINIR PRECIO</b></td>
 
-                <td>{{ detalle.precio * detalle.cantidad | currency:'ARS':'symbol':'1.2-2':'es-AR' }}</td>
+                <td>{{ pedido.precio * pedido.cantidad | currency:'ARS':'symbol':'1.2-2':'es-AR' }}</td>
                 <td>
                   <a class="btn btn-warning btn-sm disable-smt-btn spacingLeft" (click)="onCambiarPrecioClick(i)" data-toggle="tooltip" data-placement="top" title="Cambiar monto"><i class="fa fa-dollar" aria-hidden="true"></i></a>
                 </td>
@@ -186,6 +187,145 @@
         </div>
       </div>
     </div>
+
+
+    <div class="tab-pane fade" id="nav-detalle" role="tabpanel" aria-labelledby="nav-detalle-tab">
+      <div class="row">
+        <div class="col-md-4">
+          <div class="input-group input-group-sm">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="basic-addon1">Lista de precios</span>
+            </div>
+            <select
+                  class="form-control"
+                  size="1"
+                  [(ngModel)]="detalle_listaDePrecios_encrypted_id"
+                  (ngModelChange)="consultarPrecio()">
+              <option value="">Seleccione...</option>
+              <option *ngFor="let lista of listasDePrecios" value="{{ lista.encrypted_id }}">{{ lista.descripcion }}</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="input-group input-group-sm">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="basic-addon1">Producto</span>
+            </div>
+            <input
+              id="productoSearch"
+              type="text"
+              class="form-control"
+              [(ngModel)]="detalle_producto"
+              (keyup)='onProductoSearchKeyUp($event)'
+              (blur)='closeProductoSearchPopUp()'
+              placeholder="Buscar por código o palabra clave..." />
+            <ul class="input-autocomplete-options">
+              <li
+                class="no-results"
+                *ngIf="productosSearch !== undefined && productosSearch.length === 0"
+                >
+                  <small>SIN RESULTADOS</small>
+              </li>
+              <li
+                *ngFor="let producto of productosSearch; let i = index"
+                (click)="onProductoSearchSelectItem(producto)"
+                >
+                  <small>({{ producto.codigo }}) {{ producto.marca }} {{ producto.descripcion }}</small>
+              </li>
+            </ul>
+          </div>
+        </div>
+        
+        <div class="col-md-2">
+          <div class="input-group input-group-sm">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="basic-addon1">Precio</span>
+            </div>
+            <input type="text"
+                class="form-control"
+                readonly
+                value="{{ detalle_precio | currency:'ARS':'symbol':'1.2-2':'es-AR' }}" />
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-2">
+          <div class="input-group input-group-sm">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="basic-addon1">Depósito</span>
+            </div>
+            <select size="1"
+              class="form-control"
+              [(ngModel)]="detalle_deposito_encrypted_id"
+              (ngModelChange)="consultarStock()"
+              #cboDeposito>
+              <option value="" disabled selected>Seleccione...</option>
+              <option *ngFor="let deposito of depositos" value="{{ deposito.encrypted_id }}">{{ deposito.descripcion }}</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="input-group input-group-sm">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="basic-addon1">Stock actual</span>
+            </div>
+            <input type="text"
+                class="form-control"
+                readonly
+                [(ngModel)]="detalle_stock_actual" />
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="input-group input-group-sm">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="basic-addon1">Cantidad</span>
+            </div>
+            <input type="number"
+                class="form-control"
+                onkeypress="return (event.charCode >= 48 && event.charCode <= 57)"
+                [(ngModel)]="detalle_cantidad" />
+          </div>
+        </div>
+        <div class="col-md-2">
+          <button class="btn btn-sm btn-success" (click)="onAgregarDetalleClick()">[+] Agregar</button>
+        </div>
+      </div>
+      <hr>
+      <div class="row">
+        <div class="col-md-12">
+          <table datatable [dtOptions]="dtDetalle" class="table table-striped table-bordered dt-responsive nowrap">
+            <thead>
+              <tr>
+                <th>Producto</th>
+                <th>Depósito</th>
+                <th>Cantidad</th>
+                <th>Peso total</th>
+                <th>Lista de precios</th>
+                <th>Precio unitario</th>
+                <th>Monto total</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let detalle of crud.model.detalle; let i = index">
+                <td>{{ detalle.producto_descripcion }}</td>
+                <td>{{ detalle.deposito_descripcion }}</td>
+                <td>{{ detalle.cantidad }}</td>
+                <td>{{ ((detalle.producto_peso_gramos * detalle.cantidad) / 1000).toFixed(2).replace('.', ',') }} KG</td>
+                <td>{{ detalle.precio_descripcion }}</td>
+                <td>{{ detalle.precio | currency:'ARS':'symbol':'1.2-2':'es-AR' }}</td>
+                <td>{{ detalle.precio * detalle.cantidad | currency:'ARS':'symbol':'1.2-2':'es-AR' }}</td>
+                <td>
+                  <a class="btn btn-danger btn-sm disable-smt-btn spacingLeft" (click)="onQuitarDetalleClick(i)" data-toggle="tooltip" data-placement="top" title="Quitar"><i class="fa fa-times" aria-hidden="true"></i></a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
 
   </div>
 

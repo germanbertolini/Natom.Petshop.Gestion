@@ -26,5 +26,14 @@ namespace Natom.Petshop.Gestion.Entities.DTO.Stock
 
         [JsonProperty("observaciones")]
         public string Observaciones { get; set; }
+
+        [JsonProperty("esCompra")]
+        public bool EsCompra { get; set; }
+
+        [JsonProperty("proveedor_encrypted_id")]
+        public string ProveedorEncryptedId { get; set; }
+
+        [JsonProperty("costoUnitario")]
+        public decimal? CostoUnitario { get; set; }
     }
 }

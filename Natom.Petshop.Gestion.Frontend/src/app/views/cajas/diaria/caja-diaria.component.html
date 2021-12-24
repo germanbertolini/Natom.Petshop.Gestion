@@ -44,6 +44,7 @@
             <th>Usuario</th>
             <th>Tipo</th>
             <th>Importe</th>
+            <th>Cheque</th>
             <th>Observaciones</th>
           </tr>
         </thead>
@@ -54,6 +55,8 @@
             <td>{{ movimiento.tipo }}</td>
             <td class="monto" *ngIf="movimiento.tipo !== 'Egreso'">{{ movimiento.importe | currency:'ARS':'symbol':'1.2-2':'es-AR' }}</td>
             <td class="monto debito" *ngIf="movimiento.tipo === 'Egreso'">( - {{ movimiento.importe | currency:'ARS':'symbol':'1.2-2':'es-AR' }}  )</td>
+            <td *ngIf="movimiento.esCheque">SI</td>
+            <td *ngIf="!movimiento.esCheque">NO</td>
             <td>{{ movimiento.observaciones }}</td>
           </tr>
         </tbody>

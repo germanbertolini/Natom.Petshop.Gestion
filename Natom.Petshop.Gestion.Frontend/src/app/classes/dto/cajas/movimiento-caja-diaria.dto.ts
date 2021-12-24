@@ -5,4 +5,5 @@ export class MovimientoCajaDiariaDTO {
     public tipo: String;
     public importe: number;
     public observaciones: String;
+    public esCheque: boolean;
 }

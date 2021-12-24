@@ -23,5 +23,8 @@ namespace Natom.Petshop.Gestion.Entities.DTO.Cajas
 
         [JsonProperty("observaciones")]
         public string Observaciones { get; set; }
+
+        [JsonProperty("esCheque")]
+        public bool EsCheque { get; set; }
     }
 }

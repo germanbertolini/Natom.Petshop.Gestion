@@ -22,5 +22,7 @@ namespace Natom.Petshop.Gestion.Entities.Model
 		public decimal Importe { get; set; }
 
 		public string Observaciones { get; set; }
-    }
+
+		public bool EsCheque { get; set; }
+	}
 }

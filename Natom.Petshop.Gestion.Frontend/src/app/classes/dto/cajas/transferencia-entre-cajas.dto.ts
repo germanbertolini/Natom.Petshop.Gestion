@@ -4,4 +4,5 @@ export class TransferenciaEntreCajasDTO {
     public importe: number;
     public usuarioNombre: String;
     public observaciones: String;
+    public esCheque: boolean;
 }

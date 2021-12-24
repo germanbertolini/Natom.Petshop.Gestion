@@ -29,6 +29,9 @@ namespace Natom.Petshop.Gestion.Entities.DTO.Cajas
         [JsonProperty("observaciones")]
         public string Observaciones { get; set; }
 
+        [JsonProperty("esCheque")]
+        public bool EsCheque { get; set; }
+
         public MovimientoCajaFuerteDTO From(MovimientoCajaFuerte entity)
         {
             EncryptedId = EncryptionService.Encrypt(entity.MovimientoCajaFuerteId);
@@ -37,6 +40,7 @@ namespace Natom.Petshop.Gestion.Entities.DTO.Cajas
             Tipo = entity.Tipo.Equals("C") ? "Ingreso" : "Egreso";
             Importe = entity.Importe;
             Observaciones = entity.Observaciones;
+            EsCheque = entity.EsCheque;
 
             return this;
         }

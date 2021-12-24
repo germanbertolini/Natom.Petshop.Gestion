@@ -6,4 +6,7 @@ export class MovimientoStockDTO {
     public usuario_encrypted_id: string;
     public usuarioNombre: string;
     public observaciones: string;
+    public esCompra: boolean;
+    public proveedor_encrypted_id: string;
+    public costoUnitario: number;
 }

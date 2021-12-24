@@ -50,9 +50,9 @@ namespace Natom.Petshop.Gestion.Entities.DTO.Ventas
             Numero = entity.NumeroVenta.ToString().PadLeft(8, '0');
             FechaHora = entity.FechaHoraVenta;
             NumeroVenta = entity.NumeroVenta.ToString().PadLeft(8, '0');
-            var numerosRemitos = entity.Detalle.Select(d => d.OrdenDePedido.NumeroRemito).ToList();
+            var numerosRemitos = entity.Detalle.Select(d => d.OrdenDePedido?.NumeroRemito).Where(d => !string.IsNullOrEmpty(d)).ToList();
             Remitos = numerosRemitos.Where(r => !string.IsNullOrEmpty(r)).GroupBy(k => k, (k, v) => k).Select(r => $"RTO {r}").ToList();
-            Pedidos = entity.Detalle.Select(d => d.OrdenDePedido.NumeroPedido.ToString().PadLeft(8, '0')).GroupBy(k => k, (k, v) => k).ToList();
+            Pedidos = entity.Detalle.Select(d => d.OrdenDePedido?.NumeroPedido.ToString().PadLeft(8, '0')).GroupBy(k => k, (k, v) => k).Where(r => !string.IsNullOrEmpty(r)).ToList();
             Factura = string.IsNullOrEmpty(entity.NumeroFactura) ? null : entity.TipoFactura + " " + entity.NumeroFactura;
             Cliente = entity.Cliente.RazonSocial;
             Usuario = entity.Usuario?.Nombre ?? "Admin";

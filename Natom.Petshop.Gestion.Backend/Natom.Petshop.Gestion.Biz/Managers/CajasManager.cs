@@ -49,6 +49,12 @@ namespace Natom.Petshop.Gestion.Biz.Managers
                                         ? queryable.OrderBy(c => c.Importe)
                                         : queryable.OrderByDescending(c => c.Importe);
             }
+            else if (sortColumnIndex == 4) //CHEQUE (BOOL)
+            {
+                queryableOrdered = sortDirection.ToLower().Equals("asc")
+                                        ? queryable.OrderBy(c => c.EsCheque)
+                                        : queryable.OrderByDescending(c => c.EsCheque);
+            }
             else //OTROS (STRING)
             {
                 queryableOrdered = sortDirection.ToLower().Equals("asc")
@@ -95,7 +101,8 @@ namespace Natom.Petshop.Gestion.Biz.Managers
                 Importe = movimientoDto.Importe,
                 Observaciones = movimientoDto.Observaciones,
                 Tipo = movimientoDto.Tipo,
-                UsuarioId = usuarioId
+                UsuarioId = usuarioId,
+                EsCheque = movimientoDto.EsCheque
             };
 
             _db.MovimientosCajaDiaria.Add(movimiento);
@@ -139,6 +146,12 @@ namespace Natom.Petshop.Gestion.Biz.Managers
                 queryableOrdered = sortDirection.ToLower().Equals("asc")
                                         ? queryable.OrderBy(c => c.Importe)
                                         : queryable.OrderByDescending(c => c.Importe);
+            }
+            else if (sortColumnIndex == 4) //CHEQUE (BOOL)
+            {
+                queryableOrdered = sortDirection.ToLower().Equals("asc")
+                                        ? queryable.OrderBy(c => c.EsCheque)
+                                        : queryable.OrderByDescending(c => c.EsCheque);
             }
             else //OTROS (STRING)
             {
@@ -186,7 +199,8 @@ namespace Natom.Petshop.Gestion.Biz.Managers
                 Importe = movimientoDto.Importe,
                 Observaciones = movimientoDto.Observaciones,
                 Tipo = movimientoDto.Tipo,
-                UsuarioId = usuarioId
+                UsuarioId = usuarioId,
+                EsCheque = movimientoDto.EsCheque
             };
 
             _db.MovimientosCajaFuerte.Add(movimiento);
@@ -207,9 +221,9 @@ namespace Natom.Petshop.Gestion.Biz.Managers
         {
             var saldoActual = await ObtenerSaldoActualCajaFuerteAsync();
             if (saldoActual - movimientoDto.Importe < 0)
-                throw new HandledException($"No es posible realizar la Transferencia ya que el importe ingresado ({movimientoDto.Importe.ToString("C2")}) es superior al saldo disponible actual en la Caja Fuerte ({saldoActual.ToString("C2")})");
+                throw new HandledException($"No es posible realizar la Transferencia ya que el importe ingresado ({movimientoDto.Importe.ToString("C2")}) es superior al saldo disponible actual en Tesorería ({saldoActual.ToString("C2")})");
 
-            string observaciones = "TRANSFERENCIA CAJA FUERTE A DIARIA";
+            string observaciones = "TRANSFERENCIA TESORERIA A CAJA DIARIA";
             if (!string.IsNullOrEmpty(movimientoDto.Observaciones))
                 observaciones += " /// " + movimientoDto.Observaciones;
 
@@ -219,7 +233,8 @@ namespace Natom.Petshop.Gestion.Biz.Managers
                 Importe = movimientoDto.Importe,
                 Observaciones = observaciones,
                 Tipo = "D", //DEBITO EN CAJA FUERTE
-                UsuarioId = usuarioId
+                UsuarioId = usuarioId,
+                EsCheque = movimientoDto.EsCheque
             };
 
             var movimientoCredito = new MovimientoCajaDiaria()
@@ -228,7 +243,8 @@ namespace Natom.Petshop.Gestion.Biz.Managers
                 Importe = movimientoDto.Importe,
                 Observaciones = observaciones,
                 Tipo = "C", //CREDITO EN CAJA DIARIA
-                UsuarioId = usuarioId
+                UsuarioId = usuarioId,
+                EsCheque = movimientoDto.EsCheque
             };
 
             _db.MovimientosCajaFuerte.Add(movimientoDebito);
@@ -242,7 +258,7 @@ namespace Natom.Petshop.Gestion.Biz.Managers
             if (saldoActual - movimientoDto.Importe < 0)
                 throw new HandledException($"No es posible realizar la Transferencia ya que el importe ingresado ({movimientoDto.Importe.ToString("C2")}) es superior al saldo disponible actual en la Caja Diaria ({saldoActual.ToString("C2")})");
 
-            string observaciones = "TRANSFERENCIA CAJA DIARIA A FUERTE";
+            string observaciones = "TRANSFERENCIA CAJA DIARIA A TESORERIA";
             if (!string.IsNullOrEmpty(movimientoDto.Observaciones))
                 observaciones += " /// " + movimientoDto.Observaciones;
 
@@ -252,7 +268,8 @@ namespace Natom.Petshop.Gestion.Biz.Managers
                 Importe = movimientoDto.Importe,
                 Observaciones = observaciones,
                 Tipo = "D", //DEBITO EN CAJA DIARIA
-                UsuarioId = usuarioId
+                UsuarioId = usuarioId,
+                EsCheque = movimientoDto.EsCheque
             };
 
             var movimientoCredito = new MovimientoCajaFuerte()
@@ -261,7 +278,8 @@ namespace Natom.Petshop.Gestion.Biz.Managers
                 Importe = movimientoDto.Importe,
                 Observaciones = observaciones,
                 Tipo = "C", //CREDITO EN CAJA FUERTE
-                UsuarioId = usuarioId
+                UsuarioId = usuarioId,
+                EsCheque = movimientoDto.EsCheque
             };
 
             _db.MovimientosCajaDiaria.Add(movimientoDebito);

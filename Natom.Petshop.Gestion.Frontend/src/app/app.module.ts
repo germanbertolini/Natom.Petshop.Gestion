@@ -58,6 +58,8 @@ import { VentasComponent } from './views/ventas/ventas.component';
 import { VentaCrudComponent } from './views/ventas/crud/venta-crud.component';
 import { HistoricoCambiosService } from './components/historico-cambios/historico-cambios.service';
 import { HistoricoCambiosComponent } from './components/historico-cambios/historico-cambios.component';
+import { ProveedorCrudComponent } from './views/proveedores/crud/proveedor-crud.component';
+import { ProveedoresComponent } from './views/proveedores/proveedores.component';
 
 export function OnInit(jsonAppConfigService: JsonAppConfigService) {
   return () => {
@@ -87,6 +89,8 @@ export function OnInit(jsonAppConfigService: JsonAppConfigService) {
     HistoricoCambiosComponent,
     ClientesComponent,
     ClienteCrudComponent,
+    ProveedoresComponent,
+    ProveedorCrudComponent,
     ProductosComponent,
     ProductoCrudComponent,
     PreciosComponent,
