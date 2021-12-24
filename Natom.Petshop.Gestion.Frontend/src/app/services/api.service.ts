@@ -2,6 +2,7 @@ import { HttpClient, HttpErrorResponse, HttpHeaders } from "@angular/common/http
 import { Injectable } from "@angular/core";
 import { CookieService } from "ngx-cookie-service";
 import { Observable } from "rxjs";
+import { SpinnerLoadingService } from "../components/spinner-loading/spinner-loading.service";
 import { JsonAppConfigService } from "./json-app-config.service";
 
 @Injectable({
@@ -12,7 +13,8 @@ export class ApiService {
 
     constructor(private jsonAppConfig: JsonAppConfigService,
                 private httpClient: HttpClient,
-                private cookieService: CookieService) {
+                private cookieService: CookieService,
+                private loadingService: SpinnerLoadingService) {
 
     }
 
@@ -26,54 +28,66 @@ export class ApiService {
     }
     
     public DoGET<TResponse>(relativeUrl: string, headers: HttpHeaders = null, onSuccess: (response: TResponse) => void, onError: (errorMessage: string) => void) {
+        this.loadingService.show();
         headers = this.SetAPIHeaders(headers);
         this.DoGETWithObservable(relativeUrl, headers)
                 .subscribe({
                     next: response => {
                         onSuccess(<TResponse>response);
+                        this.loadingService.hide();
                     },
                     error: error => {
                         if (error.status === 403 && this.onForbidden !== null) {
                             this.onForbidden();
                         }
-                        else
+                        else {
                             onError(error.message);
+                        }
+                        this.loadingService.hide();
                     }
                 });
     }
 
     public DoPOST<TResponse>(relativeUrl: string, body: any, headers: HttpHeaders = null, onSuccess: (response: TResponse) => void, onError: (errorMessage: string) => void) {
+        this.loadingService.show();
         headers = this.SetAPIHeaders(headers);
         this.httpClient
                 .post(this.jsonAppConfig.baseURL + relativeUrl, body, { headers: headers })
                 .subscribe({
                     next: response => {
                         onSuccess(<TResponse>response);
+                        this.loadingService.hide();
                     },
                     error: error => {
                         if (error.status === 403 && this.onForbidden !== null) {
                             this.onForbidden();
                         }
-                        else
+                        else {
                             onError(error.message);
+                        }
+                        this.loadingService.hide();    
                     }
                 });
     }
 
     public DoDELETE<TResponse>(relativeUrl: string, headers: HttpHeaders = null, onSuccess: (response: TResponse) => void, onError: (errorMessage: string) => void) {
+        this.loadingService.show();
         headers = this.SetAPIHeaders(headers);
         this.httpClient
                 .delete(this.jsonAppConfig.baseURL + relativeUrl, { headers: headers })
                 .subscribe({
                     next: response => {
                         onSuccess(<TResponse>response);
+                        this.loadingService.hide();
                     },
                     error: error => {
                         if (error.status === 403 && this.onForbidden !== null) {
                             this.onForbidden();
                         }
-                        else
+                        else {
                             onError(error.message);
+                        }
+                        this.loadingService.hide();   
                     }
                 });
     }

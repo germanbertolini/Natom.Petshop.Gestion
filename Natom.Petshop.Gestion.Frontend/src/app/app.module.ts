@@ -60,6 +60,8 @@ import { HistoricoCambiosService } from './components/historico-cambios/historic
 import { HistoricoCambiosComponent } from './components/historico-cambios/historico-cambios.component';
 import { ProveedorCrudComponent } from './views/proveedores/crud/proveedor-crud.component';
 import { ProveedoresComponent } from './views/proveedores/proveedores.component';
+import { SpinnerLoadingComponent } from './components/spinner-loading/spinner-loading.component';
+import { SpinnerLoadingService } from './components/spinner-loading/spinner-loading.service';
 
 export function OnInit(jsonAppConfigService: JsonAppConfigService) {
   return () => {
@@ -86,6 +88,7 @@ export function OnInit(jsonAppConfigService: JsonAppConfigService) {
     CajaFuerteNewComponent,
     CajaTransferenciaComponent,
     ConfirmDialogComponent,
+    SpinnerLoadingComponent,
     HistoricoCambiosComponent,
     ClientesComponent,
     ClienteCrudComponent,
@@ -121,6 +124,7 @@ export function OnInit(jsonAppConfigService: JsonAppConfigService) {
   ],
   exports: [  
     ConfirmDialogComponent,
+    SpinnerLoadingComponent,
     HistoricoCambiosComponent
   ], 
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
@@ -144,6 +148,7 @@ export function OnInit(jsonAppConfigService: JsonAppConfigService) {
       useClass: NgbDateCustomParserFormatter
     },
     ConfirmDialogService,
+    SpinnerLoadingService,
     HistoricoCambiosService,
     ThemeService,
     CookieService,
