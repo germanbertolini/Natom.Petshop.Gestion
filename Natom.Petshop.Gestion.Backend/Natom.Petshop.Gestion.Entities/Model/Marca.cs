@@ -15,5 +15,8 @@ namespace Natom.Petshop.Gestion.Entities.Model
         public int MarcaId { get; set; }
 	    public string Descripcion { get; set; }
         public bool Activo { get; set; }
+
+        [NotMapped]
+        public int CantidadFiltrados { get; set; }
     }
 }

@@ -20,7 +20,7 @@ namespace Natom.Petshop.Gestion.Biz.Managers
                     => _db.Marcas
                             .CountAsync();
 
-        public Task<List<Marca>> ObtenerMarcasDataTableAsync(int start, int size, string filter, int sortColumnIndex, string sortDirection, string statusFilter)
+        public async Task<List<Marca>> ObtenerMarcasDataTableAsync(int start, int size, string filter, int sortColumnIndex, string sortDirection, string statusFilter)
         {
             var queryable = _db.Marcas.Where(u => true);
 
@@ -44,11 +44,17 @@ namespace Natom.Petshop.Gestion.Biz.Managers
                                         : queryable.OrderByDescending(c => sortColumnIndex == 0 ? c.Descripcion :
                                                             "");
 
+            var countFiltrados = queryableOrdered.Count();
+
             //SKIP Y TAKE
-            return queryableOrdered
+            var result = await queryableOrdered
                     .Skip(start)
                     .Take(size)
                     .ToListAsync();
+
+            result.ForEach(r => r.CantidadFiltrados = countFiltrados);
+
+            return result;
         }
 
         public async Task<Marca> GuardarMarcaAsync(MarcaDTO marcaDto)

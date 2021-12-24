@@ -47,7 +47,7 @@
               size="1"
               [(ngModel)]="crud.model.listaDePrecios_encrypted_id">
           <option value="">Seleccione...</option>
-          <option *ngFor="let lista of ListasDePrecios" value="{{ lista.encrypted_id }}">{{ lista.descripcion }}</option>
+          <option *ngFor="let lista of ListasDePrecios" [ngStyle]="{display:(lista.esPorcentual ? 'none' : 'inline')}" value="{{ lista.encrypted_id }}">{{ lista.descripcion }}</option>
         </select>
       </div>
     </div>

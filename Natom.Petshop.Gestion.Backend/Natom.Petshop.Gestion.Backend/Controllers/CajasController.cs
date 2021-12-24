@@ -43,7 +43,7 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
                     Data = new DataTableResponseDTO<MovimientoCajaDiariaDTO>
                     {
                         RecordsTotal = movimientosCount,
-                        RecordsFiltered = movimientos.Count,
+                        RecordsFiltered = movimientos.FirstOrDefault()?.CantidadFiltrados ?? 0,
                         Records = movimientos.Select(movimiento => new MovimientoCajaDiariaDTO().From(movimiento)).ToList(),
                         ExtraData = new
                         {
@@ -113,7 +113,7 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
                     Data = new DataTableResponseDTO<MovimientoCajaFuerteDTO>
                     {
                         RecordsTotal = movimientosCount,
-                        RecordsFiltered = movimientos.Count,
+                        RecordsFiltered = movimientos.FirstOrDefault()?.CantidadFiltrados ?? 0,
                         Records = movimientos.Select(movimiento => new MovimientoCajaFuerteDTO().From(movimiento)).ToList(),
                         ExtraData = new
                         {

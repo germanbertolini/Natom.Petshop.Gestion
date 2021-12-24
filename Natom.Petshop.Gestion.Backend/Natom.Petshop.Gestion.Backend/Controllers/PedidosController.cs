@@ -41,7 +41,7 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
                     Data = new DataTableResponseDTO<PedidoListDTO>
                     {
                         RecordsTotal = pedidosCount,
-                        RecordsFiltered = pedidos.Count,
+                        RecordsFiltered = pedidos.FirstOrDefault()?.CantidadFiltrados ?? 0,
                         Records = pedidos.Select(pedido => new PedidoListDTO().From(pedido)).ToList()
                     }
                 });

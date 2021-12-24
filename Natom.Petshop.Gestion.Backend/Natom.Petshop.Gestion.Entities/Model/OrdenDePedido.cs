@@ -64,5 +64,8 @@ namespace Natom.Petshop.Gestion.Entities.Model
 		public decimal? MontoTotal { get; set; }
 
 		public List<OrdenDePedidoDetalle> Detalle { get; set; }
-	}
+
+		[NotMapped]
+        public int CantidadFiltrados { get; set; }
+    }
 }

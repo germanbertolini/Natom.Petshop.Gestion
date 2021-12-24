@@ -19,5 +19,6 @@ namespace Natom.Petshop.Gestion.Entities.Model.Results
         public string Observaciones { get; set; }
         public int Stock { get; set; }
         public int CantidadRegistros { get; set; }
+        public int CantidadFiltrados { get; set; }
     }
 }

@@ -2,16 +2,22 @@ import { HttpClient, HttpErrorResponse, HttpHeaders } from "@angular/common/http
 import { Injectable } from "@angular/core";
 import { CookieService } from "ngx-cookie-service";
 import { Observable } from "rxjs";
-import { AuthService } from "./auth.service";
 import { JsonAppConfigService } from "./json-app-config.service";
 
 @Injectable({
     providedIn: 'root'
   })
 export class ApiService {
+    onForbidden: () => void = null;
 
-    constructor(private jsonAppConfig: JsonAppConfigService, private httpClient: HttpClient, private cookieService: CookieService) {
+    constructor(private jsonAppConfig: JsonAppConfigService,
+                private httpClient: HttpClient,
+                private cookieService: CookieService) {
 
+    }
+
+    public SetOnForbiddenAction(onForbiddenAction: () => void) {
+        this.onForbidden = onForbiddenAction;
     }
 
     public DoGETWithObservable(relativeUrl: string, headers: HttpHeaders = null) : Observable<Object> {
@@ -27,7 +33,11 @@ export class ApiService {
                         onSuccess(<TResponse>response);
                     },
                     error: error => {
-                        onError(error.message);
+                        if (error.status === 403 && this.onForbidden !== null) {
+                            this.onForbidden();
+                        }
+                        else
+                            onError(error.message);
                     }
                 });
     }
@@ -41,7 +51,11 @@ export class ApiService {
                         onSuccess(<TResponse>response);
                     },
                     error: error => {
-                        onError(error.message);
+                        if (error.status === 403 && this.onForbidden !== null) {
+                            this.onForbidden();
+                        }
+                        else
+                            onError(error.message);
                     }
                 });
     }
@@ -55,7 +69,11 @@ export class ApiService {
                         onSuccess(<TResponse>response);
                     },
                     error: error => {
-                        onError(error.message);
+                        if (error.status === 403 && this.onForbidden !== null) {
+                            this.onForbidden();
+                        }
+                        else
+                            onError(error.message);
                     }
                 });
     }

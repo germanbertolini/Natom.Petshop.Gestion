@@ -29,6 +29,9 @@ namespace Natom.Petshop.Gestion.Entities.DTO.Precios
         [JsonProperty("aplicaDesdeDias")]
         public int AplicaDesdeDias { get; set; }
 
+        [JsonProperty("esPorcentual")]
+        public bool EsPorcentual { get; set; }
+
         public PrecioListDTO From(spPreciosListResult entity)
         {
             EncryptedId = EncryptionService.Encrypt(entity.ProductoPrecioId);
@@ -37,6 +40,7 @@ namespace Natom.Petshop.Gestion.Entities.DTO.Precios
             ListaDePrecios = entity.ListaDePrecioDescripcion;
             AplicaDesdeFechaHora = entity.AplicaDesdeFechaHora;
             AplicaDesdeDias = (int)(DateTime.Now.Date - entity.AplicaDesdeFechaHora.Date).TotalDays;
+            EsPorcentual = entity.ListaDePreciosEsPorcentual;
 
             return this;
         }

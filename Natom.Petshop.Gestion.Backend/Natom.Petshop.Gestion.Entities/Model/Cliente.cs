@@ -34,5 +34,8 @@ namespace Natom.Petshop.Gestion.Entities.Model
 		public string ContactoObservaciones { get; set; }
 
 		public bool Activo { get; set; }
-	}
+
+		[NotMapped]
+        public int CantidadFiltrados { get; set; }
+    }
 }

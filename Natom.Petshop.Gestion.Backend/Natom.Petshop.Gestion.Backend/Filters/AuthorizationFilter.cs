@@ -51,6 +51,10 @@ namespace Natom.Petshop.Gestion.Backend.Filters
                     if (expirationTime < DateTime.Now)
                         throw new HandledException("Token expirado.");
 
+                    //FUERA DE HORARIO LABORAL SOLO EL ADMIN PUEDE OPERAR
+                    if (token.UserId != 0 && (DateTime.Now.Hour >= 21 || DateTime.Now.Hour <= 6))
+                        throw new HandledException("Acceso denegado.");
+
                     //START LOG
                     _transaction.Token = token;
                 }

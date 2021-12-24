@@ -68,7 +68,7 @@ namespace Natom.Petshop.Gestion.Entities.DTO.Pedidos
             NumeroVenta = entity.Venta == null ? null : entity.Venta.NumeroVenta.ToString().PadLeft(8, '0');
             Remito = string.IsNullOrEmpty(entity.NumeroRemito) ? null : "RTO " + entity.NumeroRemito;
             Factura = string.IsNullOrEmpty(entity.Venta?.NumeroFactura) ? null : entity.Venta.TipoFactura + " " + entity.Venta.NumeroFactura;
-            Cliente = entity.Cliente.RazonSocial;
+            Cliente = entity.Cliente.EsEmpresa ? entity.Cliente.RazonSocial : $"{entity.Cliente.Nombre} {entity.Cliente.Apellido}";
             Usuario = entity.Usuario?.Nombre ?? "Admin";
             Estado = ResolverEstado(entity);
             Prepared = entity.PreparacionFechaHoraFin.HasValue;

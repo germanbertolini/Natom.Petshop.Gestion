@@ -5,4 +5,5 @@ export class PrecioListDTO {
     public listaDePrecios: string;
     public aplicaDesdeFechaHora: Date;
     public aplicaDesdeDias: number;
+    public esPorcentual: boolean;
 }

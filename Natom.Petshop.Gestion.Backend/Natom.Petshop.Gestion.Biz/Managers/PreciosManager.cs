@@ -56,11 +56,17 @@ namespace Natom.Petshop.Gestion.Biz.Managers
                                                             "");
             }
 
+            var countFiltrados = queryableOrdered.Count();
+
             //SKIP Y TAKE
-            return queryableOrdered
+            var result = queryableOrdered
                     .Skip(start)
                     .Take(size)
                     .ToList();
+
+            result.ForEach(r => r.CantidadFiltrados = countFiltrados);
+
+            return result;
         }
 
         public async Task<ProductoPrecio> GuardarPrecioAsync(PrecioDTO precioDto)
@@ -79,14 +85,9 @@ namespace Natom.Petshop.Gestion.Biz.Managers
             return precio;
         }
 
-        public async Task<decimal?> ObtenerPrecioActualAsync(int productoId, int listaDePreciosId)
+        public decimal? ObtenerPrecioActual(int productoId, int listaDePreciosId)
         {
-            return (await _db.ProductosPrecios
-                                            .Where(p => p.ListaDePreciosId == listaDePreciosId
-                                                            && p.ProductoId == productoId
-                                                            && !p.FechaHoraBaja.HasValue)
-                                            .OrderByDescending(p => p.ProductoPrecioId)
-                                            .FirstOrDefaultAsync())?.Precio;
+            return _db.spPrecioGetResult.FromSqlRaw("spPrecioGet {0}, {1}", listaDePreciosId, productoId).AsEnumerable().FirstOrDefault()?.Precio;
         }
 
         public Task<ProductoPrecio> ObtenerPrecioAsync(int productoPrecioId)
@@ -180,10 +181,11 @@ namespace Natom.Petshop.Gestion.Biz.Managers
 
         public async Task<HistoricoReajustePrecio> GuardarReajustePrecioAsync(int usuarioId, PrecioReajusteDTO precioReajusteDto)
         {
-            var listaDePreciosId = precioReajusteDto.AplicoListaDePreciosEncryptedId == "-1" ? (int?)null : EncryptionService.Decrypt<int>(precioReajusteDto.AplicoListaDePreciosEncryptedId);
+            var todasLasListasDePreciosNoPorcentualesIds = await _db.ListasDePrecios.Where(l => l.Activo && !l.EsPorcentual).Select(l => l.ListaDePreciosId).ToListAsync();
+            var listasDePreciosId = precioReajusteDto.AplicoListaDePreciosEncryptedId == "-1" ? todasLasListasDePreciosNoPorcentualesIds : new List<int> { EncryptionService.Decrypt<int>(precioReajusteDto.AplicoListaDePreciosEncryptedId) };
             var marcaId = EncryptionService.Decrypt<int>(precioReajusteDto.AplicoMarcaEncryptedId);
             var preciosActuales = await _db.ProductosPrecios
-                                            .Where(p => (listaDePreciosId == null || p.ListaDePreciosId == listaDePreciosId)
+                                            .Where(p => listasDePreciosId.Contains(p.ListaDePreciosId.Value)
                                                             && p.Producto.MarcaId == marcaId
                                                             && !p.FechaHoraBaja.HasValue)
                                             .ToListAsync();
@@ -191,7 +193,7 @@ namespace Natom.Petshop.Gestion.Biz.Managers
             var reajustePrecio = new HistoricoReajustePrecio
             {
                 AplicaDesdeFechaHora = DateTime.Now,
-                AplicoListaDePreciosId = listaDePreciosId,
+                AplicoListaDePreciosId = precioReajusteDto.AplicoListaDePreciosEncryptedId == "-1" ? null /*TODAS*/ : EncryptionService.Decrypt<int>(precioReajusteDto.AplicoListaDePreciosEncryptedId),
                 AplicoMarcaId = marcaId,
                 EsIncremento = precioReajusteDto.EsIncremento,
                 EsPorcentual = precioReajusteDto.EsPorcentual,

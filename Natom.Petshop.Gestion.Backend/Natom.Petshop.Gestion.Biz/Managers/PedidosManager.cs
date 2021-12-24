@@ -20,7 +20,7 @@ namespace Natom.Petshop.Gestion.Biz.Managers
                     => _db.OrdenesDePedido
                             .CountAsync();
 
-        public Task<List<OrdenDePedido>> ObtenerPedidosDataTableAsync(int start, int size, string filter, int sortColumnIndex, string sortDirection, string statusFilter)
+        public async Task<List<OrdenDePedido>> ObtenerPedidosDataTableAsync(int start, int size, string filter, int sortColumnIndex, string sortDirection, string statusFilter)
         {
             var queryable = _db.OrdenesDePedido
                                     .Include(op => op.Cliente)
@@ -42,6 +42,8 @@ namespace Natom.Petshop.Gestion.Biz.Managers
                 else
                 {
                     queryable = queryable.Where(p => p.Cliente.RazonSocial.ToLower().Contains(filter.ToLower())
+                                                        || p.Cliente.Nombre.ToLower().Contains(filter.ToLower())
+                                                        || p.Cliente.Apellido.ToLower().Contains(filter.ToLower())
                                                         || p.NumeroRemito.Contains(filter)
                                                         || p.Venta.NumeroFactura.Contains(filter));
                 }
@@ -97,11 +99,17 @@ namespace Natom.Petshop.Gestion.Biz.Managers
                                                             "");
             }
 
+            var countFiltrados = queryableOrdered.Count();
+
             //SKIP Y TAKE
-            return queryableOrdered
+            var result = await queryableOrdered
                     .Skip(start)
                     .Take(size)
                     .ToListAsync();
+
+            result.ForEach(r => r.CantidadFiltrados = countFiltrados);
+
+            return result;
         }
 
         public Task<List<OrdenDePedido>> ObtenerPedidosPendientesDeFacturacionAsync(int clienteId)

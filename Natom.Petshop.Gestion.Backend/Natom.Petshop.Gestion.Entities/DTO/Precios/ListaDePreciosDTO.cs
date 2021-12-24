@@ -20,11 +20,16 @@ namespace Natom.Petshop.Gestion.Entities.DTO.Precios
         [JsonProperty("activo")]
         public bool Activo { get; set; }
 
+        [JsonProperty("esPorcentual")]
+        public bool EsPorcentual { get; set; }
+
+
         public ListaDePreciosDTO From(ListaDePrecios entity)
         {
             EncryptedId = EncryptionService.Encrypt(entity.ListaDePreciosId);
             Descripcion = entity.Descripcion;
             Activo = entity.Activo;
+            EsPorcentual = entity.EsPorcentual;
 
             return this;
         }

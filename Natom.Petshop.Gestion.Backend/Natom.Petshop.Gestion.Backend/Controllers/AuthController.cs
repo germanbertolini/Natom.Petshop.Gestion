@@ -36,6 +36,11 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
 
                 var manager = new UsuariosManager(_serviceProvider);
                 var usuario = await manager.LoginAsync(email, password);
+
+                //RESTRICCIÓN DE ACCESO: SOLO ADMIN PUEDE INGRESAR FUERA DEL HORARIO LABORAL
+                if (usuario.UsuarioId != 0 && (DateTime.Now.Hour >= 21 || DateTime.Now.Hour <= 6))
+                    throw new HandledException("Acceso denegado.");
+
                 var permisos = await manager.ObtenerPermisosAsync(usuario.UsuarioId);
                 var tokenDurationInSeconds = 24 * 60 * 60; //24 HORAS
                 var token = OAuthService.GenerateAccessToken(scope: "gestionBackend", usuario, permisos, tokenDurationInSeconds);

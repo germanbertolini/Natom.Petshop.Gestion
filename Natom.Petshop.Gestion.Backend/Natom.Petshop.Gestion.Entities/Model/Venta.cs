@@ -31,5 +31,8 @@ namespace Natom.Petshop.Gestion.Entities.Model
 		public int PesoTotalEnGramos { get; set; }
 
 		public List<VentaDetalle> Detalle { get; set; }
-	}
+
+		[NotMapped]
+        public int CantidadFiltrados { get; set; }
+    }
 }

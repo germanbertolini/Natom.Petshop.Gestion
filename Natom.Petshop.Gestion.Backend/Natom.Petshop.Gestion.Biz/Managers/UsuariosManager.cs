@@ -76,7 +76,7 @@ namespace Natom.Petshop.Gestion.Biz.Managers
                             .Where(p => !p.FechaHoraBaja.HasValue)
                             .CountAsync();
 
-        public Task<List<Usuario>> ObtenerUsuariosDataTableAsync(int start, int size, string filter, int sortColumnIndex, string sortDirection)
+        public async Task<List<Usuario>> ObtenerUsuariosDataTableAsync(int start, int size, string filter, int sortColumnIndex, string sortDirection)
         {
             var queryable = _db.Usuarios.Where(p => !p.FechaHoraBaja.HasValue);
 
@@ -101,11 +101,17 @@ namespace Natom.Petshop.Gestion.Biz.Managers
                                                                   sortColumnIndex == 3 ? c.FechaHoraAlta.Ticks.ToString() :
                                                             "");
 
+            var countFiltrados = queryableOrdered.Count();
+
             //SKIP Y TAKE
-            return queryableOrdered
+            var result = await queryableOrdered
                     .Skip(start)
                     .Take(size)
                     .ToListAsync();
+
+            result.ForEach(r => r.CantidadFiltrados = countFiltrados);
+
+            return result;
         }
 
         public async Task<Usuario> GuardarUsuarioAsync(IConfiguration configuration, UserDTO user)

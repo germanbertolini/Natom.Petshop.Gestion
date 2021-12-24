@@ -45,7 +45,7 @@ namespace Natom.Petshop.Gestion.Biz.Managers
                     .ToListAsync();
         }
 
-        public Task<List<Producto>> ObtenerProductosDataTableAsync(int start, int size, string filter, int sortColumnIndex, string sortDirection, string statusFilter)
+        public async Task<List<Producto>> ObtenerProductosDataTableAsync(int start, int size, string filter, int sortColumnIndex, string sortDirection, string statusFilter)
         {
             var queryable = _db.Productos
                                     .Include(p => p.Marca)
@@ -78,11 +78,17 @@ namespace Natom.Petshop.Gestion.Biz.Managers
                                                                             sortColumnIndex == 2 ? c.Marca.Descripcion :
                                                             "");
 
+            var countFiltrados = queryableOrdered.Count();
+
             //SKIP Y TAKE
-            return queryableOrdered
+            var result = await queryableOrdered
                     .Skip(start)
                     .Take(size)
                     .ToListAsync();
+
+            result.ForEach(r => r.CantidadFiltrados = countFiltrados);
+
+            return result;
         }
 
         public async Task<Producto> GuardarProductoAsync(ProductoDTO productoDto)

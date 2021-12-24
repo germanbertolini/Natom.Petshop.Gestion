@@ -7,6 +7,8 @@ import { LoginResult } from '../classes/dto/auth/login-result.dto';
 import { ApiResult } from '../classes/dto/shared/api-result.dto';
 import { UserDTO } from "../classes/dto/user.dto";
 import { ApiService } from './api.service';
+import { Router } from '@angular/router';
+import { ConfirmDialogService } from '../components/confirm-dialog/confirm-dialog.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +18,10 @@ export class AuthService {
   private _current_token: string;
   private _current_permissions: Array<string>;
   
-  constructor(private cookieService: CookieService, private apiService: ApiService) {
+  constructor(private cookieService: CookieService,
+              private apiService: ApiService,
+              private routerService: Router,
+              private confirmDialogService: ConfirmDialogService) {
     this._current_user = null;
     this._current_token = null;
     this._current_permissions = null;
@@ -29,6 +34,19 @@ export class AuthService {
 
     let permissionsCookieData = this.cookieService.get('Auth.Current.Permissions');
     if (permissionsCookieData.length > 0) this._current_permissions = JSON.parse(atob(permissionsCookieData));
+
+    apiService.SetOnForbiddenAction(() => {
+      this.confirmDialogService.showError("La sesión expiró.", () => { location.href = "/"; });
+      this.logout(true);
+    });
+  }
+
+  public logout(cancelRedirect: boolean = false) {
+    this.cookieService.delete('Auth.Current.User');
+    this.cookieService.delete('Auth.Current.Token');
+    this.cookieService.delete('Auth.Current.Permissions');
+    if (!cancelRedirect)
+      location.href = "/";
   }
 
   public getCurrentUser() {

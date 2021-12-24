@@ -87,6 +87,7 @@ export class VentasComponent implements OnInit {
       pageLength: 10,
       serverSide: true,
       processing: true,
+      paging: true,
       info: true,
       language: {
         emptyTable: '',

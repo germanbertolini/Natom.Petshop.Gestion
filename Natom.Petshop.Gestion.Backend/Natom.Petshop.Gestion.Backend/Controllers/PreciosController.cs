@@ -45,7 +45,7 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
                     Data = new DataTableResponseDTO<PrecioListDTO>
                     {
                         RecordsTotal = precios.FirstOrDefault()?.CantidadRegistros ?? 0,
-                        RecordsFiltered = precios.Count,
+                        RecordsFiltered = precios.FirstOrDefault()?.CantidadFiltrados ?? 0,
                         Records = precios.Select(precio => new PrecioListDTO().From(precio)).ToList(),
                         ExtraData = new
                         {
@@ -292,7 +292,7 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
                     throw new HandledException("Falta la Lista de precios");
 
                 var manager = new PreciosManager(_serviceProvider);
-                var precioActual = await manager.ObtenerPrecioActualAsync(productoId, listaDePreciosId);
+                var precioActual = manager.ObtenerPrecioActual(productoId, listaDePreciosId);
 
                 return Ok(new ApiResultDTO<decimal?>
                 {

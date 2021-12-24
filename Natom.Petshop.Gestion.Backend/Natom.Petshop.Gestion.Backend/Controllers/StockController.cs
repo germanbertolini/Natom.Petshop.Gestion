@@ -46,7 +46,7 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
                     Data = new DataTableResponseDTO<StockListDTO>
                     {
                         RecordsTotal = movimientos.FirstOrDefault()?.CantidadRegistros ?? 0,
-                        RecordsFiltered = movimientos.Count,
+                        RecordsFiltered = movimientos.FirstOrDefault()?.CantidadFiltrados ?? 0,
                         Records = movimientos.Select(movimiento => new StockListDTO().From(movimiento)).ToList(),
                         ExtraData = new
                         {

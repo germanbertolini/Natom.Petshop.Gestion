@@ -23,5 +23,8 @@ namespace Natom.Petshop.Gestion.Entities.Model
 		public DateTime? FechaHoraBaja { get; set; }
 
 		public List<UsuarioPermiso> Permisos { get; set; }
-	}
+
+		[NotMapped]
+        public int CantidadFiltrados { get; set; }
+    }
 }

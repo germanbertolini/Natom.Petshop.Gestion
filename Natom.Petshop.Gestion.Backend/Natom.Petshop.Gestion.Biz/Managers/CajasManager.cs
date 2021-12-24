@@ -19,7 +19,7 @@ namespace Natom.Petshop.Gestion.Biz.Managers
                     => _db.MovimientosCajaDiaria
                             .CountAsync();
 
-        public Task<List<MovimientoCajaDiaria>> ObtenerMovimientosCajaDiariaDataTableAsync(int start, int size, string filter, int sortColumnIndex, string sortDirection, DateTime? dateTimeFilter)
+        public async Task<List<MovimientoCajaDiaria>> ObtenerMovimientosCajaDiariaDataTableAsync(int start, int size, string filter, int sortColumnIndex, string sortDirection, DateTime? dateTimeFilter)
         {
             var queryable = _db.MovimientosCajaDiaria.Include(m => m.Usuario).Where(u => true);
 
@@ -66,11 +66,17 @@ namespace Natom.Petshop.Gestion.Biz.Managers
                                                             "");
             }
 
+            var countFiltrados = queryableOrdered.Count();
+
             //SKIP Y TAKE
-            return queryableOrdered
+            var result = await queryableOrdered
                     .Skip(start)
                     .Take(size)
                     .ToListAsync();
+
+            result.ForEach(r => r.CantidadFiltrados = countFiltrados);
+
+            return result;
         }
 
         public Task<decimal> ObtenerSaldoActualCajaDiariaAsync(DateTime? dateTimeFilter = null)
@@ -117,7 +123,7 @@ namespace Natom.Petshop.Gestion.Biz.Managers
                     => _db.MovimientosCajaFuerte
                             .CountAsync();
 
-        public Task<List<MovimientoCajaFuerte>> ObtenerMovimientosCajaFuerteDataTableAsync(int start, int size, string filter, int sortColumnIndex, string sortDirection, DateTime? dateTimeFilter)
+        public async Task<List<MovimientoCajaFuerte>> ObtenerMovimientosCajaFuerteDataTableAsync(int start, int size, string filter, int sortColumnIndex, string sortDirection, DateTime? dateTimeFilter)
         {
             var queryable = _db.MovimientosCajaFuerte.Include(m => m.Usuario).Where(u => true);
 
@@ -164,11 +170,17 @@ namespace Natom.Petshop.Gestion.Biz.Managers
                                                             "");
             }
 
+            var countFiltrados = queryableOrdered.Count();
+
             //SKIP Y TAKE
-            return queryableOrdered
+            var result = await queryableOrdered
                     .Skip(start)
                     .Take(size)
                     .ToListAsync();
+
+            result.ForEach(r => r.CantidadFiltrados = countFiltrados);
+
+            return result;
         }
 
         public Task<decimal> ObtenerSaldoActualCajaFuerteAsync(DateTime? dateTimeFilter = null)

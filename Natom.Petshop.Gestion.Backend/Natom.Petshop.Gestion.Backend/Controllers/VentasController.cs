@@ -42,7 +42,7 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
                     Data = new DataTableResponseDTO<VentaListDTO>
                     {
                         RecordsTotal = ventasCount,
-                        RecordsFiltered = ventas.Count,
+                        RecordsFiltered = ventas.FirstOrDefault()?.CantidadFiltrados ?? 0,
                         Records = ventas.Select(venta => new VentaListDTO().From(venta)).ToList()
                     }
                 });

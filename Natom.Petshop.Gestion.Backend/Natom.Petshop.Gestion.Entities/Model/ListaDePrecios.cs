@@ -15,5 +15,11 @@ namespace Natom.Petshop.Gestion.Entities.Model
         public int ListaDePreciosId { get; set; }
 	    public string Descripcion { get; set; }
         public bool Activo { get; set; }
+        public bool EsPorcentual { get; set; }
+        public decimal? IncrementoPorcentaje { get; set; }
+
+        public int? IncrementoDeListaDePreciosId { get; set; }
+        [ForeignKey("IncrementoDeListaDePreciosId")]
+        public ListaDePrecios IncrementoDeListaDePrecios { get; set; }
     }
 }

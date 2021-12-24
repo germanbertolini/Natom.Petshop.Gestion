@@ -20,11 +20,9 @@
         <div class="input-group-prepend">
           <span class="input-group-text" id="basic-addon1">Lista</span>
         </div>
-        <select class="form-control" size="1" #filtroListaDePrecios (change)="onFiltroListaDePreciosChange(filtroListaDePrecios.value)">
-          <option value="" selected>Todas</option>
-          <option value="1">Lista de precios 1</option>
-          <option value="2">Lista de precios 2</option>
-          <option value="3">Lista de precios 3</option>
+        <select class="form-control" size="1" #filtroListaDePrecios [ngModel]="filterListaValue" (change)="onFiltroListaDePreciosChange(filtroListaDePrecios.value)">
+          <option value="">Todas</option>
+          <option *ngFor="let lista of ListasDePrecios" [ngStyle]="{display:(lista.esPorcentual ? 'none' : 'inline')}" value="{{ lista.encrypted_id }}">{{ lista.descripcion }}</option>
         </select>
       </div>
     </div>

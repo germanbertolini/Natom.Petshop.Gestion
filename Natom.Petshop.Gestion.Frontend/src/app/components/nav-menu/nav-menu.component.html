@@ -102,7 +102,7 @@
               Usuario
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" [routerLink]="['/logout']"><i class="fa fa-sign-out" aria-hidden="true"></i> Cerrar sesión</a>
+              <a class="dropdown-item" (click)="authService.logout()"><i class="fa fa-sign-out" aria-hidden="true"></i> Cerrar sesión</a>
             </div>
           </li>
         </ul>
