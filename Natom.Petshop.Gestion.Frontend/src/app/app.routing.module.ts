@@ -53,6 +53,20 @@ import { ProveedorCrudComponent } from "./views/proveedores/crud/proveedor-crud.
 import { VerProveedoresGuard } from "./guards/proveedores/proveedores.ver.guards";
 import { CRUDProveedoresGuard } from "./guards/proveedores/proveedores.crud.guards";
 import { ProveedoresComponent } from "./views/proveedores/proveedores.component";
+import { ReportesListadosVentasPorProductoProveedorComponent } from "./views/reportes/listados/ventas-por-producto-proveedor/reportes-listados-ventas-por-producto-proveedor.component";
+import { ClientesQueNoCompranDesdeFechaComponent } from "./views/reportes/listados/clientes-que-no-compran-desde-fecha/clientes-que-no-compran-desde-fecha.component";
+import { KilosCompradosPorCadaProveedorComponent } from "./views/reportes/estadistica/kilos-comprados-por-cada-proveedor/kilos-comprados-por-cada-proveedor.component";
+import { VentasRepartoVsMostradorComponent } from "./views/reportes/estadistica/ventas-reparto-vs-mostrador/ventas-reparto-vs-mostrador.component";
+import { TotalVentasPorListaDePreciosComponent } from "./views/reportes/estadistica/total-ventas-por-lista-de-precios/total-ventas-por-lista-de-precios.component";
+import { ReportesEstadisticaComprasComponent } from "./views/reportes/estadistica/compras/reportes-estadistica-compras.component";
+import { ReportesEstadisticaGananciasComponent } from "./views/reportes/estadistica/ganancias/reportes-estadistica-ganancias.component";
+import { KilosCompradosPorProveedorGuard } from "./guards/reportes/estadistica/kilos-comprados-por-proveedor.guards";
+import { VentasMostradorVsRepartoGuard } from "./guards/reportes/estadistica/ventas-mostrador-vs-reparto.guards";
+import { VentasPorListsaDePreciosGuard } from "./guards/reportes/estadistica/ventas-por-lista-de-precios.guards";
+import { ReportesEstadisticasComprasGuard } from "./guards/reportes/estadistica/reportes-estadisticas-compras.guards";
+import { ReportesEstadisticasGananciasGuard } from "./guards/reportes/estadistica/reportes-estadisticas-ganancias.guards";
+import { VentasPorProductoVendedorGuard } from "./guards/reportes/listados/ventas-por-producto-vendedor.guards";
+import { ClientesQueNoCompranDesdeFechaGuard } from "./guards/reportes/listados/clientes-que-no-compran-desde-fecha.guards";
 
 const appRoutes: Routes = [
     { path: 'login', component: LoginComponent, pathMatch: 'full' },
@@ -93,6 +107,13 @@ const appRoutes: Routes = [
     { canActivate: [ AuthGuard, NuevoPedidoGuard ], path: "pedidos/new", component: PedidoCrudComponent },
     { canActivate: [ AuthGuard, VerVentasGuard ], path: "ventas", component: VentasComponent },
     { canActivate: [ AuthGuard, NuevoVentasGuard ], path: "ventas/new", component: VentaCrudComponent },
+    { canActivate: [ AuthGuard, VentasPorProductoVendedorGuard ], path: "reportes/listados/ventas-por-producto-vendedor", component: ReportesListadosVentasPorProductoProveedorComponent },
+    { canActivate: [ AuthGuard, ClientesQueNoCompranDesdeFechaGuard ], path: "reportes/listados/clientes-que-no-compran-desde-fecha", component: ClientesQueNoCompranDesdeFechaComponent },
+    { canActivate: [ AuthGuard, KilosCompradosPorProveedorGuard ], path: "reportes/estadistica/kilos-comprados-por-cada-proveedor", component: KilosCompradosPorCadaProveedorComponent },
+    { canActivate: [ AuthGuard, VentasMostradorVsRepartoGuard ], path: "reportes/estadistica/ventas-reparto-vs-mostrador", component: VentasRepartoVsMostradorComponent },
+    { canActivate: [ AuthGuard, VentasPorListsaDePreciosGuard ], path: "reportes/estadistica/total-ventas-por-lista-de-precios", component: TotalVentasPorListaDePreciosComponent },
+    { canActivate: [ AuthGuard, ReportesEstadisticasComprasGuard ], path: "reportes/estadistica/compras", component: ReportesEstadisticaComprasComponent },
+    { canActivate: [ AuthGuard, ReportesEstadisticasGananciasGuard ], path: "reportes/estadistica/ganancias", component: ReportesEstadisticaGananciasComponent }
 ]
 
 @NgModule({

@@ -91,6 +91,27 @@
               <a *ngIf="authService.can('ventas_nuevo')" class="dropdown-item" [routerLink]="['/ventas/new']">[+] Nueva facturación</a>
             </div>
           </li>
+
+          <li *ngIf="authService.can('REPORTES_LISTADO_VENTAS_POR_PRODUCTO')
+                      || authService.can('REPORTES_LISTADO_CLIENTES_QUE_NO_COMPRAN')
+                      || authService.can('REPORTES_ESTADISTICA_KILOS_COMPRADOS_POR_PROVEEDOR')
+                      || authService.can('REPORTES_ESTADISTICA_VENTAS_REPARTO_MOSTRADOR')
+                      || authService.can('REPORTES_ESTADISTICA_VENTAS_POR_LISTA_DE_PRECIOS')
+                      || authService.can('REPORTES_COMPRAS')
+                      || authService.can('REPORTES_GANANCIAS')" class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Reportes
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <a *ngIf="authService.can('REPORTES_LISTADO_VENTAS_POR_PRODUCTO')" class="dropdown-item" [routerLink]="['/reportes/listados/ventas-por-producto-vendedor']">Listado de ventas por producto y/o proveedor</a>
+              <a *ngIf="authService.can('REPORTES_LISTADO_CLIENTES_QUE_NO_COMPRAN')" class="dropdown-item" [routerLink]="['/reportes/listados/clientes-que-no-compran-desde-fecha']">Listado de clientes que no compran desde una cierta fecha</a>
+              <a *ngIf="authService.can('REPORTES_ESTADISTICA_KILOS_COMPRADOS_POR_PROVEEDOR')" class="dropdown-item" [routerLink]="['/reportes/estadistica/kilos-comprados-por-cada-proveedor']">Estadística de kilos comprados por proveedor</a>
+              <a *ngIf="authService.can('REPORTES_ESTADISTICA_VENTAS_REPARTO_MOSTRADOR')" class="dropdown-item" [routerLink]="['/reportes/estadistica/ventas-reparto-vs-mostrador']">Estadística de cuánto vendió reparto vs mostrador</a>
+              <a *ngIf="authService.can('REPORTES_ESTADISTICA_VENTAS_POR_LISTA_DE_PRECIOS')" class="dropdown-item" [routerLink]="['/reportes/estadistica/total-ventas-por-lista-de-precios']">Estadística de cuánto se vendió por cada lista de precios</a>
+              <a *ngIf="authService.can('REPORTES_COMPRAS')" class="dropdown-item" [routerLink]="['/reportes/estadistica/compras']">Estadística de compras</a>
+              <a *ngIf="authService.can('REPORTES_GANANCIAS')" class="dropdown-item" [routerLink]="['/reportes/estadistica/ganancias']">Estadística de ganancias</a>
+            </div>
+          </li>
         </ul>
       </div>
 

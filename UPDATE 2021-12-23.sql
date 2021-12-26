@@ -294,5 +294,8 @@ INSERT INTO Permiso (PermisoId, Descripcion) VALUES ('STOCK_CONTROL', 'Stock: Co
 
 GO
 
+UPDATE Permiso SET Descripcion = 'Tesorería: Registrar movimientos' WHERE PermisoId = 'CAJA_FUERTE_NUEVO_MOVIMIENTO';
+UPDATE Permiso SET Descripcion = 'Tesorería: Ver movimientos' WHERE PermisoId = 'CAJA_FUERTE_VER';
 
+GO
 

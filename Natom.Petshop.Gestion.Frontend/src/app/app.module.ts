@@ -62,6 +62,14 @@ import { ProveedorCrudComponent } from './views/proveedores/crud/proveedor-crud.
 import { ProveedoresComponent } from './views/proveedores/proveedores.component';
 import { SpinnerLoadingComponent } from './components/spinner-loading/spinner-loading.component';
 import { SpinnerLoadingService } from './components/spinner-loading/spinner-loading.service';
+import { ReportesListadosVentasPorProductoProveedorComponent } from './views/reportes/listados/ventas-por-producto-proveedor/reportes-listados-ventas-por-producto-proveedor.component';
+import { ClientesQueNoCompranDesdeFechaComponent } from './views/reportes/listados/clientes-que-no-compran-desde-fecha/clientes-que-no-compran-desde-fecha.component';
+import { KilosCompradosPorCadaProveedorComponent } from './views/reportes/estadistica/kilos-comprados-por-cada-proveedor/kilos-comprados-por-cada-proveedor.component';
+import { VentasRepartoVsMostradorComponent } from './views/reportes/estadistica/ventas-reparto-vs-mostrador/ventas-reparto-vs-mostrador.component';
+import { TotalVentasPorListaDePreciosComponent } from './views/reportes/estadistica/total-ventas-por-lista-de-precios/total-ventas-por-lista-de-precios.component';
+import { ReportesEstadisticaComprasComponent } from './views/reportes/estadistica/compras/reportes-estadistica-compras.component';
+import { ReportesEstadisticaGananciasComponent } from './views/reportes/estadistica/ganancias/reportes-estadistica-ganancias.component';
+
 
 export function OnInit(jsonAppConfigService: JsonAppConfigService) {
   return () => {
@@ -106,6 +114,13 @@ export function OnInit(jsonAppConfigService: JsonAppConfigService) {
     PedidoCrudComponent,
     VentasComponent,
     VentaCrudComponent,
+    ReportesListadosVentasPorProductoProveedorComponent,
+    ClientesQueNoCompranDesdeFechaComponent,
+    KilosCompradosPorCadaProveedorComponent,
+    VentasRepartoVsMostradorComponent,
+    TotalVentasPorListaDePreciosComponent,
+    ReportesEstadisticaComprasComponent,
+    ReportesEstadisticaGananciasComponent,
     NgbdDatepickerPopup
   ],
   imports: [

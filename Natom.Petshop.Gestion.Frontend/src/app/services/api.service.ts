@@ -22,6 +22,10 @@ export class ApiService {
         this.onForbidden = onForbiddenAction;
     }
 
+    public OpenNewTab(relativeUrl: string) {
+        window.open(this.jsonAppConfig.baseURL + relativeUrl, "_blank");
+    }
+
     public DoGETWithObservable(relativeUrl: string, headers: HttpHeaders = null) : Observable<Object> {
         headers = this.SetAPIHeaders(headers);
         return this.httpClient.get(this.jsonAppConfig.baseURL + relativeUrl, { headers: headers });
