@@ -76,5 +76,22 @@ namespace Natom.Petshop.Gestion.Biz.Managers
                         .Where(m => m.ProductoId == productoId && m.DepositoId == (depositoId ?? m.DepositoId))
                         .SumAsync(m => (int?)(m.Tipo == "I" ? m.Cantidad : m.Cantidad * -1) ?? 0);
         }
+
+        public async Task MarcarMovimientosComoControladoAsync(int usuarioId, int movimientoStockId)
+        {
+            var ahora = DateTime.Now;
+            var ultimoMovimiento = await _db.MovimientosStock.FirstAsync(m => m.MovimientoStockId == movimientoStockId);
+            var movimientosAnteriores = await _db.MovimientosStock.Where(m => m.MovimientoStockId <= ultimoMovimiento.MovimientoStockId
+                                                                            && m.DepositoId == ultimoMovimiento.DepositoId
+                                                                            && m.ProductoId == ultimoMovimiento.ProductoId
+                                                                            && m.FechaHoraControlado == null).ToListAsync();
+            foreach (var movimiento in movimientosAnteriores)
+            {
+                _db.Entry(movimiento).State = EntityState.Modified;
+                movimiento.FechaHoraControlado = ahora;
+                movimiento.ControladoUsuarioId = usuarioId;
+            }
+            await _db.SaveChangesAsync();
+        }
     }
 }

@@ -179,6 +179,10 @@ END
 
 GO
 
+ALTER TABLE MovimientoStock ADD FechaHoraControlado DATETIME, ControladoUsuarioId INT;
+
+GO
+
 ALTER PROCEDURE [dbo].[spMovimientosStockList]
 (
 	@DepositoId INT = NULL,
@@ -195,6 +199,7 @@ BEGIN
 	SELECT
 		M.MovimientoStockId,
 		M.FechaHora,
+		M.FechaHoraControlado,
 		D.Descripcion AS Deposito,
 		P.ProductoId,
 		'(' + P.Codigo + ') ' + MA.Descripcion + ' ' + P.DescripcionCorta AS Producto,
@@ -237,6 +242,7 @@ BEGIN
 	SELECT
 		M.MovimientoStockId,
 		M.FechaHora,
+		M.FechaHoraControlado,
 		M.Deposito,
 		M.Producto,
 		M.Tipo,
@@ -283,4 +289,10 @@ BEGIN
 END
 
 GO
+
+INSERT INTO Permiso (PermisoId, Descripcion) VALUES ('STOCK_CONTROL', 'Stock: Conteo y control');
+
+GO
+
+
 

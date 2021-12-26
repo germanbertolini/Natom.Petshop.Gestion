@@ -130,15 +130,19 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
             }
         }
 
-        // POST: stock/save
+
+
+        // POST: stock/control?encryptedId={encryptedId}
         [HttpPost]
-        [ActionName("save")]
-        public async Task<IActionResult> PostSaveAsync([FromBody] MovimientoStockDTO movimientoDto)
+        [ActionName("control")]
+        public async Task<IActionResult> PostSaveAsync([FromQuery] string encryptedId)
         {
             try
             {
+                int movimientoStockId = EncryptionService.Decrypt<int>(encryptedId);
+
                 var manager = new StockManager(_serviceProvider);
-                await manager.GuardarMovimientoAsync((int)(_token?.UserId ?? 0), movimientoDto);
+                await manager.MarcarMovimientosComoControladoAsync((int)(_token?.UserId ?? 0), movimientoStockId);
 
                 return Ok(new ApiResultDTO
                 {

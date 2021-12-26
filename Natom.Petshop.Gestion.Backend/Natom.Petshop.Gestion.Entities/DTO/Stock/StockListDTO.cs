@@ -1,4 +1,5 @@
 ﻿using Natom.Petshop.Gestion.Entities.Model.Results;
+using Natom.Petshop.Gestion.Entities.Services;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -10,8 +11,14 @@ namespace Natom.Petshop.Gestion.Entities.DTO.Stock
 {
     public class StockListDTO
     {
+        [JsonProperty("encrypted_id")]
+        public string EncryptedId { get; set; }
+
         [JsonProperty("fechaHora")]
         public DateTime FechaHora { get; set; }
+
+        [JsonProperty("fechaHoraControlado")]
+        public DateTime? FechaHoraControlado { get; set; }
 
         [JsonProperty("deposito")]
         public string Deposito { get; set; }
@@ -36,6 +43,7 @@ namespace Natom.Petshop.Gestion.Entities.DTO.Stock
 
         public StockListDTO From(spMovimientosStockListResult entity)
         {
+            EncryptedId = EncryptionService.Encrypt(entity.MovimientoStockId);
             FechaHora = entity.FechaHora;
             Deposito = entity.Deposito;
             Producto = entity.Producto;
@@ -44,6 +52,7 @@ namespace Natom.Petshop.Gestion.Entities.DTO.Stock
             Reservado = entity.Reservado;
             Stock = entity.Stock;
             Observaciones = entity.Observaciones;
+            FechaHoraControlado = entity.FechaHoraControlado;
 
             return this;
         }

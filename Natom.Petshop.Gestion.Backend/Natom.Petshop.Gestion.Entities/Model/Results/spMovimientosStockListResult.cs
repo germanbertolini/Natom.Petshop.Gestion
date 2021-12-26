@@ -10,7 +10,9 @@ namespace Natom.Petshop.Gestion.Entities.Model.Results
     [Keyless]
     public class spMovimientosStockListResult
     {
+        public int MovimientoStockId { get; set; }
         public DateTime FechaHora { get; set; }
+        public DateTime? FechaHoraControlado { get; set; }
         public string Deposito { get; set; }
         public string Producto { get; set; }
         public string Tipo { get; set; }

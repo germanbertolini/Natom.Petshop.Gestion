@@ -223,7 +223,7 @@ namespace Natom.Petshop.Gestion.Biz.Managers
         }
 
         public Task<List<Permiso>> ObtenerListaPermisosAsync()
-                        => _db.Permisos.ToListAsync();
+                        => _db.Permisos.OrderBy(p => p.PermisoId).ToListAsync();
 
         public Task<Usuario> ObtenerUsuarioAsync(int usuarioId)
                         => _db.Usuarios

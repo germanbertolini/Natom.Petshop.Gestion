@@ -13,6 +13,7 @@ import { DepositoDTO } from "src/app/classes/dto/stock/deposito.dto";
 import { DataTableDirective } from "angular-datatables/src/angular-datatables.directive";
 import { ProductoListDTO } from "src/app/classes/dto/productos/producto-list.dto";
 import { AutocompleteResultDTO } from "src/app/classes/dto/shared/autocomplete-result.dto";
+import { AuthService } from "src/app/services/auth.service";
 
 @Component({
   selector: 'app-stock',
@@ -40,7 +41,8 @@ export class StockComponent implements OnInit {
   constructor(private apiService: ApiService,
               private routerService: Router,
               private notifierService: NotifierService,
-              private confirmDialogService: ConfirmDialogService) {
+              private confirmDialogService: ConfirmDialogService,
+              private authService: AuthService) {
     this.depositoFilterValue = "";
     this.productoFilterValue = "";
     this.filtroFechaValue = "";
@@ -71,6 +73,36 @@ export class StockComponent implements OnInit {
 
   closeProductoSearchPopUp() {
     setTimeout(() => { this.productosSearch = undefined; }, 200);    
+  }
+
+  onControlStockClick(id: string, deposito: string, producto: string){
+    let notifier = this.notifierService;
+    let confirmDialogService = this.confirmDialogService;
+    let apiService = this.apiService;
+    let dataTableInstance = this.dtElement.dtInstance;
+
+    if (this.depositoFilterValue === "") {
+      this.confirmDialogService.showError("Debes seleccionar primero un 'Depósito'.");
+      return;
+    }
+
+    this.confirmDialogService.showConfirm("¿Marcar a '" + producto + "' en '" + deposito + "' como 'Controlado'?", function () {  
+      apiService.DoPOST<ApiResult<any>>("stock/control?encryptedId=" + encodeURIComponent(id), {}, /*headers*/ null,
+                                            (response) => {
+                                              if (!response.success) {
+                                                confirmDialogService.showError(response.message);
+                                              }
+                                              else {
+                                                notifier.notify('success', "Marcado como 'Controlado' con éxito.");
+                                                dataTableInstance.then((dtInstance: DataTables.Api) => {
+                                                  dtInstance.ajax.reload()
+                                                });
+                                              }
+                                            },
+                                            (errorMessage) => {
+                                              confirmDialogService.showError(errorMessage);
+                                            });
+                                          });
   }
 
   onProductoSearchKeyUp(event) {
@@ -158,6 +190,7 @@ export class StockComponent implements OnInit {
                       });
       },
       columns: [
+        { data: 'control', orderable: false },
         { data: 'fechaHora', orderable: false },
         { data: 'deposito', orderable: false },
         { data: 'producto', orderable: false },

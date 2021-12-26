@@ -72,6 +72,7 @@
       <table datatable [dtOptions]="dtIndex" class="table table-striped table-bordered dt-responsive nowrap">
         <thead>
           <tr>
+            <th>Control</th>
             <th>Fecha / Hora</th>
             <th>Depósito</th>
             <th>Producto</th>
@@ -84,6 +85,10 @@
         </thead>
         <tbody>
           <tr *ngFor="let movimiento of Movimientos">
+            <td>
+              <a *ngIf="authService.can('stock_control') && movimiento.fechaHoraControlado === null" class="btn btn-success btn-sm control-smt-btn spacingLeft" (click)="onControlStockClick(movimiento.encrypted_id, movimiento.deposito, movimiento.producto)" data-toggle="tooltip" data-placement="top" title="Marcar como 'Controlado'"><i class="fa fa-check" aria-hidden="true"></i></a>
+              <b *ngIf="movimiento.fechaHoraControlado !== null">{{ movimiento.fechaHoraControlado  |  date:'dd/MM' }}</b>
+            </td>
             <td>{{ movimiento.fechaHora  |  date:'dd/MM/yyyy HH:mm' }} hs</td>
             <td>{{ movimiento.deposito }}</td>
             <td>{{ movimiento.producto }}</td>
