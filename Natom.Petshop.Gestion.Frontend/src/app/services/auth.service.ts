@@ -45,6 +45,8 @@ export class AuthService {
     this.cookieService.delete('Auth.Current.User');
     this.cookieService.delete('Auth.Current.Token');
     this.cookieService.delete('Auth.Current.Permissions');
+    this.cookieService.delete('Authorization');
+
     if (!cancelRedirect)
       location.href = "/";
   }
@@ -85,6 +87,7 @@ export class AuthService {
                           this.cookieService.set('Auth.Current.User', btoa(JSON.stringify(this._current_user)));
                           this.cookieService.set('Auth.Current.Token', btoa(JSON.stringify(this._current_token)));
                           this.cookieService.set('Auth.Current.Permissions', btoa(JSON.stringify(this._current_permissions)));
+                          this.cookieService.set('Authorization', 'Bearer ' + this._current_token);
 
                           onSuccess();
                         }

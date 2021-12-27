@@ -41,10 +41,17 @@ namespace Natom.Petshop.Gestion.Backend.Filters
                 if (!(_controller.Equals("auth") || (_controller.Equals("users") && _action.Equals("confirm"))))
                 {
                     IEnumerable<string> headerValuesForAuthorization = context.HttpContext.Request.Headers["Authorization"];
-                    if (headerValuesForAuthorization == null || headerValuesForAuthorization.Count() == 0) throw new HandledException("Falta el 'Authorization' header en el Request.");
-                    if (!headerValuesForAuthorization.ToString().StartsWith("Bearer")) throw new HandledException("'Authorization' header inválido.");
+                    string cookieValueForAuthorization = context.HttpContext.Request.Cookies["Authorization"];
+                    if ((headerValuesForAuthorization == null || headerValuesForAuthorization.Count() == 0) && string.IsNullOrEmpty(cookieValueForAuthorization)) throw new HandledException("Falta el 'Authorization' header en el Request.");
+
+                    //SI EL AUTHORIZATION NO VINO EN EL HEADER ENTONCES LO TOMAMOS DE LA COOKIE
+                    string authorization = string.IsNullOrEmpty(cookieValueForAuthorization)
+                                                ? headerValuesForAuthorization.ToString()
+                                                : cookieValueForAuthorization;
+
+                    if (!authorization.StartsWith("Bearer")) throw new HandledException("'Authorization' header inválido.");
                     
-                    string authorization = headerValuesForAuthorization.ToString().Replace("Bearer ", "");
+                    authorization = authorization.Replace("Bearer ", "");
 
                     token = OAuthService.Decode(authorization);
                     var expirationTime = OAuthService.UnixTimeStampToDateTime(token.ExpirationTime);

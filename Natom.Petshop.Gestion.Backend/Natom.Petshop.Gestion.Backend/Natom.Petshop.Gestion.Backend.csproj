@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AspNetCore.Reporting" Version="2.1.0" />
     <PackageReference Include="jose-jwt" Version="3.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="5.0.12" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.12" />
@@ -12,6 +13,25 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Natom.Petshop.Gestion.Biz\Natom.Petshop.Gestion.Biz.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Reporting\DataSetReporting.Designer.cs">
+      <DependentUpon>DataSetReporting.xsd</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Reporting\DataSetReporting.xsd">
+      <SubType>Designer</SubType>
+      <LastGenOutput>DataSetReporting.Designer.cs</LastGenOutput>
+      <Generator>MSDataSetGenerator</Generator>
+    </None>
+    <None Update="Reporting\OrdenDePedidoReport.rdlc">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>

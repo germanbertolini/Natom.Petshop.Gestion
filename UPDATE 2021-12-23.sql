@@ -299,3 +299,208 @@ UPDATE Permiso SET Descripcion = 'Tesorería: Ver movimientos' WHERE PermisoId = 
 
 GO
 
+INSERT INTO Permiso (PermisoId, Descripcion) 
+VALUES ('REPORTES_LISTADO_VENTAS_POR_PRODUCTO', 'Reporte: Listado de ventas por producto y/o proveedor'),
+('REPORTES_LISTADO_CLIENTES_QUE_NO_COMPRAN', 'Reporte: Listado de clientes que no compran desde una cierta fecha'),
+('REPORTES_ESTADISTICA_KILOS_COMPRADOS_POR_PROVEEDOR', 'Reporte: Estadística de kilos comprados por cada proveedor'),
+('REPORTES_ESTADISTICA_VENTAS_REPARTO_MOSTRADOR', 'Reporte: Estadística de cuánto vendió reparto vs mostrador'),
+('REPORTES_ESTADISTICA_VENTAS_POR_LISTA_DE_PRECIOS', 'Reporte: Estadística de cuánto se vendió por cada lista de precios'),
+('REPORTES_COMPRAS', 'Reporte: Compras'),
+('REPORTES_GANANCIAS', 'Reporte: Ganancias');
+
+GO
+
+CREATE PROCEDURE spReportOrdenDePedido
+	@OrdenDePedido INT
+AS
+BEGIN
+
+	SELECT
+		REPLACE(STR(OP.NumeroPedido, 8), SPACE(1), '0') AS Numero,
+		OP.FechaHoraPedido AS FechaHora,
+		CASE WHEN C.EsEmpresa = 1 THEN C.RazonSocial ELSE CONCAT(C.Nombre, ' ', C.Apellido) END AS Cliente,
+		CASE WHEN C.EsEmpresa = 1 THEN CONCAT('CUIT ', C.NumeroDocumento) ELSE CONCAT('DNI ', C.NumeroDocumento) END AS ClienteDocumento,
+		C.Domicilio AS ClienteDomicilio,
+		C.Localidad AS ClienteLocalidad,
+		CASE WHEN OP.NumeroRemito IS NULL OR OP.NumeroRemito = '' THEN '- SIN REMITO -' ELSE OP.NumeroRemito END AS RemitoNumero,
+		CASE WHEN OP.VentaId IS NULL THEN '- Pendiente -' ELSE REPLACE(STR(V.NumeroVenta, 8), SPACE(1), '0') END AS VentaNumero,
+		CASE WHEN OP.VentaId IS NULL THEN '- Pendiente -' ELSE CONCAT(V.TipoFactura, ' ', V.NumeroFactura) END AS VentaComprobante,
+		OP.EntregaEstimadaFecha AS EntregaFecha,
+		RH.Descripcion AS EntregaRangoHorario,
+		CASE WHEN OP.RetiraPersonalmente = 1 THEN '- Retira personalmente -' ELSE OP.EntregaDomicilio END AS EntregaDomicilio,
+		CASE WHEN OP.RetiraPersonalmente = 1 THEN '' ELSE OP.EntregaEntreCalles END AS EntregaEntreCalles,
+		CASE WHEN OP.RetiraPersonalmente = 1 THEN '' ELSE OP.EntregaLocalidad END AS EntregaLocalidad,
+		OP.EntregaTelefono1 AS EntregaTelefono1,
+		OP.EntregaTelefono2 AS EntregaTelefono2,
+		OP.EntregaObservaciones,
+		CASE WHEN OP.UsuarioId = 0 THEN 'Admin' ELSE CONCAT(U.Nombre, ' ', U.Apellido) END AS CargadoPor,
+		OP.Observaciones,
+		CASE WHEN OP.Activo = 0 THEN 'ANULADO' ELSE '' END AS Anulado,
+		CASE WHEN V.VentaId = 1 THEN 'FACTURADO' ELSE '' END AS Facturado,
+		CASE WHEN OP.MarcoEntregaFechaHora IS NOT NULL THEN 'ENTREGADO' ELSE '' END AS Entregado,
+		OP.MontoTotal,
+		(CAST(OP.PesoTotalEnGramos AS decimal(18,2)) / 1000) AS PesoTotalEnKilogramos,
+		P.Codigo AS DetalleCodigo,
+		P.DescripcionCorta AS DetalleDescripcion,
+		D.Cantidad AS DetalleCantidad,
+		CAST(D.PesoUnitarioEnGramos AS decimal(18,2)) / 1000 AS DetallePesoUnitarioEnKilogramos,
+		D.Precio AS DetallePrecioUnitario,
+		D.Precio * D.Cantidad AS DetallePrecioTotal,
+		(CAST(D.PesoUnitarioEnGramos AS decimal(18,2)) * D.Cantidad) / 1000 AS DetallePesoTotalEnKilogramos,
+		DEPO.Descripcion AS DetalleDeposito,
+		L.Descripcion AS DetalleListaDePrecios
+	FROM
+		OrdenDePedido OP WITH(NOLOCK)
+		INNER JOIN RangoHorario RH WITH(NOLOCK) ON RH.RangoHorarioId = OP.EntregaEstimadaRangoHorarioId
+		INNER JOIN Cliente C WITH(NOLOCK) ON C.ClienteId = OP.ClienteId
+		LEFT JOIN Venta V WITH(NOLOCK) ON V.VentaId = OP.VentaId AND V.Activo = 1
+		LEFT JOIN Usuario U WITH(NOLOCK) ON U.UsuarioId = OP.UsuarioId
+		INNER JOIN OrdenDePedidoDetalle D WITH(NOLOCK) ON D.OrdenDePedidoId = OP.OrdenDePedidoId
+		INNER JOIN Producto P WITH(NOLOCK) ON P.ProductoId = D.ProductoId
+		INNER JOIN Deposito DEPO WITH(NOLOCK) ON DEPO.DepositoId = D.DepositoId
+		INNER JOIN ListaDePrecios L WITH(NOLOCK) ON L.ListaDePreciosId = D.ListaDePreciosId
+	WHERE
+		OP.OrdenDePedidoId = @OrdenDePedido
+
+END
+
+GO
+
+CREATE PROCEDURE spReportRemito
+	@OrdenDePedido INT
+AS
+BEGIN
+
+	SELECT
+		REPLACE(STR(OP.NumeroPedido, 8), SPACE(1), '0') AS Numero,
+		OP.FechaHoraPedido AS FechaHora,
+		CASE WHEN C.EsEmpresa = 1 THEN C.RazonSocial ELSE CONCAT(C.Nombre, ' ', C.Apellido) END AS Cliente,
+		CASE WHEN C.EsEmpresa = 1 THEN CONCAT('CUIT ', C.NumeroDocumento) ELSE CONCAT('DNI ', C.NumeroDocumento) END AS ClienteDocumento,
+		C.Domicilio AS ClienteDomicilio,
+		C.Localidad AS ClienteLocalidad,
+		CASE WHEN OP.NumeroRemito IS NULL OR OP.NumeroRemito = '' THEN '- SIN REMITO -' ELSE OP.NumeroRemito END AS RemitoNumero,
+		CASE WHEN OP.VentaId IS NULL THEN '- Pendiente -' ELSE REPLACE(STR(V.NumeroVenta, 8), SPACE(1), '0') END AS VentaNumero,
+		CASE WHEN OP.VentaId IS NULL THEN '- Pendiente -' ELSE CONCAT(V.TipoFactura, ' ', V.NumeroFactura) END AS VentaComprobante,
+		OP.EntregaEstimadaFecha AS EntregaFecha,
+		RH.Descripcion AS EntregaRangoHorario,
+		CASE WHEN OP.RetiraPersonalmente = 1 THEN '- Retira personalmente -' ELSE OP.EntregaDomicilio END AS EntregaDomicilio,
+		CASE WHEN OP.RetiraPersonalmente = 1 THEN '' ELSE OP.EntregaEntreCalles END AS EntregaEntreCalles,
+		CASE WHEN OP.RetiraPersonalmente = 1 THEN '' ELSE OP.EntregaLocalidad END AS EntregaLocalidad,
+		OP.EntregaTelefono1 AS EntregaTelefono1,
+		OP.EntregaTelefono2 AS EntregaTelefono2,
+		OP.EntregaObservaciones,
+		CASE WHEN OP.UsuarioId = 0 THEN 'Admin' ELSE CONCAT(U.Nombre, ' ', U.Apellido) END AS CargadoPor,
+		OP.Observaciones,
+		CASE WHEN OP.Activo = 0 THEN 'ANULADO' ELSE '' END AS Anulado,
+		CASE WHEN V.VentaId = 1 THEN 'FACTURADO' ELSE '' END AS Facturado,
+		CASE WHEN OP.MarcoEntregaFechaHora IS NOT NULL THEN 'ENTREGADO' ELSE '' END AS Entregado,
+		OP.MontoTotal,
+		CAST(OP.PesoTotalEnGramos AS decimal(18,2)) / 1000 AS PesoTotalEnKilogramos,
+		P.Codigo AS DetalleCodigo,
+		P.DescripcionCorta AS DetalleDescripcion,
+		D.Cantidad AS DetalleCantidad,
+		CAST(D.PesoUnitarioEnGramos AS decimal(18,2)) / 1000 AS DetallePesoUnitarioEnKilogramos,
+		D.Precio AS DetallePrecioUnitario,
+		(CAST(D.PesoUnitarioEnGramos AS decimal(18,2)) / 1000) * D.Cantidad AS DetallePesoTotalEnKilogramos,
+		(D.Precio) * D.Cantidad AS DetallePrecioTotal,
+		DEPO.Descripcion AS DetalleDeposito,
+		L.Descripcion AS DetalleListaDePrecios
+	FROM
+		OrdenDePedido OP WITH(NOLOCK)
+		INNER JOIN RangoHorario RH WITH(NOLOCK) ON RH.RangoHorarioId = OP.EntregaEstimadaRangoHorarioId
+		INNER JOIN Cliente C WITH(NOLOCK) ON C.ClienteId = OP.ClienteId
+		LEFT JOIN Venta V WITH(NOLOCK) ON V.VentaId = OP.VentaId AND V.Activo = 1
+		LEFT JOIN Usuario U WITH(NOLOCK) ON U.UsuarioId = OP.UsuarioId
+		INNER JOIN OrdenDePedidoDetalle D WITH(NOLOCK) ON D.OrdenDePedidoId = OP.OrdenDePedidoId
+		INNER JOIN Producto P WITH(NOLOCK) ON P.ProductoId = D.ProductoId
+		INNER JOIN Deposito DEPO WITH(NOLOCK) ON DEPO.DepositoId = D.DepositoId
+		INNER JOIN ListaDePrecios L WITH(NOLOCK) ON L.ListaDePreciosId = D.ListaDePreciosId
+	WHERE
+		OP.OrdenDePedidoId = @OrdenDePedido
+
+END
+
+GO
+
+CREATE FUNCTION fnVentaGetRemitos
+(
+	@VentaId INT
+) RETURNS NVARCHAR(MAX)
+AS
+BEGIN
+
+	DECLARE @Return NVARCHAR(MAX) = '';
+
+	SELECT
+		@Return = STRING_AGG(CONCAT('RTO ', R.NumeroRemito), ', ')
+	FROM
+	(
+		SELECT DISTINCT
+			V.VentaId,
+			OP.NumeroRemito
+		FROM
+			Venta V WITH(NOLOCK)
+			INNER JOIN VentaDetalle D WITH(NOLOCK) ON D.VentaId = V.VentaId
+			INNER JOIN OrdenDePedidoDetalle OPD WITH(NOLOCK) ON OPD.OrdenDePedidoDetalleId = D.OrdenDePedidoDetalleId
+			INNER JOIN OrdenDePedido OP WITH(NOLOCK) ON OP.OrdenDePedidoId = OPD.OrdenDePedidoId AND OP.NumeroRemito IS NOT NULL AND OP.NumeroRemito != '' AND OP.Activo = 1
+		WHERE
+			V.VentaId = @VentaId
+	) AS R
+	GROUP BY
+		R.VentaId;
+
+	RETURN @Return;
+
+END
+
+GO
+
+CREATE PROCEDURE spReportVenta
+	@VentaId INT
+AS
+BEGIN
+
+	SELECT
+		CASE WHEN CHARINDEX('-',REVERSE(TipoFactura)) = 0 THEN 
+			SUBSTRING(TipoFactura, 1, 1)
+		ELSE
+			SUBSTRING(TipoFactura, LEN(TipoFactura) - CHARINDEX('-',REVERSE(TipoFactura)) + 2, LEN(TipoFactura))
+		END AS LetraComprobante,
+		REPLACE(STR(V.NumeroVenta, 8), SPACE(1), '0') AS VentaNumero,
+		CONCAT(V.TipoFactura, ' ', V.NumeroFactura) AS VentaComprobante,
+		V.FechaHoraVenta AS FechaHora,
+		CASE WHEN C.EsEmpresa = 1 THEN C.RazonSocial ELSE CONCAT(C.Nombre, ' ', C.Apellido) END AS Cliente,
+		CASE WHEN C.EsEmpresa = 1 THEN CONCAT('CUIT ', C.NumeroDocumento) ELSE CONCAT('DNI ', C.NumeroDocumento) END AS ClienteDocumento,
+		C.Domicilio AS ClienteDomicilio,
+		C.Localidad AS ClienteLocalidad,
+		dbo.fnVentaGetRemitos(V.VentaId) AS Remitos,
+		CASE WHEN V.UsuarioId = 0 THEN 'Admin' ELSE CONCAT(U.Nombre, ' ', U.Apellido) END AS FacturadoPor,
+		V.Observaciones,
+		CASE WHEN V.Activo = 0 THEN 'ANULADA' ELSE '' END AS Anulado,
+		V.MontoTotal,
+		CAST(V.PesoTotalEnGramos AS decimal(18,2)) / 1000 AS PesoTotalEnKilogramos,
+		P.Codigo AS DetalleCodigo,
+		P.DescripcionCorta AS DetalleDescripcion,
+		CASE WHEN OP.NumeroRemito IS NULL THEN '' ELSE CONCAT('RTO ', OP.NumeroRemito) END AS DetalleRemito,
+		D.Cantidad AS DetalleCantidad,
+		CAST(D.PesoUnitarioEnGramos AS decimal(18,2)) / 1000 AS DetallePesoUnitarioEnKilogramos,
+		D.Precio AS DetallePrecioUnitario,
+		(CAST(D.PesoUnitarioEnGramos AS decimal(18,2)) / 1000) * D.Cantidad AS DetallePesoUnitarioEnKilogramos,
+		(D.Precio) * D.Cantidad AS DetallePrecioUnitario,
+		L.Descripcion AS DetalleListaDePrecios
+	FROM
+		Venta V WITH(NOLOCK)
+		INNER JOIN Cliente C WITH(NOLOCK) ON C.ClienteId = V.ClienteId
+		LEFT JOIN Usuario U WITH(NOLOCK) ON U.UsuarioId = V.UsuarioId
+		INNER JOIN VentaDetalle D WITH(NOLOCK) ON D.VentaId = V.VentaId
+		LEFT JOIN OrdenDePedidoDetalle OPD WITH(NOLOCK) ON OPD.OrdenDePedidoDetalleId = D.OrdenDePedidoDetalleId
+		LEFT JOIN OrdenDePedido OP WITH(NOLOCK) ON OP.OrdenDePedidoId = OPD.OrdenDePedidoId AND OP.NumeroRemito IS NOT NULL AND OP.NumeroRemito != ''
+		INNER JOIN Producto P WITH(NOLOCK) ON P.ProductoId = D.ProductoId
+		INNER JOIN ListaDePrecios L WITH(NOLOCK) ON L.ListaDePreciosId = D.ListaDePreciosId
+	WHERE
+		V.VentaId = @VentaId
+
+END
+
+GO
+

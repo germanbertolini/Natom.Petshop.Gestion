@@ -37,7 +37,9 @@ namespace Natom.Petshop.Gestion.Biz
         public DbSet<spPrecioGetResult> spPrecioGetResult { get; set; }
         public DbSet<spPreciosListResult> spPreciosListResult { get; set; }
         public DbSet<spMovimientosStockListResult> spMovimientosStockListResult { get; set; }
-
+        public DbSet<spReportOrdenDePedidoResult> spReportOrdenDePedidoResult { get; set; }
+        public DbSet<spReportRemitoResult> spReportRemitoResult { get; set; }
+        public DbSet<spReportVentaResult> spReportVentaResult { get; set; }
 
         public BizDbContext(DbContextOptions<BizDbContext> options) : base(options)
         {

@@ -2,6 +2,7 @@
 using Natom.Petshop.Gestion.Biz.Exceptions;
 using Natom.Petshop.Gestion.Entities.DTO.Pedidos;
 using Natom.Petshop.Gestion.Entities.Model;
+using Natom.Petshop.Gestion.Entities.Model.Results;
 using Natom.Petshop.Gestion.Entities.Services;
 using System;
 using System.Collections.Generic;
@@ -110,6 +111,11 @@ namespace Natom.Petshop.Gestion.Biz.Managers
             result.ForEach(r => r.CantidadFiltrados = countFiltrados);
 
             return result;
+        }
+
+        public List<spReportOrdenDePedidoResult> ObtenerDataOrdenDePedidoReport(int ordenDePedidoId)
+        {
+             return _db.spReportOrdenDePedidoResult.FromSqlRaw("spReportOrdenDePedido {0}", ordenDePedidoId).AsEnumerable().ToList();
         }
 
         public Task<List<OrdenDePedido>> ObtenerPedidosPendientesDeFacturacionAsync(int clienteId)
