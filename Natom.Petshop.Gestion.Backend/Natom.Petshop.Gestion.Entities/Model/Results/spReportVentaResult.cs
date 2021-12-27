@@ -12,7 +12,8 @@ namespace Natom.Petshop.Gestion.Entities.Model.Results
     {
 		public string LetraComprobante { get; set; }
 		public string VentaNumero { get; set; }
-		public string VentaComprobante { get; set; }
+		public string NumeroComprobante { get; set; }
+		public string Comprobante { get; set; }
 		public DateTime FechaHora { get; set; }
 		public string Cliente { get; set; }
 		public string ClienteDocumento { get; set; }

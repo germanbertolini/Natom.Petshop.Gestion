@@ -47,7 +47,7 @@ export class PedidosComponent implements OnInit {
   }
 
   onPrintRemitoClick(id: string) {
-    console.log(id);
+    this.apiService.OpenNewTab("pedidos/imprimir/remito?encryptedId=" + encodeURIComponent(id));
   }
 
   onVerHistoricoCambiosClick(id: string) {

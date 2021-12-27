@@ -43,12 +43,8 @@ export class VentasComponent implements OnInit {
     });
   }
 
-  onPrintOrdenClick(id: string) {
-    console.log(id);
-  }
-
-  onPrintRemitoClick(id: string) {
-    console.log(id);
+  onPrintVentaClick(id: string) {
+    this.apiService.OpenNewTab("ventas/imprimir/comprobante?encryptedId=" + encodeURIComponent(id));
   }
 
   onVerHistoricoCambiosClick(id: string) {

@@ -2,6 +2,7 @@
 using Natom.Petshop.Gestion.Biz.Exceptions;
 using Natom.Petshop.Gestion.Entities.DTO.Ventas;
 using Natom.Petshop.Gestion.Entities.Model;
+using Natom.Petshop.Gestion.Entities.Model.Results;
 using Natom.Petshop.Gestion.Entities.Services;
 using System;
 using System.Collections.Generic;
@@ -230,6 +231,11 @@ namespace Natom.Petshop.Gestion.Biz.Managers
 
 
             return venta;
+        }
+
+        public List<spReportVentaResult> ObtenerDataVentaReport(int ventaId)
+        {
+            return _db.spReportVentaResult.FromSqlRaw("spReportVenta {0}", ventaId).AsEnumerable().ToList();
         }
 
         public async Task<List<OrdenDePedido>> AnularVentaAsync(int usuarioId, int ventaId)

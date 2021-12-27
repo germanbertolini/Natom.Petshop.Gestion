@@ -115,7 +115,6 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
             }
         }
 
-        // GET: pedidos/imprimir/data
         // GET: pedidos/imprimir/orden?encryptedId={encryptedId}
         [HttpGet]
         [ActionName("imprimir/orden")]
@@ -128,23 +127,42 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
 
                 var data = manager.ObtenerDataOrdenDePedidoReport(ordenDePedidoId);
 
-                //Report report = new Report();
-                //var path = Path.Combine(_hostingEnvironment.ContentRootPath, "Reporting", "OrdenDePedidoReport.rdlc");
-                //report.Load(path);
-
-                //report.RegisterData(data, "DataSet1");
-
-                //report.Prepare();
-
-                //Stream stream = null;
-                //report.Export(new FastReport.Export.PdfSimple.PDFSimpleExport(), stream);
-
-                //return File(stream, "application/pdf");
-
                 string mimtype = "";
                 int extension = 1;
                 Dictionary<string, string> parameters = new Dictionary<string, string>();
                 var path = Path.Combine(_hostingEnvironment.ContentRootPath, "Reporting", "OrdenDePedidoReport.rdlc");
+                var report = new LocalReport(path);
+                report.AddDataSource("DataSet1", data);
+                var result = report.Execute(RenderType.Pdf, extension, parameters, mimtype);
+                return File(result.MainStream, "application/pdf");
+            }
+            catch (HandledException ex)
+            {
+                return Ok(new ApiResultDTO { Success = false, Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                await LoggingService.LogExceptionAsync(_db, ex, usuarioId: (int)(_token?.UserId ?? 0), _userAgent);
+                return Ok(new ApiResultDTO { Success = false, Message = "Se ha producido un error interno." });
+            }
+        }
+
+        // GET: pedidos/imprimir/remito?encryptedId={encryptedId}
+        [HttpGet]
+        [ActionName("imprimir/remito")]
+        public async Task<IActionResult> GetImprimirRemitoAsync([FromQuery] string encryptedId)
+        {
+            try
+            {
+                var ordenDePedidoId = EncryptionService.Decrypt<int>(encryptedId);
+                var manager = new PedidosManager(_serviceProvider);
+
+                var data = manager.ObtenerDataRemitoReport(ordenDePedidoId);
+
+                string mimtype = "";
+                int extension = 1;
+                Dictionary<string, string> parameters = new Dictionary<string, string>();
+                var path = Path.Combine(_hostingEnvironment.ContentRootPath, "Reporting", "RemitoReport.rdlc");
                 var report = new LocalReport(path);
                 report.AddDataSource("DataSet1", data);
                 var result = report.Execute(RenderType.Pdf, extension, parameters, mimtype);

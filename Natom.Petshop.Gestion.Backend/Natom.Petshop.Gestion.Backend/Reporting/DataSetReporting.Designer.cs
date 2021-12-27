@@ -1809,7 +1809,7 @@ namespace Natom.Petshop.Gestion.Backend.Reporting {
             
             private global::System.Data.DataColumn columnVentaNumero;
             
-            private global::System.Data.DataColumn columnVentaComprobante;
+            private global::System.Data.DataColumn columnNumeroComprobante;
             
             private global::System.Data.DataColumn columnFechaHora;
             
@@ -1850,6 +1850,8 @@ namespace Natom.Petshop.Gestion.Backend.Reporting {
             private global::System.Data.DataColumn columnDetallePrecioTotal;
             
             private global::System.Data.DataColumn columnDetallePesoTotalEnKilogramos;
+            
+            private global::System.Data.DataColumn columnComprobante;
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
@@ -1902,9 +1904,9 @@ namespace Natom.Petshop.Gestion.Backend.Reporting {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
-            public global::System.Data.DataColumn VentaComprobanteColumn {
+            public global::System.Data.DataColumn NumeroComprobanteColumn {
                 get {
-                    return this.columnVentaComprobante;
+                    return this.columnNumeroComprobante;
                 }
             }
             
@@ -2070,6 +2072,14 @@ namespace Natom.Petshop.Gestion.Backend.Reporting {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn ComprobanteColumn {
+                get {
+                    return this.columnComprobante;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -2108,7 +2118,7 @@ namespace Natom.Petshop.Gestion.Backend.Reporting {
             public dtSpReportVentaResultRow AdddtSpReportVentaResultRow(
                         string LetraComprobante, 
                         string VentaNumero, 
-                        string VentaComprobante, 
+                        string NumeroComprobante, 
                         System.DateTime FechaHora, 
                         string Cliente, 
                         string ClienteDocumento, 
@@ -2128,12 +2138,13 @@ namespace Natom.Petshop.Gestion.Backend.Reporting {
                         decimal DetallePrecioUnitario, 
                         string DetalleListaDePrecios, 
                         decimal DetallePrecioTotal, 
-                        decimal DetallePesoTotalEnKilogramos) {
+                        decimal DetallePesoTotalEnKilogramos, 
+                        string Comprobante) {
                 dtSpReportVentaResultRow rowdtSpReportVentaResultRow = ((dtSpReportVentaResultRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         LetraComprobante,
                         VentaNumero,
-                        VentaComprobante,
+                        NumeroComprobante,
                         FechaHora,
                         Cliente,
                         ClienteDocumento,
@@ -2153,7 +2164,8 @@ namespace Natom.Petshop.Gestion.Backend.Reporting {
                         DetallePrecioUnitario,
                         DetalleListaDePrecios,
                         DetallePrecioTotal,
-                        DetallePesoTotalEnKilogramos};
+                        DetallePesoTotalEnKilogramos,
+                        Comprobante};
                 rowdtSpReportVentaResultRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowdtSpReportVentaResultRow);
                 return rowdtSpReportVentaResultRow;
@@ -2178,7 +2190,7 @@ namespace Natom.Petshop.Gestion.Backend.Reporting {
             internal void InitVars() {
                 this.columnLetraComprobante = base.Columns["LetraComprobante"];
                 this.columnVentaNumero = base.Columns["VentaNumero"];
-                this.columnVentaComprobante = base.Columns["VentaComprobante"];
+                this.columnNumeroComprobante = base.Columns["NumeroComprobante"];
                 this.columnFechaHora = base.Columns["FechaHora"];
                 this.columnCliente = base.Columns["Cliente"];
                 this.columnClienteDocumento = base.Columns["ClienteDocumento"];
@@ -2199,6 +2211,7 @@ namespace Natom.Petshop.Gestion.Backend.Reporting {
                 this.columnDetalleListaDePrecios = base.Columns["DetalleListaDePrecios"];
                 this.columnDetallePrecioTotal = base.Columns["DetallePrecioTotal"];
                 this.columnDetallePesoTotalEnKilogramos = base.Columns["DetallePesoTotalEnKilogramos"];
+                this.columnComprobante = base.Columns["Comprobante"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -2208,8 +2221,8 @@ namespace Natom.Petshop.Gestion.Backend.Reporting {
                 base.Columns.Add(this.columnLetraComprobante);
                 this.columnVentaNumero = new global::System.Data.DataColumn("VentaNumero", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnVentaNumero);
-                this.columnVentaComprobante = new global::System.Data.DataColumn("VentaComprobante", typeof(string), null, global::System.Data.MappingType.Element);
-                base.Columns.Add(this.columnVentaComprobante);
+                this.columnNumeroComprobante = new global::System.Data.DataColumn("NumeroComprobante", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnNumeroComprobante);
                 this.columnFechaHora = new global::System.Data.DataColumn("FechaHora", typeof(global::System.DateTime), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnFechaHora);
                 this.columnCliente = new global::System.Data.DataColumn("Cliente", typeof(string), null, global::System.Data.MappingType.Element);
@@ -2250,6 +2263,8 @@ namespace Natom.Petshop.Gestion.Backend.Reporting {
                 base.Columns.Add(this.columnDetallePrecioTotal);
                 this.columnDetallePesoTotalEnKilogramos = new global::System.Data.DataColumn("DetallePesoTotalEnKilogramos", typeof(decimal), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnDetallePesoTotalEnKilogramos);
+                this.columnComprobante = new global::System.Data.DataColumn("Comprobante", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnComprobante);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -4367,18 +4382,18 @@ namespace Natom.Petshop.Gestion.Backend.Reporting {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
-            public string VentaComprobante {
+            public string NumeroComprobante {
                 get {
                     try {
-                        return ((string)(this[this.tabledtSpReportVentaResult.VentaComprobanteColumn]));
+                        return ((string)(this[this.tabledtSpReportVentaResult.NumeroComprobanteColumn]));
                     }
                     catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("El valor de la columna \'VentaComprobante\' de la tabla \'dtSpReportVentaResult\' es " +
-                                "DBNull.", e);
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'NumeroComprobante\' de la tabla \'dtSpReportVentaResult\' es" +
+                                " DBNull.", e);
                     }
                 }
                 set {
-                    this[this.tabledtSpReportVentaResult.VentaComprobanteColumn] = value;
+                    this[this.tabledtSpReportVentaResult.NumeroComprobanteColumn] = value;
                 }
             }
             
@@ -4721,6 +4736,23 @@ namespace Natom.Petshop.Gestion.Backend.Reporting {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string Comprobante {
+                get {
+                    try {
+                        return ((string)(this[this.tabledtSpReportVentaResult.ComprobanteColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'Comprobante\' de la tabla \'dtSpReportVentaResult\' es DBNul" +
+                                "l.", e);
+                    }
+                }
+                set {
+                    this[this.tabledtSpReportVentaResult.ComprobanteColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public bool IsLetraComprobanteNull() {
                 return this.IsNull(this.tabledtSpReportVentaResult.LetraComprobanteColumn);
             }
@@ -4745,14 +4777,14 @@ namespace Natom.Petshop.Gestion.Backend.Reporting {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
-            public bool IsVentaComprobanteNull() {
-                return this.IsNull(this.tabledtSpReportVentaResult.VentaComprobanteColumn);
+            public bool IsNumeroComprobanteNull() {
+                return this.IsNull(this.tabledtSpReportVentaResult.NumeroComprobanteColumn);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
-            public void SetVentaComprobanteNull() {
-                this[this.tabledtSpReportVentaResult.VentaComprobanteColumn] = global::System.Convert.DBNull;
+            public void SetNumeroComprobanteNull() {
+                this[this.tabledtSpReportVentaResult.NumeroComprobanteColumn] = global::System.Convert.DBNull;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -4993,6 +5025,18 @@ namespace Natom.Petshop.Gestion.Backend.Reporting {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public void SetDetallePesoTotalEnKilogramosNull() {
                 this[this.tabledtSpReportVentaResult.DetallePesoTotalEnKilogramosColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsComprobanteNull() {
+                return this.IsNull(this.tabledtSpReportVentaResult.ComprobanteColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetComprobanteNull() {
+                this[this.tabledtSpReportVentaResult.ComprobanteColumn] = global::System.Convert.DBNull;
             }
         }
         

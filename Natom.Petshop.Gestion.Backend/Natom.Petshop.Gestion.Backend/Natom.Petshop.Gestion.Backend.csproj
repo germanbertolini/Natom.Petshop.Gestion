@@ -29,6 +29,12 @@
       <LastGenOutput>DataSetReporting.Designer.cs</LastGenOutput>
       <Generator>MSDataSetGenerator</Generator>
     </None>
+    <None Update="Reporting\VentaReport.rdlc">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Reporting\RemitoReport.rdlc">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Reporting\OrdenDePedidoReport.rdlc">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

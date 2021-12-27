@@ -118,6 +118,11 @@ namespace Natom.Petshop.Gestion.Biz.Managers
              return _db.spReportOrdenDePedidoResult.FromSqlRaw("spReportOrdenDePedido {0}", ordenDePedidoId).AsEnumerable().ToList();
         }
 
+        public List<spReportRemitoResult> ObtenerDataRemitoReport(int ordenDePedidoId)
+        {
+            return _db.spReportRemitoResult.FromSqlRaw("spReportRemito {0}", ordenDePedidoId).AsEnumerable().ToList();
+        }
+
         public Task<List<OrdenDePedido>> ObtenerPedidosPendientesDeFacturacionAsync(int clienteId)
         {
             return _db.OrdenesDePedido.Where(op => op.VentaId == null && op.ClienteId == clienteId && op.Activo == true).OrderBy(op => op.NumeroPedido).ToListAsync();
