@@ -513,3 +513,112 @@ END
 
 GO
 
+CREATE PROCEDURE spVentasPorProductoProveedorReport
+(
+	@ProductoId INT,
+	@ProveedorId INT,
+	@Desde DATE,
+	@Hasta DATE
+)
+AS
+BEGIN
+
+	SELECT
+		COALESCE(OP.FechaHoraPedido, V.FechaHoraVenta) AS FechaHora,
+		CASE WHEN OP.OrdenDePedidoId IS NULL THEN 'Mostrador' ELSE 'Reparto' END AS VendidoPor,
+		CASE WHEN OP.OrdenDePedidoId IS NULL THEN 'VTA ' + REPLACE(STR(V.NumeroVenta, 8), SPACE(1), '0') ELSE 'OP ' + REPLACE(STR(OP.NumeroPedido, 8), SPACE(1), '0') END AS Operacion,
+		'RTO ' + OP.NumeroRemito AS Remito,
+		REPLACE(STR(V.NumeroVenta, 8), SPACE(1), '0') AS Venta,
+		V.TipoFactura + '-' + V.NumeroFactura AS ComprobanteVenta,
+		CASE WHEN PR.EsEmpresa = 1 THEN PR.RazonSocial ELSE PR.Nombre + ' ' + PR.Apellido END AS Proveedor,
+		CONCAT(P.Codigo, ' ', P.DescripcionCorta) AS Producto,
+		D.Cantidad,
+		(CAST(D.PesoUnitarioEnGramos AS decimal(18,2)) / 1000) * D.Cantidad AS PesoTotalKilos,
+		D.Precio * D.Cantidad AS MontoTotal
+	FROM
+		VentaDetalle D WITH(NOLOCK)
+		INNER JOIN Venta V WITH(NOLOCK) ON V.VentaId = D.VentaId AND V.Activo = 1
+		INNER JOIN Producto P WITH(NOLOCK) ON P.ProductoId = D.ProductoId
+		LEFT JOIN Proveedor PR WITH(NOLOCK) ON PR.ProveedorId = P.ProveedorId
+		LEFT JOIN OrdenDePedidoDetalle OPD WITH(NOLOCK) ON OPD.OrdenDePedidoDetalleId = D.OrdenDePedidoDetalleId
+		LEFT JOIN OrdenDePedido OP WITH(NOLOCK) ON OP.OrdenDePedidoId = OPD.OrdenDePedidoDetalleId AND OP.Activo = 1
+	WHERE
+		P.ProductoId = COALESCE(@ProductoId, P.ProductoId)
+		AND P.ProveedorId = COALESCE(@ProveedorId, P.ProveedorId)
+		AND COALESCE(OP.FechaHoraPedido, V.FechaHoraVenta) >= @Desde AND COALESCE(OP.FechaHoraPedido, V.FechaHoraVenta) <= @Hasta
+	ORDER BY
+		P.Codigo, P.DescripcionCorta, PR.RazonSocial, PR.Nombre, PR.Apellido
+
+END
+
+GO
+
+CREATE VIEW vwClientesUltimaCompra
+AS
+
+	SELECT
+		MAX(R.FechaHora) AS FechaHora,
+		R.ClienteId
+	FROM
+	(
+		SELECT
+			MAX(COALESCE(OP.FechaHoraPedido, V.FechaHoraVenta)) AS FechaHora,
+			V.ClienteId
+		FROM
+			Venta V WITH(NOLOCK)
+			LEFT JOIN OrdenDePedido OP WITH(NOLOCK) ON OP.VentaId = V.VentaId
+		WHERE
+			V.Activo = 1
+		GROUP BY
+			V.ClienteId
+
+		UNION
+
+		SELECT
+			MAX(OP.FechaHoraPedido) AS FechaHora,
+			OP.ClienteId
+		FROM
+			OrdenDePedido OP WITH(NOLOCK)
+		WHERE
+			OP.Activo = 1
+			AND OP.VentaId IS NULL
+		GROUP BY
+			OP.ClienteId
+	) AS R
+	GROUP BY
+		R.ClienteId
+
+GO
+
+CREATE PROCEDURE spClientesQueNoCompranDesdeFechaReport
+(
+	@Desde DATE
+)
+AS
+BEGIN
+
+	SELECT
+		CASE WHEN C.EsEmpresa = 1 THEN
+			C.RazonSocial
+		ELSE
+			C.Nombre + ' ' + C.Apellido
+		END AS Cliente,
+		CASE WHEN C.EsEmpresa = 1 THEN
+			'CUIT ' + C.NumeroDocumento
+		ELSE
+			'DNI ' + C.NumeroDocumento
+		END AS Documento,
+		UC.FechaHora AS FechaHoraUltimaCompra
+	FROM
+		Cliente C WITH(NOLOCK)
+		INNER JOIN vwClientesUltimaCompra UC ON UC.ClienteId = C.ClienteId
+	WHERE
+		UC.FechaHora <= @Desde
+	ORDER BY
+		UC.FechaHora DESC;
+
+
+END
+
+GO
+

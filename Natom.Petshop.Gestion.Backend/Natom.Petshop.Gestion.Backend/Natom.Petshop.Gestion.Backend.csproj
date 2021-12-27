@@ -29,6 +29,12 @@
       <LastGenOutput>DataSetReporting.Designer.cs</LastGenOutput>
       <Generator>MSDataSetGenerator</Generator>
     </None>
+    <None Update="Reporting\ClientesQueNoCompranDesdeFechaReport.rdlc">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Reporting\VentasPorProductoProveedorReport.rdlc">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Reporting\VentaReport.rdlc">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
