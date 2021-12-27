@@ -27,5 +27,10 @@ namespace Natom.Petshop.Gestion.Biz.Managers
             return _db.spClientesQueNoCompranDesdeFechaReportResult.FromSqlRaw("spClientesQueNoCompranDesdeFechaReport {0}", desde).AsEnumerable().ToList();
         }
         
+        public List<spKilosCompradosPorProveedorReportResult> ObtenerDataKilosCompradosPorProveedorReport(DateTime? desde)
+        {
+            return _db.spKilosCompradosPorProveedorReportResult.FromSqlRaw("spKilosCompradosPorProveedorReport {0}", desde).AsEnumerable().ToList();
+        }
+
     }
 }

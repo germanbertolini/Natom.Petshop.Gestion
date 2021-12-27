@@ -32,6 +32,9 @@
     <None Update="Reporting\ClientesQueNoCompranDesdeFechaReport.rdlc">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Reporting\KilosCompradosPorProveedorReport.rdlc">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Reporting\VentasPorProductoProveedorReport.rdlc">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

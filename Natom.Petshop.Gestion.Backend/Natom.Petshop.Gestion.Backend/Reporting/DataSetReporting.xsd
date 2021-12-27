@@ -146,6 +146,15 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
+        <xs:element name="spKilosCompradosPorProveedorReportResult" msprop:Generator_TableClassName="spKilosCompradosPorProveedorReportResultDataTable" msprop:Generator_TableVarName="tablespKilosCompradosPorProveedorReportResult" msprop:Generator_TablePropName="spKilosCompradosPorProveedorReportResult" msprop:Generator_RowDeletingName="spKilosCompradosPorProveedorReportResultRowDeleting" msprop:Generator_RowChangingName="spKilosCompradosPorProveedorReportResultRowChanging" msprop:Generator_RowEvHandlerName="spKilosCompradosPorProveedorReportResultRowChangeEventHandler" msprop:Generator_RowDeletedName="spKilosCompradosPorProveedorReportResultRowDeleted" msprop:Generator_UserTableName="spKilosCompradosPorProveedorReportResult" msprop:Generator_RowChangedName="spKilosCompradosPorProveedorReportResultRowChanged" msprop:Generator_RowEvArgName="spKilosCompradosPorProveedorReportResultRowChangeEvent" msprop:Generator_RowClassName="spKilosCompradosPorProveedorReportResultRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Proveedor" msprop:Generator_ColumnVarNameInTable="columnProveedor" msprop:Generator_ColumnPropNameInRow="Proveedor" msprop:Generator_ColumnPropNameInTable="ProveedorColumn" msprop:Generator_UserColumnName="Proveedor" type="xs:string" minOccurs="0" />
+              <xs:element name="Documento" msprop:Generator_ColumnVarNameInTable="columnDocumento" msprop:Generator_ColumnPropNameInRow="Documento" msprop:Generator_ColumnPropNameInTable="DocumentoColumn" msprop:Generator_UserColumnName="Documento" type="xs:string" minOccurs="0" />
+              <xs:element name="TotalKilosComprados" msprop:Generator_ColumnVarNameInTable="columnTotalKilosComprados" msprop:Generator_ColumnPropNameInRow="TotalKilosComprados" msprop:Generator_ColumnPropNameInTable="TotalKilosCompradosColumn" msprop:Generator_UserColumnName="TotalKilosComprados" type="xs:decimal" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
       </xs:choice>
     </xs:complexType>
   </xs:element>
