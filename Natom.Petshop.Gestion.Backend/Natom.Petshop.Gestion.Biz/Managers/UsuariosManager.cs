@@ -167,7 +167,7 @@ namespace Natom.Petshop.Gestion.Biz.Managers
             string subject = "Recuperar clave";
             var dataBytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(new { s = usuario.SecretConfirmacion, e = usuario.Email }));
             var data = Uri.EscapeDataString(Convert.ToBase64String(dataBytes));
-            string link = new Uri(new Uri(configuration["CORS:FrontendOrigin"]), relativeUri: $"users/confirm/{data}").AbsoluteUri;
+            string link = new Uri($"{configuration["CORS:FrontendOrigin"]}/users/confirm/{data}").AbsoluteUri;
             string body = String.Format("<h2>Mundo Mascota .:. Sistema de Gestión</h2><br/><br/>Por favor, para <b>recuperar la clave de acceso al sistema</b> haga clic en el siguiente link: {0}", link);
             return EmailHelper.EnviarMailAsync(configuration, subject, body, usuario.Email, usuario.Nombre);
         }
@@ -177,7 +177,7 @@ namespace Natom.Petshop.Gestion.Biz.Managers
             string subject = "Confirmar registración";
             var dataBytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(new { s = usuario.SecretConfirmacion, e = usuario.Email }));
             var data = Uri.EscapeDataString(Convert.ToBase64String(dataBytes));
-            string link = new Uri(new Uri(configuration["CORS:FrontendOrigin"]), relativeUri: $"users/confirm/{data}").AbsoluteUri;
+            string link = new Uri($"{configuration["CORS:FrontendOrigin"]}/users/confirm/{data}").AbsoluteUri;
             string body = String.Format("<h2>Mundo Mascota .:. Sistema de Gestión</h2><br/><br/>Por favor, para <b>generar la clave de acceso al sistema</b> haga clic en el siguiente link: {0}", link);
             return EmailHelper.EnviarMailAsync(configuration, subject, body, usuario.Email, usuario.Nombre);
         }

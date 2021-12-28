@@ -39,7 +39,7 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
 
                 //RESTRICCIÓN DE ACCESO: SOLO ADMIN PUEDE INGRESAR FUERA DEL HORARIO LABORAL
                 if (usuario.UsuarioId != 0 && (DateTime.Now.Hour >= 21 || DateTime.Now.Hour <= 6))
-                    throw new HandledException("Acceso denegado.");
+                    throw new HandledException("Acceso denegado (fuera de horario).");
 
                 var permisos = await manager.ObtenerPermisosAsync(usuario.UsuarioId);
                 var tokenDurationInSeconds = 24 * 60 * 60; //24 HORAS
