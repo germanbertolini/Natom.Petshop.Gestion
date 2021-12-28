@@ -18,6 +18,10 @@ export class LoginComponent {
 
     }
 
+    onRecoverPasswordClick() {
+        this._confirmDialogService.showOK("Para recuperar su cuenta debe contactarse con el Administrador de sistema para que le envíe el email de recuperación de clave.");
+    }
+
     onLoginClick() {
         this._authService.Login(this.email, this.password,
             /* onSuccess */
