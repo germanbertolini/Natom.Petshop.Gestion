@@ -6,10 +6,15 @@ div.background {
     top: 0;
     left: 0;
     z-index:99999999998;
-    background-image:url(/assets/img/loading.gif);
-    background-repeat: no-repeat;
-    background-size: 150px;
-    background-position: center;
+}
+
+div.background img {
+    opacity: 0.75;
+    position: fixed;
+    left:50%;
+    top:50%;
+    margin-top:-75px;
+    margin-left:-75px;
 }
 
 div.background small {
