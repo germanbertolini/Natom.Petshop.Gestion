@@ -36,7 +36,7 @@ export class AuthService {
     if (permissionsCookieData.length > 0) this._current_permissions = JSON.parse(atob(permissionsCookieData));
 
     apiService.SetOnForbiddenAction(() => {
-      this.confirmDialogService.showError("La sesión expiró.", () => { location.href = "/"; });
+      this.confirmDialogService.showError("La sesión expiró.", () => { location.href = this.getBaseURL(); });
       this.logout(true);
     });
   }
@@ -45,10 +45,16 @@ export class AuthService {
     this.cookieService.delete('Auth.Current.User');
     this.cookieService.delete('Auth.Current.Token');
     this.cookieService.delete('Auth.Current.Permissions');
-    this.cookieService.delete('Authorization');
+    this.cookieService.delete('Authorization', "/");
 
     if (!cancelRedirect)
-      location.href = "/";
+      location.href = this.getBaseURL();
+  }
+
+  private getBaseURL() {
+    var getUrl = window.location;
+    var baseUrl = getUrl.protocol + "//" + getUrl.host + "/" + getUrl.pathname.split('/')[1];
+    return baseUrl;
   }
 
   public getCurrentUser() {
@@ -87,7 +93,7 @@ export class AuthService {
                           this.cookieService.set('Auth.Current.User', btoa(JSON.stringify(this._current_user)));
                           this.cookieService.set('Auth.Current.Token', btoa(JSON.stringify(this._current_token)));
                           this.cookieService.set('Auth.Current.Permissions', btoa(JSON.stringify(this._current_permissions)));
-                          this.cookieService.set('Authorization', 'Bearer ' + this._current_token);
+                          this.cookieService.set('Authorization', 'Bearer ' + this._current_token, null, "/");
 
                           onSuccess();
                         }

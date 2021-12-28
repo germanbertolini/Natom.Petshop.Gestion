@@ -7,6 +7,7 @@ using Natom.Petshop.Gestion.Entities.DTO;
 using Natom.Petshop.Gestion.Entities.Services;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -37,8 +38,8 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
                 if (!string.IsNullOrEmpty(proveedorId))
                     _proveedorId = EncryptionService.Decrypt<int>(proveedorId);
 
-                DateTime _desde = DateTime.Parse(desde);
-                DateTime _hasta = DateTime.Parse(hasta);
+                DateTime _desde = DateTime.ParseExact(desde, "d/M/yyyy", CultureInfo.InvariantCulture);
+                DateTime _hasta = DateTime.ParseExact(hasta, "d/M/yyyy", CultureInfo.InvariantCulture);
 
                 var manager = new ReportingManager(_serviceProvider);
                 var data = manager.ObtenerDataVentasPorProductoProveedorReport(_productoId, _proveedorId, _desde, _hasta);
@@ -70,7 +71,7 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
         {
             try
             {
-                DateTime _desde = DateTime.Parse(desde);
+                DateTime _desde = DateTime.ParseExact(desde, "d/M/yyyy", CultureInfo.InvariantCulture);
 
                 var manager = new ReportingManager(_serviceProvider);
                 var data = manager.ObtenerDataClientesQueNoCompranDesdeFechaReport(_desde);
@@ -105,7 +106,7 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
                 DateTime? _desde = null;
 
                 if (!string.IsNullOrEmpty(desde))
-                    _desde = DateTime.Parse(desde);
+                    _desde = DateTime.ParseExact(desde, "d/M/yyyy", CultureInfo.InvariantCulture);
 
                 var manager = new ReportingManager(_serviceProvider);
                 var data = manager.ObtenerDataKilosCompradosPorProveedorReport(_desde);
@@ -140,7 +141,7 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
                 DateTime? _desde = null;
 
                 if (!string.IsNullOrEmpty(desde))
-                    _desde = DateTime.Parse(desde);
+                    _desde = DateTime.ParseExact(desde, "d/M/yyyy", CultureInfo.InvariantCulture);
 
                 var manager = new ReportingManager(_serviceProvider);
                 var data = manager.ObtenerDataVentasRepartoVsMostradorReport(_desde);
@@ -175,7 +176,7 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
                 DateTime? _desde = null;
 
                 if (!string.IsNullOrEmpty(desde))
-                    _desde = DateTime.Parse(desde);
+                    _desde = DateTime.ParseExact(desde, "d/M/yyyy", CultureInfo.InvariantCulture);
 
                 var manager = new ReportingManager(_serviceProvider);
                 var data = manager.ObtenerDataTotalVendidoPorListaDePreciosReport(_desde);
@@ -207,11 +208,11 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
         {
             try
             {
-                DateTime _desde = DateTime.Parse(desde);
+                DateTime _desde = DateTime.ParseExact(desde, "d/M/yyyy", CultureInfo.InvariantCulture);
                 DateTime? _hasta = null;
 
                 if (!string.IsNullOrEmpty(hasta))
-                    _hasta = DateTime.Parse(hasta);
+                    _hasta = DateTime.ParseExact(hasta, "d/M/yyyy", CultureInfo.InvariantCulture);
 
                 var manager = new ReportingManager(_serviceProvider);
                 var data = manager.ObtenerDataEstadisticaComprasReport(_desde, _hasta);
@@ -243,11 +244,11 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
         {
             try
             {
-                DateTime _desde = DateTime.Parse(desde);
+                DateTime _desde = DateTime.ParseExact(desde, "d/M/yyyy", CultureInfo.InvariantCulture);
                 DateTime? _hasta = null;
 
                 if (!string.IsNullOrEmpty(hasta))
-                    _hasta = DateTime.Parse(hasta);
+                    _hasta = DateTime.ParseExact(hasta, "d/M/yyyy", CultureInfo.InvariantCulture);
 
                 var manager = new ReportingManager(_serviceProvider);
                 var data = manager.ObtenerDataEstadisticaGananciasReport(_desde, _hasta);
