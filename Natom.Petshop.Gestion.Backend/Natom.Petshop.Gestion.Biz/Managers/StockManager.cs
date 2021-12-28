@@ -64,6 +64,7 @@ namespace Natom.Petshop.Gestion.Biz.Managers
                 var producto = await _db.Productos.FindAsync(productoId);
                 _db.Entry(producto).State = EntityState.Modified;
                 producto.ProveedorId = movimiento.ProveedorId;
+                producto.CostoUnitario = (movimiento.CostoUnitario ?? producto.CostoUnitario);
             }
 
             _db.MovimientosStock.Add(movimiento);

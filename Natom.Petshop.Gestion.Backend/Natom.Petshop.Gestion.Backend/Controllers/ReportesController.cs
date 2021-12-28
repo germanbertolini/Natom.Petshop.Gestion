@@ -164,5 +164,112 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
                 return Ok(new ApiResultDTO { Success = false, Message = "Se ha producido un error interno." });
             }
         }
+
+        // GET: reportes/estadistica/ventas-reparto-vs-mostrador?desde={desde}
+        [HttpGet]
+        [ActionName("estadistica/total-ventas-por-lista-de-precios")]
+        public async Task<IActionResult> GetTotalVentasPorListaDePreciosAsync([FromQuery] string desde = null)
+        {
+            try
+            {
+                DateTime? _desde = null;
+
+                if (!string.IsNullOrEmpty(desde))
+                    _desde = DateTime.Parse(desde);
+
+                var manager = new ReportingManager(_serviceProvider);
+                var data = manager.ObtenerDataTotalVendidoPorListaDePreciosReport(_desde);
+
+                string mimtype = "";
+                int extension = 1;
+                Dictionary<string, string> parameters = new Dictionary<string, string>();
+                var path = Path.Combine(_hostingEnvironment.ContentRootPath, "Reporting", "TotalVendidoPorListaDePreciosReport.rdlc");
+                var report = new LocalReport(path);
+                report.AddDataSource("DataSet1", data);
+                var result = report.Execute(RenderType.Pdf, extension, parameters, mimtype);
+                return File(result.MainStream, "application/pdf");
+            }
+            catch (HandledException ex)
+            {
+                return Ok(new ApiResultDTO { Success = false, Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                await LoggingService.LogExceptionAsync(_db, ex, usuarioId: (int)(_token?.UserId ?? 0), _userAgent);
+                return Ok(new ApiResultDTO { Success = false, Message = "Se ha producido un error interno." });
+            }
+        }
+
+        // GET: reportes/estadistica/compras?desde={desde}&hasta={hasta}
+        [HttpGet]
+        [ActionName("estadistica/compras")]
+        public async Task<IActionResult> GetComprasAsync([FromQuery] string desde = null, [FromQuery] string hasta = null)
+        {
+            try
+            {
+                DateTime _desde = DateTime.Parse(desde);
+                DateTime? _hasta = null;
+
+                if (!string.IsNullOrEmpty(hasta))
+                    _hasta = DateTime.Parse(hasta);
+
+                var manager = new ReportingManager(_serviceProvider);
+                var data = manager.ObtenerDataEstadisticaComprasReport(_desde, _hasta);
+
+                string mimtype = "";
+                int extension = 1;
+                Dictionary<string, string> parameters = new Dictionary<string, string>();
+                var path = Path.Combine(_hostingEnvironment.ContentRootPath, "Reporting", "EstadisticaComprasReport.rdlc");
+                var report = new LocalReport(path);
+                report.AddDataSource("DataSet1", data);
+                var result = report.Execute(RenderType.Pdf, extension, parameters, mimtype);
+                return File(result.MainStream, "application/pdf");
+            }
+            catch (HandledException ex)
+            {
+                return Ok(new ApiResultDTO { Success = false, Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                await LoggingService.LogExceptionAsync(_db, ex, usuarioId: (int)(_token?.UserId ?? 0), _userAgent);
+                return Ok(new ApiResultDTO { Success = false, Message = "Se ha producido un error interno." });
+            }
+        }
+
+        // GET: reportes/estadistica/ganancias?desde={desde}&hasta={hasta}
+        [HttpGet]
+        [ActionName("estadistica/ganancias")]
+        public async Task<IActionResult> GetGananciasAsync([FromQuery] string desde = null, [FromQuery] string hasta = null)
+        {
+            try
+            {
+                DateTime _desde = DateTime.Parse(desde);
+                DateTime? _hasta = null;
+
+                if (!string.IsNullOrEmpty(hasta))
+                    _hasta = DateTime.Parse(hasta);
+
+                var manager = new ReportingManager(_serviceProvider);
+                var data = manager.ObtenerDataEstadisticaGananciasReport(_desde, _hasta);
+
+                string mimtype = "";
+                int extension = 1;
+                Dictionary<string, string> parameters = new Dictionary<string, string>();
+                var path = Path.Combine(_hostingEnvironment.ContentRootPath, "Reporting", "EstadisticaGananciasReport.rdlc");
+                var report = new LocalReport(path);
+                report.AddDataSource("DataSet1", data);
+                var result = report.Execute(RenderType.Pdf, extension, parameters, mimtype);
+                return File(result.MainStream, "application/pdf");
+            }
+            catch (HandledException ex)
+            {
+                return Ok(new ApiResultDTO { Success = false, Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                await LoggingService.LogExceptionAsync(_db, ex, usuarioId: (int)(_token?.UserId ?? 0), _userAgent);
+                return Ok(new ApiResultDTO { Success = false, Message = "Se ha producido un error interno." });
+            }
+        }
     }
 }

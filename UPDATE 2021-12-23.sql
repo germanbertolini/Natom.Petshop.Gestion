@@ -763,3 +763,173 @@ END
 
 GO
 
+CREATE PROCEDURE spTotalVendidoPorListaDePreciosReport
+(
+	@Desde DATE
+)
+AS
+BEGIN
+
+	SELECT
+		COALESCE(L.Descripcion, '-Sin lista de precios-') AS ListaDePrecios,
+		SUM(D.Precio * D.Cantidad)  AS MontoVendido,
+		SUM(CAST(D.PesoUnitarioEnGramos AS DECIMAL(18,2)) / 1000 * D.Cantidad)  AS KilosVendidos
+	FROM
+		VentaDetalle D WITH(NOLOCK)
+		INNER JOIN Venta V WITH(NOLOCK) ON V.VentaId = D.VentaId AND V.Activo = 1
+		INNER JOIN Producto P WITH(NOLOCK) ON P.ProductoId = D.ProductoId
+		LEFT JOIN ListaDePrecios L WITH(NOLOCK) ON L.ListaDePreciosId = D.ListaDePreciosId
+	WHERE
+		@Desde IS NULL
+		OR (@Desde IS NOT NULL AND V.FechaHoraVenta >= @Desde)
+	GROUP BY
+		L.ListaDePreciosId, L.Descripcion
+			   
+END
+
+GO
+
+ALTER TABLE Producto ADD CostoUnitario DECIMAL(18,2) DEFAULT 0;
+
+GO
+
+CREATE PROCEDURE spEstadisticaComprasReport
+(
+	@Desde DATE,
+	@Hasta DATE
+)
+AS
+BEGIN
+
+	IF @Hasta IS NULL
+		SET @Hasta = '2099-01-01';
+
+	SELECT
+		COALESCE(SUM(CASE WHEN P.EsPresupuesto = 1 THEN M.CostoUnitario * M.Cantidad ELSE 0 END), 0) AS TotalPresupuesto,
+		COALESCE(SUM(CASE WHEN P.EsPresupuesto = 0 THEN M.CostoUnitario * M.Cantidad ELSE 0 END), 0) AS TotalCompras
+	FROM
+		MovimientoStock M WITH(NOLOCK)
+		INNER JOIN Proveedor P WITH(NOLOCK) ON P.ProveedorId = M.ProveedorId
+		INNER JOIN Producto PR WITH(NOLOCK) ON PR.ProductoId = M.ProductoId
+	WHERE
+		M.EsCompra = 1
+		AND M.FechaHora >= @Desde AND M.FechaHora <= @Hasta
+			   
+END
+
+GO
+
+CREATE FUNCTION fnCalcularTotalVentas
+(
+	@Fecha DATE
+)
+RETURNS DECIMAL(18,2)
+AS
+BEGIN
+
+	DECLARE @Return DECIMAL(18,2) = 0;
+
+	SELECT
+		@Return = SUM(MontoTotal)
+	FROM
+		Venta V WITH(NOLOCK)
+	WHERE
+		V.Activo = 1
+		AND CAST(V.FechaHoraVenta AS DATE) = @Fecha
+
+	RETURN COALESCE(@Return, 0)
+
+END
+
+GO
+
+CREATE FUNCTION fnCalcularTotalCostosVentas
+(
+	@Fecha DATE
+)
+RETURNS DECIMAL(18,2)
+AS
+BEGIN
+
+	DECLARE @Return DECIMAL(18,2) = 0;
+
+	SELECT
+		@Return = SUM(P.CostoUnitario * D.Cantidad)
+	FROM
+		Venta V WITH(NOLOCK)
+		INNER JOIN VentaDetalle D WITH(NOLOCK) ON D.VentaId = V.VentaId
+		INNER JOIN Producto P WITH(NOLOCK) ON P.ProductoId = D.ProductoId
+	WHERE
+		V.Activo = 1
+		AND CAST(V.FechaHoraVenta AS DATE) = @Fecha
+
+	RETURN COALESCE(@Return, 0)
+
+END
+
+GO
+
+CREATE FUNCTION fnCalcularEgresosCajaDiaria
+(
+	@Fecha DATE
+)
+RETURNS DECIMAL(18,2)
+AS
+BEGIN
+
+	DECLARE @Return DECIMAL(18,2) = 0;
+
+	SELECT
+		@Return = SUM(Importe)
+	FROM
+		MovimientoCajaDiaria M WITH(NOLOCK)
+	WHERE
+		M.Tipo = 'D'
+		AND M.Observaciones NOT LIKE 'TRANSFERENCIA%' --DEBITOS QUE NO SON TRANSFERENCIA, ES DECIR, GASTOS!
+		AND CAST(M.FechaHora AS DATE) = @Fecha
+
+	RETURN COALESCE(@Return, 0)
+
+END
+
+GO
+
+CREATE PROCEDURE spEstadisticaGananciasReport
+(
+	@Desde DATE,
+	@Hasta DATE
+)
+AS
+BEGIN
+
+	IF @Hasta IS NULL
+		SET @Hasta = GETDATE()
+
+	CREATE TABLE #dates(Fecha DATETIME)
+
+	DECLARE @TDesde DATE = @Desde;
+
+	WHILE @TDesde <= @Hasta
+	BEGIN
+		INSERT INTO #dates VALUES (@TDesde);
+		SET @TDesde = DATEADD(DAY, 1, @TDesde)
+	END  
+
+	SELECT
+		R.Fecha,
+		R.TotalVentas,
+		R.TotalCostosVentas,
+		R.TotalEgresosCajaDiaria,
+		R.TotalVentas - R.TotalCostosVentas - R.TotalEgresosCajaDiaria AS TotalGanancias
+	FROM
+	(
+		SELECT
+			Fecha,
+			dbo.fnCalcularTotalVentas(Fecha) AS TotalVentas,
+			dbo.fnCalcularTotalCostosVentas(Fecha) AS TotalCostosVentas,
+			dbo.fnCalcularEgresosCajaDiaria(Fecha) AS TotalEgresosCajaDiaria
+		FROM
+			#dates
+	) R
+
+END
