@@ -36,6 +36,8 @@ namespace Natom.Petshop.Gestion.Backend.Reporting {
         
         private spKilosCompradosPorProveedorReportResultDataTable tablespKilosCompradosPorProveedorReportResult;
         
+        private dtSpVentasRepartoVsMostradorReportResultDataTable tabledtSpVentasRepartoVsMostradorReportResult;
+        
         private global::System.Data.SchemaSerializationMode _schemaSerializationMode = global::System.Data.SchemaSerializationMode.IncludeSchema;
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -81,6 +83,9 @@ namespace Natom.Petshop.Gestion.Backend.Reporting {
                 }
                 if ((ds.Tables["spKilosCompradosPorProveedorReportResult"] != null)) {
                     base.Tables.Add(new spKilosCompradosPorProveedorReportResultDataTable(ds.Tables["spKilosCompradosPorProveedorReportResult"]));
+                }
+                if ((ds.Tables["dtSpVentasRepartoVsMostradorReportResult"] != null)) {
+                    base.Tables.Add(new dtSpVentasRepartoVsMostradorReportResultDataTable(ds.Tables["dtSpVentasRepartoVsMostradorReportResult"]));
                 }
                 this.DataSetName = ds.DataSetName;
                 this.Prefix = ds.Prefix;
@@ -157,6 +162,16 @@ namespace Natom.Petshop.Gestion.Backend.Reporting {
         public spKilosCompradosPorProveedorReportResultDataTable spKilosCompradosPorProveedorReportResult {
             get {
                 return this.tablespKilosCompradosPorProveedorReportResult;
+            }
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+        [global::System.ComponentModel.Browsable(false)]
+        [global::System.ComponentModel.DesignerSerializationVisibility(global::System.ComponentModel.DesignerSerializationVisibility.Content)]
+        public dtSpVentasRepartoVsMostradorReportResultDataTable dtSpVentasRepartoVsMostradorReportResult {
+            get {
+                return this.tabledtSpVentasRepartoVsMostradorReportResult;
             }
         }
         
@@ -245,6 +260,9 @@ namespace Natom.Petshop.Gestion.Backend.Reporting {
                 if ((ds.Tables["spKilosCompradosPorProveedorReportResult"] != null)) {
                     base.Tables.Add(new spKilosCompradosPorProveedorReportResultDataTable(ds.Tables["spKilosCompradosPorProveedorReportResult"]));
                 }
+                if ((ds.Tables["dtSpVentasRepartoVsMostradorReportResult"] != null)) {
+                    base.Tables.Add(new dtSpVentasRepartoVsMostradorReportResultDataTable(ds.Tables["dtSpVentasRepartoVsMostradorReportResult"]));
+                }
                 this.DataSetName = ds.DataSetName;
                 this.Prefix = ds.Prefix;
                 this.Namespace = ds.Namespace;
@@ -314,6 +332,12 @@ namespace Natom.Petshop.Gestion.Backend.Reporting {
                     this.tablespKilosCompradosPorProveedorReportResult.InitVars();
                 }
             }
+            this.tabledtSpVentasRepartoVsMostradorReportResult = ((dtSpVentasRepartoVsMostradorReportResultDataTable)(base.Tables["dtSpVentasRepartoVsMostradorReportResult"]));
+            if ((initTable == true)) {
+                if ((this.tabledtSpVentasRepartoVsMostradorReportResult != null)) {
+                    this.tabledtSpVentasRepartoVsMostradorReportResult.InitVars();
+                }
+            }
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -336,6 +360,8 @@ namespace Natom.Petshop.Gestion.Backend.Reporting {
             base.Tables.Add(this.tabledtSpClientesQueNoCompranDesdeFechaReportResult);
             this.tablespKilosCompradosPorProveedorReportResult = new spKilosCompradosPorProveedorReportResultDataTable();
             base.Tables.Add(this.tablespKilosCompradosPorProveedorReportResult);
+            this.tabledtSpVentasRepartoVsMostradorReportResult = new dtSpVentasRepartoVsMostradorReportResultDataTable();
+            base.Tables.Add(this.tabledtSpVentasRepartoVsMostradorReportResult);
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -371,6 +397,12 @@ namespace Natom.Petshop.Gestion.Backend.Reporting {
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
         private bool ShouldSerializespKilosCompradosPorProveedorReportResult() {
+            return false;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+        private bool ShouldSerializedtSpVentasRepartoVsMostradorReportResult() {
             return false;
         }
         
@@ -446,6 +478,9 @@ namespace Natom.Petshop.Gestion.Backend.Reporting {
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
         public delegate void spKilosCompradosPorProveedorReportResultRowChangeEventHandler(object sender, spKilosCompradosPorProveedorReportResultRowChangeEvent e);
+        
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+        public delegate void dtSpVentasRepartoVsMostradorReportResultRowChangeEventHandler(object sender, dtSpVentasRepartoVsMostradorReportResultRowChangeEvent e);
         
         /// <summary>
         ///Represents the strongly named DataTable class.
@@ -3393,6 +3428,435 @@ namespace Natom.Petshop.Gestion.Backend.Reporting {
                 global::System.Xml.Schema.XmlSchemaAttribute attribute2 = new global::System.Xml.Schema.XmlSchemaAttribute();
                 attribute2.Name = "tableTypeName";
                 attribute2.FixedValue = "spKilosCompradosPorProveedorReportResultDataTable";
+                type.Attributes.Add(attribute2);
+                type.Particle = sequence;
+                global::System.Xml.Schema.XmlSchema dsSchema = ds.GetSchemaSerializable();
+                if (xs.Contains(dsSchema.TargetNamespace)) {
+                    global::System.IO.MemoryStream s1 = new global::System.IO.MemoryStream();
+                    global::System.IO.MemoryStream s2 = new global::System.IO.MemoryStream();
+                    try {
+                        global::System.Xml.Schema.XmlSchema schema = null;
+                        dsSchema.Write(s1);
+                        for (global::System.Collections.IEnumerator schemas = xs.Schemas(dsSchema.TargetNamespace).GetEnumerator(); schemas.MoveNext(); ) {
+                            schema = ((global::System.Xml.Schema.XmlSchema)(schemas.Current));
+                            s2.SetLength(0);
+                            schema.Write(s2);
+                            if ((s1.Length == s2.Length)) {
+                                s1.Position = 0;
+                                s2.Position = 0;
+                                for (; ((s1.Position != s1.Length) 
+                                            && (s1.ReadByte() == s2.ReadByte())); ) {
+                                    ;
+                                }
+                                if ((s1.Position == s1.Length)) {
+                                    return type;
+                                }
+                            }
+                        }
+                    }
+                    finally {
+                        if ((s1 != null)) {
+                            s1.Close();
+                        }
+                        if ((s2 != null)) {
+                            s2.Close();
+                        }
+                    }
+                }
+                xs.Add(dsSchema);
+                return type;
+            }
+        }
+        
+        /// <summary>
+        ///Represents the strongly named DataTable class.
+        ///</summary>
+        [global::System.Serializable()]
+        [global::System.Xml.Serialization.XmlSchemaProviderAttribute("GetTypedTableSchema")]
+        public partial class dtSpVentasRepartoVsMostradorReportResultDataTable : global::System.Data.TypedTableBase<dtSpVentasRepartoVsMostradorReportResultRow> {
+            
+            private global::System.Data.DataColumn columnCodigo;
+            
+            private global::System.Data.DataColumn columnDescripcion;
+            
+            private global::System.Data.DataColumn columnCantidadMostrador;
+            
+            private global::System.Data.DataColumn columnVariacionCantidadMostrador;
+            
+            private global::System.Data.DataColumn columnKilosMostrador;
+            
+            private global::System.Data.DataColumn columnVariacionKilosMostrador;
+            
+            private global::System.Data.DataColumn columnCantidadReparto;
+            
+            private global::System.Data.DataColumn columnVariacionCantidadReparto;
+            
+            private global::System.Data.DataColumn columnKilosReparto;
+            
+            private global::System.Data.DataColumn columnVariacionKilosReparto;
+            
+            private global::System.Data.DataColumn columnColorVariacionCantidadMostrador;
+            
+            private global::System.Data.DataColumn columnColorVariacionKilosMostrador;
+            
+            private global::System.Data.DataColumn columnColorVariacionCantidadReparto;
+            
+            private global::System.Data.DataColumn columnColorVariacionKilosReparto;
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public dtSpVentasRepartoVsMostradorReportResultDataTable() {
+                this.TableName = "dtSpVentasRepartoVsMostradorReportResult";
+                this.BeginInit();
+                this.InitClass();
+                this.EndInit();
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            internal dtSpVentasRepartoVsMostradorReportResultDataTable(global::System.Data.DataTable table) {
+                this.TableName = table.TableName;
+                if ((table.CaseSensitive != table.DataSet.CaseSensitive)) {
+                    this.CaseSensitive = table.CaseSensitive;
+                }
+                if ((table.Locale.ToString() != table.DataSet.Locale.ToString())) {
+                    this.Locale = table.Locale;
+                }
+                if ((table.Namespace != table.DataSet.Namespace)) {
+                    this.Namespace = table.Namespace;
+                }
+                this.Prefix = table.Prefix;
+                this.MinimumCapacity = table.MinimumCapacity;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            protected dtSpVentasRepartoVsMostradorReportResultDataTable(global::System.Runtime.Serialization.SerializationInfo info, global::System.Runtime.Serialization.StreamingContext context) : 
+                    base(info, context) {
+                this.InitVars();
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn CodigoColumn {
+                get {
+                    return this.columnCodigo;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn DescripcionColumn {
+                get {
+                    return this.columnDescripcion;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn CantidadMostradorColumn {
+                get {
+                    return this.columnCantidadMostrador;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn VariacionCantidadMostradorColumn {
+                get {
+                    return this.columnVariacionCantidadMostrador;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn KilosMostradorColumn {
+                get {
+                    return this.columnKilosMostrador;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn VariacionKilosMostradorColumn {
+                get {
+                    return this.columnVariacionKilosMostrador;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn CantidadRepartoColumn {
+                get {
+                    return this.columnCantidadReparto;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn VariacionCantidadRepartoColumn {
+                get {
+                    return this.columnVariacionCantidadReparto;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn KilosRepartoColumn {
+                get {
+                    return this.columnKilosReparto;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn VariacionKilosRepartoColumn {
+                get {
+                    return this.columnVariacionKilosReparto;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn ColorVariacionCantidadMostradorColumn {
+                get {
+                    return this.columnColorVariacionCantidadMostrador;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn ColorVariacionKilosMostradorColumn {
+                get {
+                    return this.columnColorVariacionKilosMostrador;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn ColorVariacionCantidadRepartoColumn {
+                get {
+                    return this.columnColorVariacionCantidadReparto;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn ColorVariacionKilosRepartoColumn {
+                get {
+                    return this.columnColorVariacionKilosReparto;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            [global::System.ComponentModel.Browsable(false)]
+            public int Count {
+                get {
+                    return this.Rows.Count;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public dtSpVentasRepartoVsMostradorReportResultRow this[int index] {
+                get {
+                    return ((dtSpVentasRepartoVsMostradorReportResultRow)(this.Rows[index]));
+                }
+            }
+            
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public event dtSpVentasRepartoVsMostradorReportResultRowChangeEventHandler dtSpVentasRepartoVsMostradorReportResultRowChanging;
+            
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public event dtSpVentasRepartoVsMostradorReportResultRowChangeEventHandler dtSpVentasRepartoVsMostradorReportResultRowChanged;
+            
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public event dtSpVentasRepartoVsMostradorReportResultRowChangeEventHandler dtSpVentasRepartoVsMostradorReportResultRowDeleting;
+            
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public event dtSpVentasRepartoVsMostradorReportResultRowChangeEventHandler dtSpVentasRepartoVsMostradorReportResultRowDeleted;
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void AdddtSpVentasRepartoVsMostradorReportResultRow(dtSpVentasRepartoVsMostradorReportResultRow row) {
+                this.Rows.Add(row);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public dtSpVentasRepartoVsMostradorReportResultRow AdddtSpVentasRepartoVsMostradorReportResultRow(string Codigo, string Descripcion, int CantidadMostrador, decimal VariacionCantidadMostrador, decimal KilosMostrador, decimal VariacionKilosMostrador, int CantidadReparto, decimal VariacionCantidadReparto, decimal KilosReparto, decimal VariacionKilosReparto, string ColorVariacionCantidadMostrador, string ColorVariacionKilosMostrador, string ColorVariacionCantidadReparto, string ColorVariacionKilosReparto) {
+                dtSpVentasRepartoVsMostradorReportResultRow rowdtSpVentasRepartoVsMostradorReportResultRow = ((dtSpVentasRepartoVsMostradorReportResultRow)(this.NewRow()));
+                object[] columnValuesArray = new object[] {
+                        Codigo,
+                        Descripcion,
+                        CantidadMostrador,
+                        VariacionCantidadMostrador,
+                        KilosMostrador,
+                        VariacionKilosMostrador,
+                        CantidadReparto,
+                        VariacionCantidadReparto,
+                        KilosReparto,
+                        VariacionKilosReparto,
+                        ColorVariacionCantidadMostrador,
+                        ColorVariacionKilosMostrador,
+                        ColorVariacionCantidadReparto,
+                        ColorVariacionKilosReparto};
+                rowdtSpVentasRepartoVsMostradorReportResultRow.ItemArray = columnValuesArray;
+                this.Rows.Add(rowdtSpVentasRepartoVsMostradorReportResultRow);
+                return rowdtSpVentasRepartoVsMostradorReportResultRow;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public override global::System.Data.DataTable Clone() {
+                dtSpVentasRepartoVsMostradorReportResultDataTable cln = ((dtSpVentasRepartoVsMostradorReportResultDataTable)(base.Clone()));
+                cln.InitVars();
+                return cln;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            protected override global::System.Data.DataTable CreateInstance() {
+                return new dtSpVentasRepartoVsMostradorReportResultDataTable();
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            internal void InitVars() {
+                this.columnCodigo = base.Columns["Codigo"];
+                this.columnDescripcion = base.Columns["Descripcion"];
+                this.columnCantidadMostrador = base.Columns["CantidadMostrador"];
+                this.columnVariacionCantidadMostrador = base.Columns["VariacionCantidadMostrador"];
+                this.columnKilosMostrador = base.Columns["KilosMostrador"];
+                this.columnVariacionKilosMostrador = base.Columns["VariacionKilosMostrador"];
+                this.columnCantidadReparto = base.Columns["CantidadReparto"];
+                this.columnVariacionCantidadReparto = base.Columns["VariacionCantidadReparto"];
+                this.columnKilosReparto = base.Columns["KilosReparto"];
+                this.columnVariacionKilosReparto = base.Columns["VariacionKilosReparto"];
+                this.columnColorVariacionCantidadMostrador = base.Columns["ColorVariacionCantidadMostrador"];
+                this.columnColorVariacionKilosMostrador = base.Columns["ColorVariacionKilosMostrador"];
+                this.columnColorVariacionCantidadReparto = base.Columns["ColorVariacionCantidadReparto"];
+                this.columnColorVariacionKilosReparto = base.Columns["ColorVariacionKilosReparto"];
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            private void InitClass() {
+                this.columnCodigo = new global::System.Data.DataColumn("Codigo", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnCodigo);
+                this.columnDescripcion = new global::System.Data.DataColumn("Descripcion", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnDescripcion);
+                this.columnCantidadMostrador = new global::System.Data.DataColumn("CantidadMostrador", typeof(int), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnCantidadMostrador);
+                this.columnVariacionCantidadMostrador = new global::System.Data.DataColumn("VariacionCantidadMostrador", typeof(decimal), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnVariacionCantidadMostrador);
+                this.columnKilosMostrador = new global::System.Data.DataColumn("KilosMostrador", typeof(decimal), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnKilosMostrador);
+                this.columnVariacionKilosMostrador = new global::System.Data.DataColumn("VariacionKilosMostrador", typeof(decimal), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnVariacionKilosMostrador);
+                this.columnCantidadReparto = new global::System.Data.DataColumn("CantidadReparto", typeof(int), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnCantidadReparto);
+                this.columnVariacionCantidadReparto = new global::System.Data.DataColumn("VariacionCantidadReparto", typeof(decimal), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnVariacionCantidadReparto);
+                this.columnKilosReparto = new global::System.Data.DataColumn("KilosReparto", typeof(decimal), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnKilosReparto);
+                this.columnVariacionKilosReparto = new global::System.Data.DataColumn("VariacionKilosReparto", typeof(decimal), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnVariacionKilosReparto);
+                this.columnColorVariacionCantidadMostrador = new global::System.Data.DataColumn("ColorVariacionCantidadMostrador", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnColorVariacionCantidadMostrador);
+                this.columnColorVariacionKilosMostrador = new global::System.Data.DataColumn("ColorVariacionKilosMostrador", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnColorVariacionKilosMostrador);
+                this.columnColorVariacionCantidadReparto = new global::System.Data.DataColumn("ColorVariacionCantidadReparto", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnColorVariacionCantidadReparto);
+                this.columnColorVariacionKilosReparto = new global::System.Data.DataColumn("ColorVariacionKilosReparto", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnColorVariacionKilosReparto);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public dtSpVentasRepartoVsMostradorReportResultRow NewdtSpVentasRepartoVsMostradorReportResultRow() {
+                return ((dtSpVentasRepartoVsMostradorReportResultRow)(this.NewRow()));
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            protected override global::System.Data.DataRow NewRowFromBuilder(global::System.Data.DataRowBuilder builder) {
+                return new dtSpVentasRepartoVsMostradorReportResultRow(builder);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            protected override global::System.Type GetRowType() {
+                return typeof(dtSpVentasRepartoVsMostradorReportResultRow);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            protected override void OnRowChanged(global::System.Data.DataRowChangeEventArgs e) {
+                base.OnRowChanged(e);
+                if ((this.dtSpVentasRepartoVsMostradorReportResultRowChanged != null)) {
+                    this.dtSpVentasRepartoVsMostradorReportResultRowChanged(this, new dtSpVentasRepartoVsMostradorReportResultRowChangeEvent(((dtSpVentasRepartoVsMostradorReportResultRow)(e.Row)), e.Action));
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            protected override void OnRowChanging(global::System.Data.DataRowChangeEventArgs e) {
+                base.OnRowChanging(e);
+                if ((this.dtSpVentasRepartoVsMostradorReportResultRowChanging != null)) {
+                    this.dtSpVentasRepartoVsMostradorReportResultRowChanging(this, new dtSpVentasRepartoVsMostradorReportResultRowChangeEvent(((dtSpVentasRepartoVsMostradorReportResultRow)(e.Row)), e.Action));
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            protected override void OnRowDeleted(global::System.Data.DataRowChangeEventArgs e) {
+                base.OnRowDeleted(e);
+                if ((this.dtSpVentasRepartoVsMostradorReportResultRowDeleted != null)) {
+                    this.dtSpVentasRepartoVsMostradorReportResultRowDeleted(this, new dtSpVentasRepartoVsMostradorReportResultRowChangeEvent(((dtSpVentasRepartoVsMostradorReportResultRow)(e.Row)), e.Action));
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            protected override void OnRowDeleting(global::System.Data.DataRowChangeEventArgs e) {
+                base.OnRowDeleting(e);
+                if ((this.dtSpVentasRepartoVsMostradorReportResultRowDeleting != null)) {
+                    this.dtSpVentasRepartoVsMostradorReportResultRowDeleting(this, new dtSpVentasRepartoVsMostradorReportResultRowChangeEvent(((dtSpVentasRepartoVsMostradorReportResultRow)(e.Row)), e.Action));
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void RemovedtSpVentasRepartoVsMostradorReportResultRow(dtSpVentasRepartoVsMostradorReportResultRow row) {
+                this.Rows.Remove(row);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public static global::System.Xml.Schema.XmlSchemaComplexType GetTypedTableSchema(global::System.Xml.Schema.XmlSchemaSet xs) {
+                global::System.Xml.Schema.XmlSchemaComplexType type = new global::System.Xml.Schema.XmlSchemaComplexType();
+                global::System.Xml.Schema.XmlSchemaSequence sequence = new global::System.Xml.Schema.XmlSchemaSequence();
+                DataSetReporting ds = new DataSetReporting();
+                global::System.Xml.Schema.XmlSchemaAny any1 = new global::System.Xml.Schema.XmlSchemaAny();
+                any1.Namespace = "http://www.w3.org/2001/XMLSchema";
+                any1.MinOccurs = new decimal(0);
+                any1.MaxOccurs = decimal.MaxValue;
+                any1.ProcessContents = global::System.Xml.Schema.XmlSchemaContentProcessing.Lax;
+                sequence.Items.Add(any1);
+                global::System.Xml.Schema.XmlSchemaAny any2 = new global::System.Xml.Schema.XmlSchemaAny();
+                any2.Namespace = "urn:schemas-microsoft-com:xml-diffgram-v1";
+                any2.MinOccurs = new decimal(1);
+                any2.ProcessContents = global::System.Xml.Schema.XmlSchemaContentProcessing.Lax;
+                sequence.Items.Add(any2);
+                global::System.Xml.Schema.XmlSchemaAttribute attribute1 = new global::System.Xml.Schema.XmlSchemaAttribute();
+                attribute1.Name = "namespace";
+                attribute1.FixedValue = ds.Namespace;
+                type.Attributes.Add(attribute1);
+                global::System.Xml.Schema.XmlSchemaAttribute attribute2 = new global::System.Xml.Schema.XmlSchemaAttribute();
+                attribute2.Name = "tableTypeName";
+                attribute2.FixedValue = "dtSpVentasRepartoVsMostradorReportResultDataTable";
                 type.Attributes.Add(attribute2);
                 type.Particle = sequence;
                 global::System.Xml.Schema.XmlSchema dsSchema = ds.GetSchemaSerializable();
@@ -6621,6 +7085,427 @@ namespace Natom.Petshop.Gestion.Backend.Reporting {
         }
         
         /// <summary>
+        ///Represents strongly named DataRow class.
+        ///</summary>
+        public partial class dtSpVentasRepartoVsMostradorReportResultRow : global::System.Data.DataRow {
+            
+            private dtSpVentasRepartoVsMostradorReportResultDataTable tabledtSpVentasRepartoVsMostradorReportResult;
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            internal dtSpVentasRepartoVsMostradorReportResultRow(global::System.Data.DataRowBuilder rb) : 
+                    base(rb) {
+                this.tabledtSpVentasRepartoVsMostradorReportResult = ((dtSpVentasRepartoVsMostradorReportResultDataTable)(this.Table));
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string Codigo {
+                get {
+                    try {
+                        return ((string)(this[this.tabledtSpVentasRepartoVsMostradorReportResult.CodigoColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'Codigo\' de la tabla \'dtSpVentasRepartoVsMostradorReportRe" +
+                                "sult\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tabledtSpVentasRepartoVsMostradorReportResult.CodigoColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string Descripcion {
+                get {
+                    try {
+                        return ((string)(this[this.tabledtSpVentasRepartoVsMostradorReportResult.DescripcionColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'Descripcion\' de la tabla \'dtSpVentasRepartoVsMostradorRep" +
+                                "ortResult\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tabledtSpVentasRepartoVsMostradorReportResult.DescripcionColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public int CantidadMostrador {
+                get {
+                    try {
+                        return ((int)(this[this.tabledtSpVentasRepartoVsMostradorReportResult.CantidadMostradorColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'CantidadMostrador\' de la tabla \'dtSpVentasRepartoVsMostra" +
+                                "dorReportResult\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tabledtSpVentasRepartoVsMostradorReportResult.CantidadMostradorColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public decimal VariacionCantidadMostrador {
+                get {
+                    try {
+                        return ((decimal)(this[this.tabledtSpVentasRepartoVsMostradorReportResult.VariacionCantidadMostradorColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'VariacionCantidadMostrador\' de la tabla \'dtSpVentasRepart" +
+                                "oVsMostradorReportResult\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tabledtSpVentasRepartoVsMostradorReportResult.VariacionCantidadMostradorColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public decimal KilosMostrador {
+                get {
+                    try {
+                        return ((decimal)(this[this.tabledtSpVentasRepartoVsMostradorReportResult.KilosMostradorColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'KilosMostrador\' de la tabla \'dtSpVentasRepartoVsMostrador" +
+                                "ReportResult\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tabledtSpVentasRepartoVsMostradorReportResult.KilosMostradorColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public decimal VariacionKilosMostrador {
+                get {
+                    try {
+                        return ((decimal)(this[this.tabledtSpVentasRepartoVsMostradorReportResult.VariacionKilosMostradorColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'VariacionKilosMostrador\' de la tabla \'dtSpVentasRepartoVs" +
+                                "MostradorReportResult\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tabledtSpVentasRepartoVsMostradorReportResult.VariacionKilosMostradorColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public int CantidadReparto {
+                get {
+                    try {
+                        return ((int)(this[this.tabledtSpVentasRepartoVsMostradorReportResult.CantidadRepartoColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'CantidadReparto\' de la tabla \'dtSpVentasRepartoVsMostrado" +
+                                "rReportResult\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tabledtSpVentasRepartoVsMostradorReportResult.CantidadRepartoColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public decimal VariacionCantidadReparto {
+                get {
+                    try {
+                        return ((decimal)(this[this.tabledtSpVentasRepartoVsMostradorReportResult.VariacionCantidadRepartoColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'VariacionCantidadReparto\' de la tabla \'dtSpVentasRepartoV" +
+                                "sMostradorReportResult\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tabledtSpVentasRepartoVsMostradorReportResult.VariacionCantidadRepartoColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public decimal KilosReparto {
+                get {
+                    try {
+                        return ((decimal)(this[this.tabledtSpVentasRepartoVsMostradorReportResult.KilosRepartoColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'KilosReparto\' de la tabla \'dtSpVentasRepartoVsMostradorRe" +
+                                "portResult\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tabledtSpVentasRepartoVsMostradorReportResult.KilosRepartoColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public decimal VariacionKilosReparto {
+                get {
+                    try {
+                        return ((decimal)(this[this.tabledtSpVentasRepartoVsMostradorReportResult.VariacionKilosRepartoColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'VariacionKilosReparto\' de la tabla \'dtSpVentasRepartoVsMo" +
+                                "stradorReportResult\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tabledtSpVentasRepartoVsMostradorReportResult.VariacionKilosRepartoColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string ColorVariacionCantidadMostrador {
+                get {
+                    try {
+                        return ((string)(this[this.tabledtSpVentasRepartoVsMostradorReportResult.ColorVariacionCantidadMostradorColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'ColorVariacionCantidadMostrador\' de la tabla \'dtSpVentasR" +
+                                "epartoVsMostradorReportResult\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tabledtSpVentasRepartoVsMostradorReportResult.ColorVariacionCantidadMostradorColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string ColorVariacionKilosMostrador {
+                get {
+                    try {
+                        return ((string)(this[this.tabledtSpVentasRepartoVsMostradorReportResult.ColorVariacionKilosMostradorColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'ColorVariacionKilosMostrador\' de la tabla \'dtSpVentasRepa" +
+                                "rtoVsMostradorReportResult\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tabledtSpVentasRepartoVsMostradorReportResult.ColorVariacionKilosMostradorColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string ColorVariacionCantidadReparto {
+                get {
+                    try {
+                        return ((string)(this[this.tabledtSpVentasRepartoVsMostradorReportResult.ColorVariacionCantidadRepartoColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'ColorVariacionCantidadReparto\' de la tabla \'dtSpVentasRep" +
+                                "artoVsMostradorReportResult\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tabledtSpVentasRepartoVsMostradorReportResult.ColorVariacionCantidadRepartoColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string ColorVariacionKilosReparto {
+                get {
+                    try {
+                        return ((string)(this[this.tabledtSpVentasRepartoVsMostradorReportResult.ColorVariacionKilosRepartoColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'ColorVariacionKilosReparto\' de la tabla \'dtSpVentasRepart" +
+                                "oVsMostradorReportResult\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tabledtSpVentasRepartoVsMostradorReportResult.ColorVariacionKilosRepartoColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsCodigoNull() {
+                return this.IsNull(this.tabledtSpVentasRepartoVsMostradorReportResult.CodigoColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetCodigoNull() {
+                this[this.tabledtSpVentasRepartoVsMostradorReportResult.CodigoColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsDescripcionNull() {
+                return this.IsNull(this.tabledtSpVentasRepartoVsMostradorReportResult.DescripcionColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetDescripcionNull() {
+                this[this.tabledtSpVentasRepartoVsMostradorReportResult.DescripcionColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsCantidadMostradorNull() {
+                return this.IsNull(this.tabledtSpVentasRepartoVsMostradorReportResult.CantidadMostradorColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetCantidadMostradorNull() {
+                this[this.tabledtSpVentasRepartoVsMostradorReportResult.CantidadMostradorColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsVariacionCantidadMostradorNull() {
+                return this.IsNull(this.tabledtSpVentasRepartoVsMostradorReportResult.VariacionCantidadMostradorColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetVariacionCantidadMostradorNull() {
+                this[this.tabledtSpVentasRepartoVsMostradorReportResult.VariacionCantidadMostradorColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsKilosMostradorNull() {
+                return this.IsNull(this.tabledtSpVentasRepartoVsMostradorReportResult.KilosMostradorColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetKilosMostradorNull() {
+                this[this.tabledtSpVentasRepartoVsMostradorReportResult.KilosMostradorColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsVariacionKilosMostradorNull() {
+                return this.IsNull(this.tabledtSpVentasRepartoVsMostradorReportResult.VariacionKilosMostradorColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetVariacionKilosMostradorNull() {
+                this[this.tabledtSpVentasRepartoVsMostradorReportResult.VariacionKilosMostradorColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsCantidadRepartoNull() {
+                return this.IsNull(this.tabledtSpVentasRepartoVsMostradorReportResult.CantidadRepartoColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetCantidadRepartoNull() {
+                this[this.tabledtSpVentasRepartoVsMostradorReportResult.CantidadRepartoColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsVariacionCantidadRepartoNull() {
+                return this.IsNull(this.tabledtSpVentasRepartoVsMostradorReportResult.VariacionCantidadRepartoColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetVariacionCantidadRepartoNull() {
+                this[this.tabledtSpVentasRepartoVsMostradorReportResult.VariacionCantidadRepartoColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsKilosRepartoNull() {
+                return this.IsNull(this.tabledtSpVentasRepartoVsMostradorReportResult.KilosRepartoColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetKilosRepartoNull() {
+                this[this.tabledtSpVentasRepartoVsMostradorReportResult.KilosRepartoColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsVariacionKilosRepartoNull() {
+                return this.IsNull(this.tabledtSpVentasRepartoVsMostradorReportResult.VariacionKilosRepartoColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetVariacionKilosRepartoNull() {
+                this[this.tabledtSpVentasRepartoVsMostradorReportResult.VariacionKilosRepartoColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsColorVariacionCantidadMostradorNull() {
+                return this.IsNull(this.tabledtSpVentasRepartoVsMostradorReportResult.ColorVariacionCantidadMostradorColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetColorVariacionCantidadMostradorNull() {
+                this[this.tabledtSpVentasRepartoVsMostradorReportResult.ColorVariacionCantidadMostradorColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsColorVariacionKilosMostradorNull() {
+                return this.IsNull(this.tabledtSpVentasRepartoVsMostradorReportResult.ColorVariacionKilosMostradorColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetColorVariacionKilosMostradorNull() {
+                this[this.tabledtSpVentasRepartoVsMostradorReportResult.ColorVariacionKilosMostradorColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsColorVariacionCantidadRepartoNull() {
+                return this.IsNull(this.tabledtSpVentasRepartoVsMostradorReportResult.ColorVariacionCantidadRepartoColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetColorVariacionCantidadRepartoNull() {
+                this[this.tabledtSpVentasRepartoVsMostradorReportResult.ColorVariacionCantidadRepartoColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsColorVariacionKilosRepartoNull() {
+                return this.IsNull(this.tabledtSpVentasRepartoVsMostradorReportResult.ColorVariacionKilosRepartoColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetColorVariacionKilosRepartoNull() {
+                this[this.tabledtSpVentasRepartoVsMostradorReportResult.ColorVariacionKilosRepartoColumn] = global::System.Convert.DBNull;
+            }
+        }
+        
+        /// <summary>
         ///Row event argument class
         ///</summary>
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
@@ -6810,6 +7695,40 @@ namespace Natom.Petshop.Gestion.Backend.Reporting {
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public spKilosCompradosPorProveedorReportResultRow Row {
+                get {
+                    return this.eventRow;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataRowAction Action {
+                get {
+                    return this.eventAction;
+                }
+            }
+        }
+        
+        /// <summary>
+        ///Row event argument class
+        ///</summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+        public class dtSpVentasRepartoVsMostradorReportResultRowChangeEvent : global::System.EventArgs {
+            
+            private dtSpVentasRepartoVsMostradorReportResultRow eventRow;
+            
+            private global::System.Data.DataRowAction eventAction;
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public dtSpVentasRepartoVsMostradorReportResultRowChangeEvent(dtSpVentasRepartoVsMostradorReportResultRow row, global::System.Data.DataRowAction action) {
+                this.eventRow = row;
+                this.eventAction = action;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public dtSpVentasRepartoVsMostradorReportResultRow Row {
                 get {
                     return this.eventRow;
                 }

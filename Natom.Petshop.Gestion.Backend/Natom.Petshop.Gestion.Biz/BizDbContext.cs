@@ -43,6 +43,7 @@ namespace Natom.Petshop.Gestion.Biz
         public DbSet<spVentasPorProductoProveedorReportResult> spVentasPorProductoProveedorReportResult { get; set; }
         public DbSet<spClientesQueNoCompranDesdeFechaReportResult> spClientesQueNoCompranDesdeFechaReportResult { get; set; }
         public DbSet<spKilosCompradosPorProveedorReportResult> spKilosCompradosPorProveedorReportResult { get; set; }
+        public DbSet<spVentasRepartoVsMostradorReportResult> spVentasRepartoVsMostradorReportResult { get; set; }
 
         public BizDbContext(DbContextOptions<BizDbContext> options) : base(options)
         {
