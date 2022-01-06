@@ -1,6 +1,7 @@
 import { HttpClient } from "@angular/common/http";
-import { Component, Input, OnInit, ViewChild } from "@angular/core";
+import { Component, Input, OnInit, TemplateRef, ViewChild } from "@angular/core";
 import { Router } from "@angular/router";
+import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { DataTableDirective } from "angular-datatables/src/angular-datatables.directive";
 import { NotifierService } from "angular-notifier";
 import { ListaDePreciosDTO } from "src/app/classes/dto/precios/lista-de-precios.dto";
@@ -17,6 +18,8 @@ import { ConfirmDialogService } from "../../components/confirm-dialog/confirm-di
   templateUrl: './precios.component.html'
 })
 export class PreciosComponent implements OnInit {
+  @ViewChild('imprimirModal', { static: false }) imprimirModal : TemplateRef<any>; // Note: TemplateRef
+  imprimir_modal_instance: NgbModalRef;
   @ViewChild(DataTableDirective, { static: false })
   dtElement: DataTableDirective;
   dtInstance: Promise<DataTables.Api>;
@@ -25,13 +28,17 @@ export class PreciosComponent implements OnInit {
   ListasDePrecios: Array<ListaDePreciosDTO>;
   Noty: any;
   filterListaValue: string;
+  listasDePrecios: ListaDePreciosDTO[];
+  imprimir_precio_lista_encrypted_id: string;
 
-  constructor(private apiService: ApiService,
+  constructor(private modalService: NgbModal,
+              private apiService: ApiService,
               private authService: AuthService,
               private routerService: Router,
               private notifierService: NotifierService,
               private confirmDialogService: ConfirmDialogService) {
     this.filterListaValue = "";
+    this.imprimir_precio_lista_encrypted_id = "";
   }
 
   onFiltroListaDePreciosChange(newValue: string) {
@@ -43,6 +50,19 @@ export class PreciosComponent implements OnInit {
 
   onRenewClick(id: string) {
     this.routerService.navigate(['/precios/renew/' + encodeURIComponent(id)]);
+  }
+
+  onImprimirClick() {
+    this.imprimir_modal_instance = this.modalService.open(this.imprimirModal);
+  }
+
+  imprimir() {
+    if (this.imprimir_precio_lista_encrypted_id === undefined || this.imprimir_precio_lista_encrypted_id === null || this.imprimir_precio_lista_encrypted_id.length === 0) {
+      this.confirmDialogService.showError("Debes seleccionar una Lista de precios.");
+      return;
+    }
+
+    this.apiService.OpenNewTab("reportes/precios/listas/imprimir?encryptedId=" + encodeURIComponent(this.imprimir_precio_lista_encrypted_id));
   }
 
   ngOnInit(): void {
@@ -105,6 +125,23 @@ export class PreciosComponent implements OnInit {
         { data: '', orderable: false } //BOTONERA
       ]
     };
+
+    this.apiService.DoGET<ApiResult<any>>("ventas/basics/data", /*headers*/ null,
+      (response) => {
+        if (!response.success) {
+          this.confirmDialogService.showError(response.message);
+        }
+        else {
+            this.listasDePrecios = <Array<ListaDePreciosDTO>>response.data.listasDePrecios;
+
+            setTimeout(function() {
+              (<any>$("#title-crud").find('[data-toggle="tooltip"]')).tooltip();
+            }, 300);
+        }
+      },
+      (errorMessage) => {
+        this.confirmDialogService.showError(errorMessage);
+      });
   }
 
 }

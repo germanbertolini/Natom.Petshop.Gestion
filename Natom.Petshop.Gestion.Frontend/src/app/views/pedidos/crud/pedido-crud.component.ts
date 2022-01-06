@@ -365,25 +365,25 @@ export class PedidoCrudComponent implements OnInit {
     }
 
     if (this.crud.model.retira_personalmente === false) {
-      if (this.crud.model.entrega_domicilio === undefined || this.crud.model.entrega_domicilio.length === 0)
+      if (this.crud.model.entrega_domicilio === undefined || this.crud.model.entrega_domicilio === null || this.crud.model.entrega_domicilio.length === 0)
       {
         this.confirmDialogService.showError("Debes indicar el Domicilio de entrega.");
         return;
       }
 
-      if (this.crud.model.entrega_entre_calles === undefined || this.crud.model.entrega_entre_calles.length === 0)
+      if (this.crud.model.entrega_entre_calles === undefined || this.crud.model.entrega_entre_calles === null || this.crud.model.entrega_entre_calles.length === 0)
       {
         this.confirmDialogService.showError("Debes indicar las Entre Calles de entrega.");
         return;
       }
 
-      if (this.crud.model.entrega_localidad === undefined || this.crud.model.entrega_localidad.length === 0)
+      if (this.crud.model.entrega_localidad === undefined || this.crud.model.entrega_localidad === null || this.crud.model.entrega_localidad.length === 0)
       {
         this.confirmDialogService.showError("Debes indicar la Localidad de entrega.");
         return;
       }
 
-      if (this.crud.model.entrega_telefono1 === undefined || this.crud.model.entrega_telefono1.length === 0)
+      if (this.crud.model.entrega_telefono1 === undefined || this.crud.model.entrega_telefono1 === null || this.crud.model.entrega_telefono1.length === 0)
       {
         this.confirmDialogService.showError("Debes indicar el Telefono 1 de entrega.");
         return;
