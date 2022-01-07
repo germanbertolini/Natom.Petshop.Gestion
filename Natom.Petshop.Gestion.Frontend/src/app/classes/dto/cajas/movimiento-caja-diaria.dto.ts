@@ -6,4 +6,6 @@ export class MovimientoCajaDiariaDTO {
     public importe: number;
     public observaciones: String;
     public esCheque: boolean;
+    public esCtaCte: boolean;
+    public cliente_encrypted_id: string;
 }

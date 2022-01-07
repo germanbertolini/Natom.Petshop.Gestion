@@ -2,6 +2,7 @@
 using Natom.Petshop.Gestion.Biz.Exceptions;
 using Natom.Petshop.Gestion.Entities.DTO.Cajas;
 using Natom.Petshop.Gestion.Entities.Model;
+using Natom.Petshop.Gestion.Entities.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -94,6 +95,8 @@ namespace Natom.Petshop.Gestion.Biz.Managers
 
         public async Task<MovimientoCajaDiaria> GuardarMovimientoCajaDiariaAsync(MovimientoCajaDiariaDTO movimientoDto, int usuarioId)
         {
+            var ahora = DateTime.Now;
+
             if (movimientoDto.Tipo == "D")
             {
                 var saldoActual = await ObtenerSaldoActualCajaDiariaAsync();
@@ -101,9 +104,32 @@ namespace Natom.Petshop.Gestion.Biz.Managers
                     throw new HandledException($"No es posible realizar el Egreso ya que el importe ingresado ({movimientoDto.Importe.ToString("C2")}) es superior al saldo disponible actual ({saldoActual.ToString("C2")})");
             }
 
+            if (movimientoDto.Tipo == "C" && movimientoDto.EsCtaCte)
+            {
+                var ctaCteManager = new CuentasCorrientesManager(_serviceProvider);
+                var clienteId = EncryptionService.Decrypt<int>(movimientoDto.ClienteEncryptedId);
+                var monto = await ctaCteManager.ObtenerMontoActualCtaCteClienteAsync(clienteId);
+
+                if (monto == 0)
+                    throw new HandledException("El cliente seleccionado no posee Cuenta Corriente.");
+
+                var disponible = await ctaCteManager.ObtenerDisponibleActualCtaCteClienteAsync(clienteId);
+                var saldo = monto - disponible;
+                var movimientoCtaCte = new MovimientoCtaCteCliente
+                {
+                    ClienteId = clienteId,
+                    FechaHora = ahora,
+                    Importe = movimientoDto.Importe,
+                    Observaciones = movimientoDto.Observaciones + " /// NUEVO SALDO DEUDOR: " + saldo.ToString("C2"),
+                    Tipo = "C",
+                    UsuarioId = usuarioId
+                };
+                _db.MovimientosCtaCteCliente.Add(movimientoCtaCte);
+            }
+
             var movimiento = new MovimientoCajaDiaria()
             {
-                FechaHora = DateTime.Now,
+                FechaHora = ahora,
                 Importe = movimientoDto.Importe,
                 Observaciones = movimientoDto.Observaciones,
                 Tipo = movimientoDto.Tipo,

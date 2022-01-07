@@ -2,8 +2,12 @@ import { HttpClient } from "@angular/common/http";
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { NotifierService } from "angular-notifier";
+import { fromEvent } from "rxjs";
+import { debounceTime, distinctUntilChanged, map, mergeMap } from "rxjs/operators";
 import { MovimientoCajaDiariaDTO } from "src/app/classes/dto/cajas/movimiento-caja-diaria.dto";
+import { ClienteDTO } from "src/app/classes/dto/clientes/cliente.dto";
 import { ApiResult } from "src/app/classes/dto/shared/api-result.dto";
+import { AutocompleteResultDTO } from "src/app/classes/dto/shared/autocomplete-result.dto";
 import { CRUDView } from "src/app/classes/views/crud-view.classes";
 import { ConfirmDialogService } from "src/app/components/confirm-dialog/confirm-dialog.service";
 import { ApiService } from "src/app/services/api.service";
@@ -17,7 +21,9 @@ import { AuthService } from "src/app/services/auth.service";
 
 export class CajaDiariaNewComponent implements OnInit {
   crud: CRUDView<MovimientoCajaDiariaDTO>;
-
+  clientesSearch: ClienteDTO[];
+  general_cliente: string;
+  
   constructor(private apiService: ApiService,
               private authService: AuthService,
               private routerService: Router,
@@ -29,6 +35,37 @@ export class CajaDiariaNewComponent implements OnInit {
     this.crud.model = new MovimientoCajaDiariaDTO();
     this.crud.model.tipo = "";
     this.crud.model.usuarioNombre = authService.getCurrentUser().first_name;
+  }
+
+  onClienteSearchSelectItem (cliente: ClienteDTO) {
+    this.general_cliente = cliente.tipoDocumento + " " + cliente.numeroDocumento + " /// " + (cliente.esEmpresa ? cliente.razonSocial : cliente.nombre + " " + cliente.apellido);
+    this.crud.model.cliente_encrypted_id = cliente.encrypted_id;
+    this.closeClienteSearchPopUp();
+  }
+
+  closeClienteSearchPopUp() {
+    setTimeout(() => { this.clientesSearch = undefined; }, 200);    
+  }
+
+  onClienteSearchKeyUp(event) {
+    let observable = fromEvent(event.target, 'keyup')
+      .pipe (
+        map(value => event.target.value),
+        debounceTime(500),
+        distinctUntilChanged(),
+        mergeMap((search) => {
+          return this.apiService.DoGETWithObservable("clientes/search?filter=" + encodeURIComponent(search), /* headers */ null);
+        })
+      )
+    observable.subscribe((data) => {
+      var result = <ApiResult<AutocompleteResultDTO<ClienteDTO>>>data;
+      if (!result.success) {
+        this.confirmDialogService.showError("Se ha producido un error interno.");
+      }
+      else {
+        this.clientesSearch = result.data.results;
+      }
+    });
   }
 
   onCancelClick() {
@@ -54,6 +91,14 @@ export class CajaDiariaNewComponent implements OnInit {
     {
       this.confirmDialogService.showError("Debes ingresar un monto válido.");
       return;
+    }
+
+    if (this.crud.model.esCtaCte) {
+      if (this.crud.model.cliente_encrypted_id === undefined || this.crud.model.cliente_encrypted_id === null || this.crud.model.cliente_encrypted_id.length === 0)
+      {
+        this.confirmDialogService.showError("Debes seleccionar el Cliente a cancelar saldo.");
+        return;
+      }
     }
 
     if (this.crud.model.observaciones === undefined || this.crud.model.observaciones === "")
