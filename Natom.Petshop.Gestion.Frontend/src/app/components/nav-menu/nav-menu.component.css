@@ -64,3 +64,28 @@ nav.navbar {
 .nav-item-now .nav-link {
   color: var(--color-05-light);
 }
+
+@media (max-width: 992px) {
+  #navbarSupportedContent {
+    margin-left:20px!important;
+  }
+}
+
+@media (min-width: 993px) {
+  .navbar-toggler-button {
+    display: none;
+  }
+}
+
+.navbar-toggler-button:focus, .navbar-toggler-button:hover {
+  text-decoration: none;
+}
+
+.navbar-toggler-button {
+  padding: 0.25rem 0.75rem;
+  font-size: 1.25rem;
+  line-height: 1;
+  background-color: transparent;
+  border: 1px solid transparent;
+  border-radius: 0.25rem;
+}

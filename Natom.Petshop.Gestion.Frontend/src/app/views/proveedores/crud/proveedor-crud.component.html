@@ -1,6 +1,6 @@
 <div class="container-fluid" id="title-crud">
   <div class="row">
-    <div class="col-md-12">
+    <div class="col-lg-12">
       <h3>{{ crud.mode }} proveedor</h3>
     </div>
   </div>
@@ -15,8 +15,8 @@
   <div class="tab-content" id="nav-tabContent">
     <div class="tab-pane fade show active" id="nav-general" role="tabpanel" aria-labelledby="nav-general-tab">
       <div class="row">
-        <div class="col-md-4">
-          <div class="material-switch pull-left" style="margin-top: 2px;"><!-- <div class="material-switch pull-right"> -->
+        <div class="col-lg-4">
+          <div class="material-switch pull-left" style="margin-top: 2px; margin-bottom:1rem;"><!-- <div class="material-switch pull-right"> -->
               <input
                 id="switchEsEmpresa"
                 type="checkbox"
@@ -26,8 +26,8 @@
           </div>
           &nbsp;&nbsp;&nbsp;<b>ES EMPRESA</b>
         </div>
-        <div class="col-md-4">
-          <div class="material-switch pull-left" style="margin-top: 2px;"><!-- <div class="material-switch pull-right"> -->
+        <div class="col-lg-4">
+          <div class="material-switch pull-left" style="margin-top: 2px; margin-bottom:1rem;"><!-- <div class="material-switch pull-right"> -->
               <input
                 id="switchEsPresupuesto"
                 type="checkbox"
@@ -40,7 +40,7 @@
       </div>
       <br/>
       <div class="row" [style.display]="crud.model.esEmpresa ? 'none' : 'flex'">
-        <div class="col-md-5">
+        <div class="col-lg-5">
           <div class="form-group">
             <label for="formGroupExampleInput">Nombre</label>
             <div class="input-group">
@@ -56,7 +56,7 @@
             </div>
           </div>
         </div>
-        <div class="col-md-5">
+        <div class="col-lg-5">
           <div class="form-group">
             <label for="formGroupExampleInput">Apellido</label>
             <div class="input-group">
@@ -72,7 +72,7 @@
             </div>            
           </div>
         </div>
-        <div class="col-md-2">
+        <div class="col-lg-2">
           <div class="form-group">
             <label for="formGroupExampleInput">DNI (sin puntos)</label>
             <div class="input-group">
@@ -92,7 +92,7 @@
       </div>
 
       <div class="row" [style.display]="crud.model.esEmpresa ? 'flex' : 'none'">
-        <div class="col-md-5">
+        <div class="col-lg-5">
           <div class="form-group">
             <label for="formGroupExampleInput">Razón Social</label>
             <div class="input-group">
@@ -108,7 +108,7 @@
             </div>            
           </div>
         </div>
-        <div class="col-md-5">
+        <div class="col-lg-5">
           <div class="form-group">
             <label for="formGroupExampleInput">Nombre Fantasía</label>
             <div class="input-group">
@@ -124,7 +124,7 @@
             </div>
           </div>
         </div>
-        <div class="col-md-2">
+        <div class="col-lg-2">
           <div class="form-group">
             <label for="formGroupExampleInput">CUIT (con guiones)</label>
             <div class="input-group">
@@ -144,7 +144,7 @@
       </div>
 
       <div class="row">
-        <div class="col-md-5">
+        <div class="col-lg-5">
             <div class="form-group">
                 <label for="formGroupExampleInput">Domicilio</label>
                 <div class="input-group">
@@ -157,7 +157,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-5">
+        <div class="col-lg-5">
             <div class="form-group">
                 <label for="formGroupExampleInput">Entre calles</label>
                 <div class="input-group">
@@ -170,7 +170,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-2">
+        <div class="col-lg-2">
           <div class="form-group">
               <label for="formGroupExampleInput">Localidad</label>
               <div class="input-group">
@@ -189,7 +189,7 @@
 
     <div class="tab-pane fade" id="nav-contacto" role="tabpanel" aria-labelledby="nav-contacto-tab">
       <div class="row">
-        <div class="col-md-3">
+        <div class="col-lg-3">
             <div class="form-group">
               <label for="formGroupExampleInput">Teléfono 1</label>
               <div class="input-group">
@@ -207,7 +207,7 @@
               </div>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-lg-3">
           <div class="form-group">
               <label for="formGroupExampleInput">Email 1</label>
               <div class="input-group">
@@ -225,7 +225,7 @@
               </div>
           </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-lg-3">
           <div class="form-group">
             <label for="formGroupExampleInput">Teléfono 2</label>
             <div class="input-group">
@@ -243,7 +243,7 @@
             </div>
           </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-lg-3">
           <div class="form-group">
             <label for="formGroupExampleInput">Email 2</label>
             <div class="input-group">
@@ -263,7 +263,7 @@
         </div>
       </div>
       <div class="row">
-        <div class="col-md-12">
+        <div class="col-lg-12">
           <div class="form-group">
             <label for="formGroupExampleInput">Observaciones</label>
             <textarea
@@ -279,7 +279,7 @@
   </div>
   
   <div class="row crud-footer">
-    <div class="col-md-12">
+    <div class="col-lg-12">
       <button class="btn btn-danger btn-circular left" (click)="onCancelClick()" data-toggle="tooltip" data-placement="right" title="Cancelar"><i class="fa fa-times"></i></button>
       <button class="btn btn-success btn-circular right" (click)="onSaveClick()" data-toggle="tooltip" data-placement="left" title="Guardar"><i class="fa fa-check"></i></button>
     </div>

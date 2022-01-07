@@ -27,6 +27,11 @@ export class AppComponent {
 
         //SI HAY CAMBIO DE URL
         (<any>$('[data-toggle="tooltip"]')).tooltip('dispose');
+        
+        if (!((<any>$(".navbar-toggler-button")).is(".collapsed"))) {
+          (<any>$(".navbar-collapse")).slideUp();
+          (<any>$(".navbar-toggler-button")).removeClass("collapsed");
+        }
 
         //LUEGO DEL CAMBIO
         if(val instanceof NavigationEnd) {

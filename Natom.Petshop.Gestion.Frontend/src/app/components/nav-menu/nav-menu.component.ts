@@ -13,4 +13,15 @@ export class NavMenuComponent {
     
   }
 
+  toggleMenu() {
+    if (!((<any>$(".navbar-toggler-button")).is(".collapsed"))) {
+      (<any>$(".navbar-collapse")).slideUp();
+      (<any>$(".navbar-toggler-button")).removeClass("collapsed");
+    }
+    else {
+      (<any>$(".navbar-collapse")).slideDown();
+      (<any>$(".navbar-toggler-button")).addClass("collapsed");
+    }
+  }
+
 }

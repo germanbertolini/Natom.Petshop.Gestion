@@ -1,11 +1,22 @@
 <header>
   <nav
-    class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark border-bottom box-shadow mb-3"
+    class="navbar navbar-expand-lg navbar-toggleable-sm navbar-dark bg-dark border-bottom box-shadow mb-3"
   >
     <div class="container-fluid">
       <a class="navbar-brand" [routerLink]="['/']">
         <img src="assets/img/logo.png" />
       </a>
+      <button
+        class="navbar-toggler-button"
+        type="button"
+        data-toggle="collapse"
+        data-target=".navbar-collapse"
+        aria-label="Toggle navigation"
+        [attr.aria-expanded]="isExpanded"
+        (click)="toggleMenu()"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
           <!-- <li class="nav-item nav-item-now">
@@ -112,10 +123,20 @@
               <a *ngIf="authService.can('REPORTES_GANANCIAS')" class="dropdown-item" [routerLink]="['/reportes/estadistica/ganancias']">Estadística de ganancias</a>
             </div>
           </li>
+
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Usuario
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <a class="dropdown-item" (click)="authService.logout()"><i class="fa fa-sign-out" aria-hidden="true"></i> Cerrar sesión</a>
+            </div>
+          </li>
+          
         </ul>
       </div>
 
-      <div
+      <!-- <div
         class="navbar-collapse collapse d-sm-inline-flex justify-content-end">
         <ul class="navbar-nav flex-grow">
           <li class="nav-item dropdown">
@@ -127,7 +148,7 @@
             </div>
           </li>
         </ul>
-      </div>
+      </div> -->
     </div>
   </nav>
 </header>
