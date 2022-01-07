@@ -50,3 +50,31 @@ CREATE TABLE [dbo].[MovimientoCtaCteCliente](
 )
 
 GO
+
+ALTER TABLE MovimientoCajaDiaria ADD VentaId INT;
+
+GO
+
+ALTER TABLE MovimientoCajaDiaria ADD MedioDePago NVARCHAR(30);
+
+GO
+
+ALTER TABLE MovimientoCajaFuerte ADD VentaId INT;
+
+GO
+
+ALTER TABLE MovimientoCajaFuerte ADD MedioDePago NVARCHAR(30);
+
+GO
+
+ALTER TABLE Venta ADD PagoReferencia NVARCHAR(50), MedioDePago NVARCHAR(30);
+
+GO
+
+ALTER TABLE MovimientoCajaDiaria ADD Referencia NVARCHAR(50);
+
+GO
+
+ALTER TABLE MovimientoCajaFuerte ADD Referencia NVARCHAR(50);
+
+GO

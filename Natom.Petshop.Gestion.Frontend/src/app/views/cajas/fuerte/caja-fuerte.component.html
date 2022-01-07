@@ -6,7 +6,8 @@
     <div class="col-md-2">
       <div class="input-group input-group-sm">
         <div class="input-group-prepend">
-          <span class="input-group-text" id="basic-addon1">Saldo actual</span>
+          <span class="input-group-text" id="basic-addon1" *ngIf="filtroFecha === undefined || filtroFecha === null || filtroFecha.length === 0">Saldo actual</span>
+          <span class="input-group-text" id="basic-addon1" *ngIf="!(filtroFecha === undefined || filtroFecha === null || filtroFecha.length === 0)">Saldo fecha</span>
         </div>
         <input type="text" class="form-control monto" value="{{ saldoActual | currency:'ARS':'symbol':'1.2-2':'es-AR' }}" readonly />
       </div>

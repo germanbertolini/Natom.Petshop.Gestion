@@ -9,6 +9,8 @@ export class VentaDTO {
     public tipo_factura: string;
     public numero_factura: string;
     public observaciones: string;
+    public medio_de_pago: string;
+    public pago_referencia: string;
 
     public pedidos: VentaDetalleDTO[];
     public detalle: VentaDetalleDTO[];

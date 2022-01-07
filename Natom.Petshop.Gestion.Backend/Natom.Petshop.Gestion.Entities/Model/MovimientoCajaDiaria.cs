@@ -25,6 +25,12 @@ namespace Natom.Petshop.Gestion.Entities.Model
 
 		public bool EsCheque { get; set; }
 
+		public int? VentaId { get; set; }
+		public Venta Venta { get; set; }
+
+		public string MedioDePago { get; set; }
+		public string Referencia { get; set; }
+
 		[NotMapped]
         public int CantidadFiltrados { get; set; }
     }

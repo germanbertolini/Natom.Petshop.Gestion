@@ -143,6 +143,8 @@ namespace Natom.Petshop.Gestion.Biz.Managers
                 TipoFactura = ventaDto.TipoFactura,
                 Activo = true,
                 Observaciones = ventaDto.Observaciones,
+                MedioDePago = ventaDto.MedioDePago,
+                PagoReferencia = ventaDto.PagoReferencia,
                 PesoTotalEnGramos = ventaDto.Detalle.Sum(d => (d.ProductoPesoGramos ?? 0) * d.Cantidad),
                 MontoTotal = ventaDto.Detalle.Sum(d => (d.Precio * d.Cantidad) ?? 0),
                 Detalle = ventaDto.Pedidos.Select(d => new VentaDetalle
@@ -177,6 +179,29 @@ namespace Natom.Petshop.Gestion.Biz.Managers
                         Precio = (decimal)d.Precio
                     });
                 }
+            }
+
+            venta.ComposicionPagoCajaDiaria = new List<MovimientoCajaDiaria>();
+            venta.ComposicionPagoCajaFuerte = new List<MovimientoCajaFuerte>();
+
+            //REALIZAMOS EL PAGO
+            switch (venta.MedioDePago)
+            {
+                case "Efectivo":
+                    RealizarPagoEnEfectivo(venta);
+                    break;
+                case "Cheque":
+                    RealizarPagoConCheque(venta);
+                    break;
+                case "Mercado Pago":
+                    RealizarPagoConMercadoPago(venta);
+                    break;
+                case "Tarjeta":
+                    RealizarPagoConTarjeta(venta);
+                    break;
+                case "Transferencia":
+                    RealizarPagoConTransferencia(venta);
+                    break;
             }
 
             _db.Ventas.Add(venta);
@@ -233,6 +258,77 @@ namespace Natom.Petshop.Gestion.Biz.Managers
             return venta;
         }
 
+        private void RealizarPagoConTransferencia(Venta venta)
+        {
+            venta.ComposicionPagoCajaFuerte.Add(new MovimientoCajaFuerte
+            {
+                FechaHora = venta.FechaHoraVenta,
+                Importe = venta.MontoTotal,
+                MedioDePago = "Transferencia",
+                Tipo = "C",
+                UsuarioId = venta.UsuarioId,
+                Referencia = venta.PagoReferencia,
+                Observaciones = $"PAGO CON TRANSFERENCIA {(string.IsNullOrEmpty(venta.PagoReferencia) ? "" : $" /// REFERENCIA {venta.PagoReferencia.ToUpper()}")} /// VENTA n°{venta.NumeroVenta.ToString().PadLeft(8, '0')}"
+            });
+        }
+
+        private void RealizarPagoConTarjeta(Venta venta)
+        {
+            venta.ComposicionPagoCajaFuerte.Add(new MovimientoCajaFuerte
+            {
+                FechaHora = venta.FechaHoraVenta,
+                Importe = venta.MontoTotal,
+                MedioDePago = "Tarjeta",
+                Tipo = "C",
+                UsuarioId = venta.UsuarioId,
+                Referencia = venta.PagoReferencia,
+                Observaciones = $"PAGO CON TARJETA {(string.IsNullOrEmpty(venta.PagoReferencia) ? "" : $" /// REFERENCIA {venta.PagoReferencia.ToUpper()}")} /// VENTA n°{venta.NumeroVenta.ToString().PadLeft(8, '0')}"
+            });
+        }
+
+        private void RealizarPagoConMercadoPago(Venta venta)
+        {
+            venta.ComposicionPagoCajaFuerte.Add(new MovimientoCajaFuerte
+            {
+                FechaHora = venta.FechaHoraVenta,
+                Importe = venta.MontoTotal,
+                MedioDePago = "Mercado Pago",
+                Tipo = "C",
+                UsuarioId = venta.UsuarioId,
+                Referencia = venta.PagoReferencia,
+                Observaciones = $"PAGO CON MERCADO PAGO {(string.IsNullOrEmpty(venta.PagoReferencia) ? "" : $" /// REFERENCIA {venta.PagoReferencia.ToUpper()}")} /// VENTA n°{venta.NumeroVenta.ToString().PadLeft(8, '0')}"
+            });
+        }
+
+        private void RealizarPagoConCheque(Venta venta)
+        {
+            venta.ComposicionPagoCajaFuerte.Add(new MovimientoCajaFuerte
+            {
+                FechaHora = venta.FechaHoraVenta,
+                Importe = venta.MontoTotal,
+                MedioDePago = "Cheque",
+                EsCheque = true,
+                Tipo = "C",
+                UsuarioId = venta.UsuarioId,
+                Referencia = venta.PagoReferencia,
+                Observaciones = $"PAGO CON CHEQUE {(string.IsNullOrEmpty(venta.PagoReferencia) ? "" : $" /// REFERENCIA {venta.PagoReferencia.ToUpper()}")} /// VENTA n°{venta.NumeroVenta.ToString().PadLeft(8, '0')}"
+            });
+        }
+
+        private void RealizarPagoEnEfectivo(Venta venta)
+        {
+            venta.ComposicionPagoCajaDiaria.Add(new MovimientoCajaDiaria
+            {
+                FechaHora = venta.FechaHoraVenta,
+                Importe = venta.MontoTotal,
+                MedioDePago = "Efectivo",
+                Tipo = "C",
+                UsuarioId = venta.UsuarioId,
+                Referencia = venta.PagoReferencia,
+                Observaciones = $"PAGO CON EFECTIVO {(string.IsNullOrEmpty(venta.PagoReferencia) ? "" : $" /// REFERENCIA {venta.PagoReferencia.ToUpper()}" )} /// VENTA n°{venta.NumeroVenta.ToString().PadLeft(8, '0')}"
+            });
+        }
+
         public List<spReportVentaResult> ObtenerDataVentaReport(int ventaId)
         {
             return _db.spReportVentaResult.FromSqlRaw("spReportVenta {0}", ventaId).AsEnumerable().ToList();
@@ -241,7 +337,11 @@ namespace Natom.Petshop.Gestion.Biz.Managers
         public async Task<List<OrdenDePedido>> AnularVentaAsync(int usuarioId, int ventaId)
         {
             var ahora = DateTime.Now;
-            var venta = this._db.Ventas.Include(d => d.Detalle).First(v => v.VentaId == ventaId);
+            var venta = this._db.Ventas
+                                    .Include(d => d.Detalle)
+                                    .Include(d => d.ComposicionPagoCajaDiaria)
+                                    .Include(d => d.ComposicionPagoCajaFuerte)
+                                    .First(v => v.VentaId == ventaId);
             _db.Entry(venta).State = EntityState.Modified;
             venta.Activo = false;
 
@@ -270,6 +370,47 @@ namespace Natom.Petshop.Gestion.Biz.Managers
                 };
                 _db.MovimientosStock.Add(contraMovimiento);
             }
+
+            //REVERSAMOS PAGOS EN CAJA DIARIA
+            var pagosDiaria = new List<MovimientoCajaDiaria>();
+            venta.ComposicionPagoCajaDiaria.ForEach(c => pagosDiaria.Add(c));
+            foreach (var diaria in pagosDiaria)
+            {
+                var contraMovimiento = new MovimientoCajaDiaria
+                {
+                    FechaHora = ahora,
+                    UsuarioId = usuarioId,
+                    Tipo = "D",
+                    Importe = diaria.Importe,
+                    Observaciones = "REVERSO POR ANULACIÓN DE VENTA /// " + diaria.Observaciones,
+                    EsCheque = diaria.EsCheque,
+                    VentaId = diaria.VentaId,
+                    MedioDePago = diaria.MedioDePago,
+                    Referencia = diaria.Referencia
+                };
+                _db.MovimientosCajaDiaria.Add(contraMovimiento);
+            }
+
+            //REVERSAMOS PAGOS EN CAJA FUERTE
+            var pagosFuerte = new List<MovimientoCajaFuerte>();
+            venta.ComposicionPagoCajaFuerte.ForEach(c => pagosFuerte.Add(c));
+            foreach (var diaria in pagosFuerte)
+            {
+                var contraMovimiento = new MovimientoCajaFuerte
+                {
+                    FechaHora = ahora,
+                    UsuarioId = usuarioId,
+                    Tipo = "D",
+                    Importe = diaria.Importe,
+                    Observaciones = "REVERSO POR ANULACIÓN DE VENTA /// " + diaria.Observaciones,
+                    EsCheque = diaria.EsCheque,
+                    VentaId = diaria.VentaId,
+                    MedioDePago = diaria.MedioDePago,
+                    Referencia = diaria.Referencia
+                };
+                _db.MovimientosCajaFuerte.Add(contraMovimiento);
+            }
+
 
             await _db.SaveChangesAsync();
 

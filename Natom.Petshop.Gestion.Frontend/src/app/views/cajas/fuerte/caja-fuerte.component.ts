@@ -65,6 +65,7 @@ export class CajaFuerteComponent implements OnInit {
           previous: 'Anterior'
         },
       },
+      order: [[0, 'desc']],
       ajax: (dataTablesParameters: any, callback) => {
         this.apiService.DoPOST<ApiResult<DataTableDTO<MovimientoCajaFuerteDTO>>>("cajas/fuerte/list" + (this.filtroFechaFinal === undefined ? "" : "?filterDate=" + encodeURIComponent(this.filtroFechaFinal)), dataTablesParameters, /*headers*/ null,
                       (response) => {

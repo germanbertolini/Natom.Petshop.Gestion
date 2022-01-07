@@ -21,6 +21,9 @@ namespace Natom.Petshop.Gestion.Entities.Model
 		public int? UsuarioId { get; set; }
 		public Usuario Usuario { get; set; }
 
+		public string MedioDePago { get; set; }
+		public string PagoReferencia { get; set; }
+
 		public string TipoFactura { get; set; }
 		public string NumeroFactura { get; set; }
 		public bool Activo { get; set; }
@@ -31,6 +34,9 @@ namespace Natom.Petshop.Gestion.Entities.Model
 		public int PesoTotalEnGramos { get; set; }
 
 		public List<VentaDetalle> Detalle { get; set; }
+
+		public List<MovimientoCajaDiaria> ComposicionPagoCajaDiaria { get; set; }
+		public List<MovimientoCajaFuerte> ComposicionPagoCajaFuerte { get; set; }
 
 		[NotMapped]
         public int CantidadFiltrados { get; set; }

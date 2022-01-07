@@ -33,6 +33,12 @@ namespace Natom.Petshop.Gestion.Entities.DTO.Ventas
         [JsonProperty("numero_factura")]
         public string NumeroFactura { get; set; }
 
+        [JsonProperty("medio_de_pago")]
+        public string MedioDePago { get; set; }
+
+        [JsonProperty("pago_referencia")]
+        public string PagoReferencia { get; set; }
+
         [JsonProperty("observaciones")]
         public string Observaciones { get; set; }
 
@@ -53,6 +59,8 @@ namespace Natom.Petshop.Gestion.Entities.DTO.Ventas
             NumeroFactura = entity.NumeroFactura;
             Observaciones = entity.Observaciones;
             Detalle = entity.Detalle.Select(d => new VentaDetalleDTO().From(d)).ToList();
+            MedioDePago = entity.MedioDePago;
+            PagoReferencia = entity.PagoReferencia;
 
             return this;
         }

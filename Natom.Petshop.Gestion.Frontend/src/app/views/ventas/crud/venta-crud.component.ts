@@ -70,6 +70,7 @@ export class VentaCrudComponent implements OnInit {
     this.crud = new CRUDView<VentaDTO>(routeService);
     this.crud.model = new VentaDTO();
     this.crud.model.tipo_factura = "";
+    this.crud.model.medio_de_pago = "";
     this.totalizador_monto = 0;
     this.totalizador_peso_gramos = 0;
     this.crud.model.pedidos = new Array<VentaDetalleDTO>();
@@ -256,6 +257,12 @@ export class VentaCrudComponent implements OnInit {
     if (this.crud.model.numero_factura === undefined || this.crud.model.numero_factura.length === 0)
     {
       this.confirmDialogService.showError("Debes ingresar el numero de Comprobante.");
+      return;
+    }
+
+    if (this.crud.model.medio_de_pago === undefined || this.crud.model.medio_de_pago.length === 0)
+    {
+      this.confirmDialogService.showError("Debes seleccionar el Medio de pago.");
       return;
     }
     
