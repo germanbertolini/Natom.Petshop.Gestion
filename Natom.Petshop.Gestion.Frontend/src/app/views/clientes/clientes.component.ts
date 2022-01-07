@@ -42,6 +42,10 @@ export class ClientesComponent implements OnInit {
     this.routerService.navigate(['/clientes/edit/' + encodeURIComponent(id)]);
   }
 
+  onVerCtaCteClick(id: string) {
+    this.routerService.navigate(['/clientes/cta_cte/' + encodeURIComponent(id)]);
+  }
+
   onEnableClick(id: string) {
     let notifier = this.notifierService;
     let confirmDialogService = this.confirmDialogService;

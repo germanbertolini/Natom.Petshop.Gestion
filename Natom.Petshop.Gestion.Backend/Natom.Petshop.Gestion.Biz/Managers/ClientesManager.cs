@@ -103,6 +103,7 @@ namespace Natom.Petshop.Gestion.Biz.Managers
                     ContactoTelefono1 = clienteDto.ContactoTelefono1,
                     ContactoTelefono2 = clienteDto.ContactoTelefono2,
                     ContactoObservaciones = clienteDto.ContactoObservaciones,
+                    MontoCtaCte = clienteDto.MontoCtaCte,
                     Activo = true
                 };
 
@@ -135,6 +136,7 @@ namespace Natom.Petshop.Gestion.Biz.Managers
                 cliente.ContactoTelefono1 = clienteDto.ContactoTelefono1;
                 cliente.ContactoTelefono2 = clienteDto.ContactoTelefono2;
                 cliente.ContactoObservaciones = clienteDto.ContactoObservaciones;
+                cliente.MontoCtaCte = clienteDto.MontoCtaCte;
 
                 await _db.SaveChangesAsync();
             }

@@ -33,6 +33,8 @@ namespace Natom.Petshop.Gestion.Entities.Model
 		public string ContactoEmail2 { get; set; }
 		public string ContactoObservaciones { get; set; }
 
+		public decimal MontoCtaCte { get; set; }
+
 		public bool Activo { get; set; }
 
 		[NotMapped]

@@ -26,6 +26,7 @@ export class ClienteCrudComponent implements OnInit {
                 
     this.crud = new CRUDView<ClienteDTO>(routeService);
     this.crud.model = new ClienteDTO();
+    this.crud.model.monto_cta_cte = 0;
   }
 
   onCancelClick() {

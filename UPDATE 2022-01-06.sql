@@ -26,3 +26,27 @@ END
 
 GO
 
+ALTER TABLE Cliente ADD MontoCtaCte DECIMAL(18,2) DEFAULT 0;
+
+GO
+
+UPDATE Cliente SET MontoCtaCte = 0;
+
+GO
+
+INSERT INTO Permiso (PermisoId, Descripcion) VALUES ('CLIENTES_CTA_CTE_VER', 'Clientes: Consultar Cuenta Corriente');
+
+GO
+
+CREATE TABLE [dbo].[MovimientoCtaCteCliente](
+	[MovimientoCtaCteClienteId] [int] IDENTITY(1,1) NOT NULL PRIMARY KEY,
+	[FechaHora] [datetime] NOT NULL,
+	ClienteId INT NOT NULL,
+	[UsuarioId] [int] NULL,
+	[Tipo] [char](1) NOT NULL,
+	[Importe] [decimal](18, 2) NOT NULL,
+	[Observaciones] [nvarchar](200) NULL,
+	FOREIGN KEY (ClienteId) REFERENCES Cliente(ClienteId)
+)
+
+GO

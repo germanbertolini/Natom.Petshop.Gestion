@@ -69,6 +69,8 @@ import { VentasRepartoVsMostradorComponent } from './views/reportes/estadistica/
 import { TotalVentasPorListaDePreciosComponent } from './views/reportes/estadistica/total-ventas-por-lista-de-precios/total-ventas-por-lista-de-precios.component';
 import { ReportesEstadisticaComprasComponent } from './views/reportes/estadistica/compras/reportes-estadistica-compras.component';
 import { ReportesEstadisticaGananciasComponent } from './views/reportes/estadistica/ganancias/reportes-estadistica-ganancias.component';
+import { ClienteCuentaCorrienteComponent } from './views/clientes/cta_cte/cliente-cta-cte.component';
+import { ClienteCuentaCorrienteNewComponent } from './views/clientes/cta_cte/new/cliente-cta-cte-new.component';
 
 
 export function OnInit(jsonAppConfigService: JsonAppConfigService) {
@@ -121,6 +123,8 @@ export function OnInit(jsonAppConfigService: JsonAppConfigService) {
     TotalVentasPorListaDePreciosComponent,
     ReportesEstadisticaComprasComponent,
     ReportesEstadisticaGananciasComponent,
+    ClienteCuentaCorrienteComponent,
+    ClienteCuentaCorrienteNewComponent,
     NgbdDatepickerPopup
   ],
   imports: [

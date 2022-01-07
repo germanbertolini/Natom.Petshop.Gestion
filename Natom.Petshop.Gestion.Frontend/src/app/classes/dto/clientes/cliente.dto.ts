@@ -16,4 +16,5 @@ export class ClienteDTO {
 	public contactoEmail1: string;
 	public contactoEmail2: string;
 	public contactoObservaciones: string;
+	public monto_cta_cte: number;
 }

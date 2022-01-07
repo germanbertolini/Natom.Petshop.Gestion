@@ -67,6 +67,8 @@ import { ReportesEstadisticasComprasGuard } from "./guards/reportes/estadistica/
 import { ReportesEstadisticasGananciasGuard } from "./guards/reportes/estadistica/reportes-estadisticas-ganancias.guards";
 import { VentasPorProductoVendedorGuard } from "./guards/reportes/listados/ventas-por-producto-vendedor.guards";
 import { ClientesQueNoCompranDesdeFechaGuard } from "./guards/reportes/listados/clientes-que-no-compran-desde-fecha.guards";
+import { ClienteCuentaCorrienteNewComponent } from "./views/clientes/cta_cte/new/cliente-cta-cte-new.component";
+import { ClienteCuentaCorrienteComponent } from "./views/clientes/cta_cte/cliente-cta-cte.component";
 
 const appRoutes: Routes = [
     { path: 'login', component: LoginComponent, pathMatch: 'full' },
@@ -90,6 +92,9 @@ const appRoutes: Routes = [
     { canActivate: [ AuthGuard, VerClientesGuard ], path: 'clientes', component: ClientesComponent },
     { canActivate: [ AuthGuard, CRUDClientesGuard ], path: "clientes/new", component: ClienteCrudComponent },
     { canActivate: [ AuthGuard, CRUDClientesGuard ], path: "clientes/edit/:id", component: ClienteCrudComponent },
+    { canActivate: [ AuthGuard, VerClientesGuard ], path: 'clientes/cta_cte/:id', component: ClienteCuentaCorrienteComponent },
+    { canActivate: [ AuthGuard, VerClientesGuard ], path: 'clientes/cta_cte/:id/new', component: ClienteCuentaCorrienteNewComponent },
+    { canActivate: [ AuthGuard, CRUDClientesGuard ], path: "clientes/new", component: ClienteCrudComponent },
     { canActivate: [ AuthGuard, VerProveedoresGuard ], path: 'proveedores', component: ProveedoresComponent },
     { canActivate: [ AuthGuard, CRUDProveedoresGuard ], path: "proveedores/new", component: ProveedorCrudComponent },
     { canActivate: [ AuthGuard, CRUDProveedoresGuard ], path: "proveedores/edit/:id", component: ProveedorCrudComponent },
