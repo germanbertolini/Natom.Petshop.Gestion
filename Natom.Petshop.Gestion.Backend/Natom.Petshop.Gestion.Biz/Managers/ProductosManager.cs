@@ -128,7 +128,7 @@ namespace Natom.Petshop.Gestion.Biz.Managers
                 producto.Codigo = productoDto.Codigo.ToUpper();
                 producto.DescripcionCorta = productoDto.DescripcionCorta;
                 producto.DescripcionLarga = productoDto.DescripcionLarga;
-                producto.MarcaId = EncryptionService.Decrypt<int>(productoDto.EncryptedId);
+                producto.MarcaId = EncryptionService.Decrypt<int>(productoDto.MarcaEncryptedId);
                 producto.MueveStock = productoDto.MueveStock;
                 producto.PesoUnitario = productoDto.PesoUnitario;
                 producto.UnidadPesoId = EncryptionService.Decrypt<int>(productoDto.UnidadPesoEncryptedId);
