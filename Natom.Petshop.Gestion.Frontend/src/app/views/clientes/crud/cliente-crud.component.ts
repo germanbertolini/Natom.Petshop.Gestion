@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { NotifierService } from "angular-notifier";
 import { ClienteDTO } from "src/app/classes/dto/clientes/cliente.dto";
 import { ApiResult } from "src/app/classes/dto/shared/api-result.dto";
+import { ZonaDTO } from "src/app/classes/dto/zonas/zona.dto";
 import { CRUDView } from "src/app/classes/views/crud-view.classes";
 import { ConfirmDialogService } from "src/app/components/confirm-dialog/confirm-dialog.service";
 import { ApiService } from "src/app/services/api.service";
@@ -17,6 +18,7 @@ import { ApiService } from "src/app/services/api.service";
 export class ClienteCrudComponent implements OnInit {
 
   crud: CRUDView<ClienteDTO>;
+  zonas: ZonaDTO[];
 
   constructor(private apiService: ApiService,
               private routerService: Router,
@@ -26,6 +28,7 @@ export class ClienteCrudComponent implements OnInit {
                 
     this.crud = new CRUDView<ClienteDTO>(routeService);
     this.crud.model = new ClienteDTO();
+    this.crud.model.zona_encrypted_id = "";
     this.crud.model.monto_cta_cte = 0;
   }
 
@@ -107,6 +110,12 @@ export class ClienteCrudComponent implements OnInit {
       return;
     }
 
+    if (this.crud.model.zona_encrypted_id === undefined || this.crud.model.zona_encrypted_id.length === 0)
+    {
+      this.confirmDialogService.showError("Debes seleccionar la Zona.");
+      return;
+    }
+
     //TAB CONTACTO
     //Todo opcional: No controlamos nada!
     
@@ -128,30 +137,25 @@ export class ClienteCrudComponent implements OnInit {
 
   ngOnInit(): void {
 
-    if (this.crud.isEditMode) {
-      this.apiService.DoGET<ApiResult<any>>("clientes/basics/data" + (this.crud.isEditMode ? "?encryptedId=" + encodeURIComponent(this.crud.id) : ""), /*headers*/ null,
-      (response) => {
-        if (!response.success) {
-          this.confirmDialogService.showError(response.message);
-        }
-        else {
-          if (response.data.entity !== null)
-            this.crud.model = response.data.entity;
+    this.apiService.DoGET<ApiResult<any>>("clientes/basics/data" + (this.crud.isEditMode ? "?encryptedId=" + encodeURIComponent(this.crud.id) : ""), /*headers*/ null,
+    (response) => {
+      if (!response.success) {
+        this.confirmDialogService.showError(response.message);
+      }
+      else {
+        if (response.data.entity !== null)
+          this.crud.model = response.data.entity;
 
-            setTimeout(function() {
-              (<any>$("#title-crud").find('[data-toggle="tooltip"]')).tooltip();
-            }, 300);
-        }
-      },
-      (errorMessage) => {
-        this.confirmDialogService.showError(errorMessage);
-      });
-    }
-    else {
-      setTimeout(function() {
-        (<any>$("#title-crud").find('[data-toggle="tooltip"]')).tooltip();
-      }, 300);
-    }
+        this.zonas = response.data.zonas;
+
+        setTimeout(function() {
+          (<any>$("#title-crud").find('[data-toggle="tooltip"]')).tooltip();
+        }, 300);
+      }
+    },
+    (errorMessage) => {
+      this.confirmDialogService.showError(errorMessage);
+    });
     
   }
 

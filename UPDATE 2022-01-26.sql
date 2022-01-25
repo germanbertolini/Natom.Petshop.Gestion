@@ -1,6 +1,12 @@
 USE PetShop_Gestion
 GO
 
+INSERT INTO Permiso
+	VALUES 
+		('ZONAS_CRUD', 'Zonas: Alta, Baja, Modificación');
+
+GO
+
 ALTER VIEW [dbo].[vwPreciosVigentes]
 AS
 	--LISTAS DE PRECIOS NO PORCENTUALES
@@ -36,3 +42,17 @@ AS
 		AND L.EsPorcentual = 1
 
 GO
+
+CREATE TABLE [dbo].[Zona](
+	[ZonaId] [int] IDENTITY(1,1) NOT NULL,
+	[Descripcion] [nvarchar](50) NULL,
+	[Activo] [bit] NOT NULL,
+	PRIMARY KEY (ZonaId)
+)
+
+GO
+
+ALTER TABLE Cliente ADD ZonaId INT;
+
+GO
+

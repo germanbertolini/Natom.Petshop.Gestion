@@ -71,6 +71,8 @@ import { ReportesEstadisticaComprasComponent } from './views/reportes/estadistic
 import { ReportesEstadisticaGananciasComponent } from './views/reportes/estadistica/ganancias/reportes-estadistica-ganancias.component';
 import { ClienteCuentaCorrienteComponent } from './views/clientes/cta_cte/cliente-cta-cte.component';
 import { ClienteCuentaCorrienteNewComponent } from './views/clientes/cta_cte/new/cliente-cta-cte-new.component';
+import { ZonasComponent } from './views/zonas/zonas.component';
+import { ZonaCrudComponent } from './views/zonas/crud/zona-crud.component';
 
 
 export function OnInit(jsonAppConfigService: JsonAppConfigService) {
@@ -116,6 +118,8 @@ export function OnInit(jsonAppConfigService: JsonAppConfigService) {
     PedidoCrudComponent,
     VentasComponent,
     VentaCrudComponent,
+    ZonasComponent,
+    ZonaCrudComponent,
     ReportesListadosVentasPorProductoProveedorComponent,
     ClientesQueNoCompranDesdeFechaComponent,
     KilosCompradosPorCadaProveedorComponent,

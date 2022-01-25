@@ -29,6 +29,12 @@ namespace Natom.Petshop.Gestion.Entities.DTO.Clientes
 		[JsonProperty("tipoDocumento_encrypted_id")]
 		public string TipoDocumentoEncryptedId { get; set; }
 
+		[JsonProperty("zona_encrypted_id")]
+		public string ZonaEncryptedId { get; set; }
+
+		[JsonProperty("zona")]
+		public string Zona { get; set; }
+
 		[JsonProperty("tipoDocumento")]
 		public string TipoDocumento { get; set; }
 
@@ -89,6 +95,8 @@ namespace Natom.Petshop.Gestion.Entities.DTO.Clientes
 			ContactoObservaciones = entity.ContactoObservaciones;
 			Activo = entity.Activo;
 			MontoCtaCte = entity.MontoCtaCte;
+			Zona = entity.Zona?.Descripcion;
+			ZonaEncryptedId = EncryptionService.Encrypt(entity.ZonaId) ?? "";
 
 			return this;
 		}

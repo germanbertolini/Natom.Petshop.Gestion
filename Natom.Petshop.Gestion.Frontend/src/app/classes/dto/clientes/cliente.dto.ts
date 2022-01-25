@@ -6,6 +6,8 @@ export class ClienteDTO {
 	public nombreFantasia: string;
 	public tipoDocumento_encrypted_id: string;
 	public tipoDocumento: string;
+	public zona_encrypted_id: string;
+	public zona: string;
 	public numeroDocumento: string;
 	public domicilio: string;
 	public entreCalles: string;

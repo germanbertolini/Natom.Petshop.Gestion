@@ -22,7 +22,7 @@ namespace Natom.Petshop.Gestion.Biz.Managers
 
         public async Task<List<Cliente>> ObtenerClientesDataTableAsync(int start, int size, string filter, int sortColumnIndex, string sortDirection, string statusFilter)
         {
-            var queryable = _db.Clientes.Include(c => c.TipoDocumento).Where(u => true);
+            var queryable = _db.Clientes.Include(c => c.TipoDocumento).Include(c => c.Zona).Where(u => true);
 
             //FILTROS
             if (!string.IsNullOrEmpty(filter))
@@ -104,6 +104,7 @@ namespace Natom.Petshop.Gestion.Biz.Managers
                     ContactoTelefono2 = clienteDto.ContactoTelefono2,
                     ContactoObservaciones = clienteDto.ContactoObservaciones,
                     MontoCtaCte = clienteDto.MontoCtaCte,
+                    ZonaId = EncryptionService.Decrypt<int>(clienteDto.ZonaEncryptedId),
                     Activo = true
                 };
 
@@ -136,6 +137,7 @@ namespace Natom.Petshop.Gestion.Biz.Managers
                 cliente.ContactoTelefono1 = clienteDto.ContactoTelefono1;
                 cliente.ContactoTelefono2 = clienteDto.ContactoTelefono2;
                 cliente.ContactoObservaciones = clienteDto.ContactoObservaciones;
+                cliente.ZonaId = EncryptionService.Decrypt<int>(clienteDto.ZonaEncryptedId);
                 cliente.MontoCtaCte = clienteDto.MontoCtaCte;
 
                 await _db.SaveChangesAsync();
@@ -169,6 +171,7 @@ namespace Natom.Petshop.Gestion.Biz.Managers
         public Task<Cliente> ObtenerClienteAsync(int clienteId)
                         => _db.Clientes
                                 .Include(d => d.TipoDocumento)
+                                .Include(d => d.Zona)
                                 .FirstAsync(u => u.ClienteId.Equals(clienteId));
 
         public Task<List<Cliente>> BuscarClientesAsync(int size, string filter)

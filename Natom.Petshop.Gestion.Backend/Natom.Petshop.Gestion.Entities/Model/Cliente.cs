@@ -23,6 +23,9 @@ namespace Natom.Petshop.Gestion.Entities.Model
 		public TipoDocumento TipoDocumento { get; set; }
 		public string NumeroDocumento { get; set; }
 
+		public int? ZonaId { get; set; }
+		public Zona Zona { get; set; }
+
 		public string Domicilio { get; set; }
 		public string EntreCalles { get; set; }
 		public string Localidad { get; set; }

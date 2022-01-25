@@ -16,6 +16,7 @@ namespace Natom.Petshop.Gestion.Biz
         public DbSet<ListaDePrecios> ListasDePrecios { get; set; }
         public DbSet<Log> Logs { get; set; }
         public DbSet<Marca> Marcas { get; set; }
+        public DbSet<Zona> Zonas { get; set; }
         public DbSet<MovimientoCajaDiaria> MovimientosCajaDiaria { get; set; }
         public DbSet<MovimientoCajaFuerte> MovimientosCajaFuerte { get; set; }
         public DbSet<MovimientoCtaCteCliente> MovimientosCtaCteCliente { get; set; }

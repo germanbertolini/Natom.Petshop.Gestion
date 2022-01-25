@@ -133,7 +133,7 @@
       </div>
 
       <div class="row">
-        <div class="col-md-5">
+        <div class="col-md-4">
             <div class="form-group">
                 <label for="formGroupExampleInput">Domicilio</label>
                 <div class="input-group">
@@ -146,7 +146,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-5">
+        <div class="col-md-4">
             <div class="form-group">
                 <label for="formGroupExampleInput">Entre calles</label>
                 <div class="input-group">
@@ -171,6 +171,21 @@
                     [(ngModel)]="crud.model.localidad" />
                 </div>
             </div>
+        </div>
+        <div class="col-md-2">
+          <div class="form-group">
+              <label for="formGroupExampleInput">Zona</label>
+              <div class="input-group">
+                <select
+                  size="1"
+                  class="form-control"
+                  [(ngModel)]="crud.model.zona_encrypted_id">
+    
+                    <option value="" disabled selected>Seleccione...</option>
+                    <option *ngFor="let zona of zonas; let i = index" value="{{ zona.encrypted_id }}">{{ zona.descripcion }}</option>
+                </select>
+              </div>
+          </div>
         </div>
       </div>
     </div>
