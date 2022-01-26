@@ -73,6 +73,8 @@ import { ClienteCuentaCorrienteComponent } from './views/clientes/cta_cte/client
 import { ClienteCuentaCorrienteNewComponent } from './views/clientes/cta_cte/new/cliente-cta-cte-new.component';
 import { ZonasComponent } from './views/zonas/zonas.component';
 import { ZonaCrudComponent } from './views/zonas/crud/zona-crud.component';
+import { TransportesComponent } from './views/transportes/transportes.component';
+import { TransporteCrudComponent } from './views/transportes/crud/transporte-crud.component';
 
 
 export function OnInit(jsonAppConfigService: JsonAppConfigService) {
@@ -120,6 +122,8 @@ export function OnInit(jsonAppConfigService: JsonAppConfigService) {
     VentaCrudComponent,
     ZonasComponent,
     ZonaCrudComponent,
+    TransportesComponent,
+    TransporteCrudComponent,
     ReportesListadosVentasPorProductoProveedorComponent,
     ClientesQueNoCompranDesdeFechaComponent,
     KilosCompradosPorCadaProveedorComponent,

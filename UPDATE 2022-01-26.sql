@@ -56,3 +56,22 @@ ALTER TABLE Cliente ADD ZonaId INT;
 
 GO
 
+ALTER TABLE MovimientoCtaCteCliente ADD VentaId INT;
+
+GO
+
+INSERT INTO Permiso
+	VALUES 
+		('TRANSPORTES_CRUD', 'Transportes: Alta, Baja, Modificación');
+
+GO
+
+CREATE TABLE [dbo].[Transporte](
+	[TransporteId] [int] IDENTITY(1,1) NOT NULL,
+	[Descripcion] [nvarchar](50) NULL,
+	[Activo] [bit] NOT NULL,
+	PRIMARY KEY ([TransporteId])
+)
+
+GO
+

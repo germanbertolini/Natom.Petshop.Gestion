@@ -183,6 +183,7 @@ namespace Natom.Petshop.Gestion.Biz.Managers
 
             venta.ComposicionPagoCajaDiaria = new List<MovimientoCajaDiaria>();
             venta.ComposicionPagoCajaFuerte = new List<MovimientoCajaFuerte>();
+            venta.ComposicionPagoCuentaCorriente = new List<MovimientoCtaCteCliente>();
 
             //REALIZAMOS EL PAGO
             switch (venta.MedioDePago)
@@ -292,6 +293,7 @@ namespace Natom.Petshop.Gestion.Biz.Managers
                 Importe = venta.MontoTotal,
                 Tipo = "D",
                 UsuarioId = venta.UsuarioId,
+                ClienteId = venta.ClienteId,
                 Observaciones = $"VENTA POR CUENTA CORRIENTE {(string.IsNullOrEmpty(venta.PagoReferencia) ? "" : $" /// REFERENCIA {venta.PagoReferencia.ToUpper()}")} /// VENTA n°{venta.NumeroVenta.ToString().PadLeft(8, '0')}"
             });
         }

@@ -73,6 +73,9 @@ import { ClienteCtaCteVerGuard } from "./guards/clientes/clientes.cta-cte-ver.gu
 import { ABMZonasGuard } from "./guards/zonas/abm.zonas.guards";
 import { ZonasComponent } from "./views/zonas/zonas.component";
 import { ZonaCrudComponent } from "./views/zonas/crud/zona-crud.component";
+import { ABMTransportesGuard } from "./guards/transportes/abm.transportes.guards";
+import { TransportesComponent } from "./views/transportes/transportes.component";
+import { TransporteCrudComponent } from "./views/transportes/crud/transporte-crud.component";
 
 const appRoutes: Routes = [
     { path: 'login', component: LoginComponent, pathMatch: 'full' },
@@ -91,6 +94,9 @@ const appRoutes: Routes = [
     { canActivate: [ AuthGuard, ABMZonasGuard ], path: 'zonas', component: ZonasComponent },
     { canActivate: [ AuthGuard, ABMZonasGuard ], path: "zonas/new", component: ZonaCrudComponent },
     { canActivate: [ AuthGuard, ABMZonasGuard ], path: "zonas/edit/:id", component: ZonaCrudComponent },
+    { canActivate: [ AuthGuard, ABMTransportesGuard ], path: 'transportes', component: TransportesComponent },
+    { canActivate: [ AuthGuard, ABMTransportesGuard ], path: "transportes/new", component: TransporteCrudComponent },
+    { canActivate: [ AuthGuard, ABMTransportesGuard ], path: "transportes/edit/:id", component: TransporteCrudComponent },
     { canActivate: [ AuthGuard, CajaDiariaVerGuard ], path: 'cajas/diaria', component: CajaDiariaComponent },
     { canActivate: [ AuthGuard, CajaDiariaNuevoMovimientoGuard ], path: "cajas/diaria/new", component: CajaDiariaNewComponent },
     { canActivate: [ AuthGuard, CajaFuerteVerGuard ], path: 'cajas/fuerte', component: CajaFuerteComponent },
