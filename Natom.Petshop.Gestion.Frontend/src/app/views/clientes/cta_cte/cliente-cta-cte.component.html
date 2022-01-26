@@ -3,7 +3,7 @@
     <div class="col-md-3">
       <h3>Cta. Cte. Cliente</h3>
     </div>
-    <div class="col-md-7">
+    <div class="col-md-8">
       <div class="row" style="padding:0">
         <div class="col-md-3">
           <div class="input-group input-group-sm">
@@ -24,7 +24,7 @@
         <div class="col-md-3">
           <div class="input-group input-group-sm">
             <div class="input-group-prepend">
-              <span class="input-group-text" id="basic-addon1">Saldo deudor</span>
+              <span class="input-group-text" id="basic-addon1">Deudor</span>
             </div>
             <input type="text" class="form-control monto" value="{{ monto - disponible | currency:'ARS':'symbol':'1.2-2':'es-AR' }}" readonly />
           </div>
@@ -49,7 +49,7 @@
         </div>
       </div>
     </div>
-    <div class="col-md-2">
+    <div class="col-md-1">
       <button class="btn btn-sm btn-success right" (click)="onNuevoClick()">[+] Nuevo</button>
     </div>
   </div>

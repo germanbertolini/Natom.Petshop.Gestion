@@ -202,6 +202,9 @@ namespace Natom.Petshop.Gestion.Biz.Managers
                 case "Transferencia":
                     RealizarPagoConTransferencia(venta);
                     break;
+                case "Cuenta Corriente":
+                    RealizarPagoConCuentaCorriente(venta);
+                    break;
             }
 
             _db.Ventas.Add(venta);
@@ -269,6 +272,27 @@ namespace Natom.Petshop.Gestion.Biz.Managers
                 UsuarioId = venta.UsuarioId,
                 Referencia = venta.PagoReferencia,
                 Observaciones = $"PAGO CON TRANSFERENCIA {(string.IsNullOrEmpty(venta.PagoReferencia) ? "" : $" /// REFERENCIA {venta.PagoReferencia.ToUpper()}")} /// VENTA n°{venta.NumeroVenta.ToString().PadLeft(8, '0')}"
+            });
+        }
+
+        private void RealizarPagoConCuentaCorriente(Venta venta)
+        {
+            var cliente = _db.Clientes.Find(venta.ClienteId);
+            if (cliente.MontoCtaCte == 0)
+                throw new HandledException("El cliente no posee Cuenta Corriente.");
+
+            var ctaCteManager = new CuentasCorrientesManager(_serviceProvider);
+            var saldoDisponible = ctaCteManager.ObtenerDisponibleActualCtaCteClienteAsync(cliente.ClienteId).GetAwaiter().GetResult();
+            if (venta.MontoTotal > saldoDisponible)
+                throw new HandledException($"Fondos de la Cuenta Corriente insuficientes ({saldoDisponible.ToString("C2")}). Monto de operación actual: {venta.MontoTotal.ToString("C2")}");
+
+            venta.ComposicionPagoCuentaCorriente.Add(new MovimientoCtaCteCliente
+            {
+                FechaHora = venta.FechaHoraVenta,
+                Importe = venta.MontoTotal,
+                Tipo = "D",
+                UsuarioId = venta.UsuarioId,
+                Observaciones = $"VENTA POR CUENTA CORRIENTE {(string.IsNullOrEmpty(venta.PagoReferencia) ? "" : $" /// REFERENCIA {venta.PagoReferencia.ToUpper()}")} /// VENTA n°{venta.NumeroVenta.ToString().PadLeft(8, '0')}"
             });
         }
 

@@ -37,6 +37,7 @@ namespace Natom.Petshop.Gestion.Entities.Model
 
 		public List<MovimientoCajaDiaria> ComposicionPagoCajaDiaria { get; set; }
 		public List<MovimientoCajaFuerte> ComposicionPagoCajaFuerte { get; set; }
+		public List<MovimientoCtaCteCliente> ComposicionPagoCuentaCorriente { get; set; }
 
 		[NotMapped]
         public int CantidadFiltrados { get; set; }
