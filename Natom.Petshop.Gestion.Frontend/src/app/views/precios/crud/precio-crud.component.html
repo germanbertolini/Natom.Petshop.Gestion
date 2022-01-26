@@ -19,8 +19,6 @@
             type="text"
             class="form-control"
             [(ngModel)]="crud.model.producto"
-            (keyup)='onProductoSearchKeyUp($event)'
-            (blur)='closeProductoSearchPopUp()'
             placeholder="Buscar por código o palabra clave..." />
           <ul class="input-autocomplete-options">
             <li

@@ -43,7 +43,8 @@ export class ReportesListadosVentasPorProductoProveedorComponent implements OnIn
     this.filtroFechaHastaValue = "";
   }
   ngOnInit(): void {
-    
+    this.bindAutocompleteEvents<ProductoListDTO>("productoSearch", "productos/search?filter=", (data) => { this.productosSearch = data; }, () => { this.productosSearch = undefined; });
+    this.bindAutocompleteEvents<ProveedorDTO>("proveedorSearch", "proveedores/search?filter=", (data) => { this.proveedoresSearch = data; }, () => { this.proveedoresSearch = undefined; });
   }
 
   decideClosure(event, datepicker) { const path = event.path.map(p => p.localName); if (!path.includes('ngb-datepicker')) { datepicker.close(); } }
@@ -59,32 +60,7 @@ export class ReportesListadosVentasPorProductoProveedorComponent implements OnIn
   onProductoSearchSelectItem (producto: ProductoListDTO) {
     this.producto_encrypted_id = producto.encrypted_id;
     this.productoFilterText = "(" + producto.codigo + ") " + producto.marca + " " + producto.descripcion;
-    this.closeProductoSearchPopUp();
-  }
-
-  closeProductoSearchPopUp() {
-    setTimeout(() => { this.productosSearch = undefined; }, 200);    
-  }
-
-  onProductoSearchKeyUp(event) {
-    let observable = fromEvent(event.target, 'keyup')
-      .pipe (
-        map(value => event.target.value),
-        debounceTime(1000),
-        distinctUntilChanged(),
-        mergeMap((search) => {
-          return this.apiService.DoGETWithObservable("productos/search?filter=" + encodeURIComponent(search), /* headers */ null);
-        })
-      )
-   observable.subscribe((data) => {
-      var result = <ApiResult<AutocompleteResultDTO<ProductoListDTO>>>data;
-      if (!result.success) {
-        this.confirmDialogService.showError("Se ha producido un error interno.");
-      }
-      else {
-        this.productosSearch = result.data.results;
-      }
-   });
+    this.productosSearch = undefined;
   }
 
   onConsultar() {
@@ -118,31 +94,32 @@ export class ReportesListadosVentasPorProductoProveedorComponent implements OnIn
   onProveedorSearchSelectItem (proveedor: ProveedorDTO) {
     this.proveedor_search = proveedor.tipoDocumento + " " + proveedor.numeroDocumento + " /// " + (proveedor.esEmpresa ? proveedor.razonSocial : proveedor.nombre + " " + proveedor.apellido);
     this.proveedor_encrypted_id = proveedor.encrypted_id;
-    this.closeProveedorSearchPopUp();
+    this.proveedoresSearch = undefined;
   }
 
-  closeProveedorSearchPopUp() {
-    setTimeout(() => { this.proveedoresSearch = undefined; }, 200);    
-  }
-
-  onProveedorSearchKeyUp(event) {
-    let observable = fromEvent(event.target, 'keyup')
+  bindAutocompleteEvents<TDTO>(id: string, url: string, onResult: (data: TDTO[]) => void, onBlur: () => void) {
+    let observableKeyUp = fromEvent(document.getElementById(id), 'keyup')
       .pipe (
-        map(value => event.target.value),
+        map(value => (<any>document.getElementById(id)).value),
         debounceTime(500),
         distinctUntilChanged(),
         mergeMap((search) => {
-          return this.apiService.DoGETWithObservable("proveedores/search?filter=" + encodeURIComponent(search), /* headers */ null);
+          return this.apiService.DoGETWithObservable(url + encodeURIComponent(search), /* headers */ null);
         })
       )
-    observable.subscribe((data) => {
-      var result = <ApiResult<AutocompleteResultDTO<ProveedorDTO>>>data;
-      if (!result.success) {
-        this.confirmDialogService.showError("Se ha producido un error interno.");
-      }
-      else {
-        this.proveedoresSearch = result.data.results;
-      }
+      observableKeyUp.subscribe((data) => {
+        var result = <ApiResult<AutocompleteResultDTO<TDTO>>>data;
+        if (!result.success) {
+          this.confirmDialogService.showError("Se ha producido un error interno.");
+        }
+        else {
+          onResult(result.data.results);
+        }
+    });
+
+    let observableBlur = fromEvent(document.getElementById(id), 'blur');
+    observableBlur.subscribe(() => {
+      setTimeout(onBlur, 200);
     });
   }
 }

@@ -90,32 +90,7 @@ export class PedidoCrudComponent implements OnInit {
     this.crud.model.entrega_localidad = cliente.localidad;
     this.crud.model.entrega_telefono1 = cliente.contactoTelefono1;
     this.crud.model.entrega_telefono2 = cliente.contactoTelefono2;
-    this.closeClienteSearchPopUp();
-  }
-
-  closeClienteSearchPopUp() {
-    setTimeout(() => { this.clientesSearch = undefined; }, 200);    
-  }
-
-  onClienteSearchKeyUp(event) {
-    let observable = fromEvent(event.target, 'keyup')
-      .pipe (
-        map(value => event.target.value),
-        debounceTime(500),
-        distinctUntilChanged(),
-        mergeMap((search) => {
-          return this.apiService.DoGETWithObservable("clientes/search?filter=" + encodeURIComponent(search), /* headers */ null);
-        })
-      )
-    observable.subscribe((data) => {
-      var result = <ApiResult<AutocompleteResultDTO<ClienteDTO>>>data;
-      if (!result.success) {
-        this.confirmDialogService.showError("Se ha producido un error interno.");
-      }
-      else {
-        this.clientesSearch = result.data.results;
-      }
-    });
+    this.clientesSearch = undefined;
   }
 
   onAgregarDetalleClick() {
@@ -193,7 +168,7 @@ export class PedidoCrudComponent implements OnInit {
     this.detalle_producto_encrypted_id = producto.encrypted_id;
     this.detalle_producto = "(" + producto.codigo + ") " + producto.marca + " " + producto.descripcion;
     this.detalle_peso_unitario_gramos = producto.peso_unitario_gramos;
-    this.closeProductoSearchPopUp();
+    this.productosSearch = undefined;
     this.consultarStock();
     this.consultarPrecio();
   }
@@ -283,31 +258,6 @@ export class PedidoCrudComponent implements OnInit {
         dtInstance.columns.adjust();
       });
     }, 300);
-  }
-
-  closeProductoSearchPopUp() {
-    setTimeout(() => { this.productosSearch = undefined; }, 200);    
-  }
-
-  onProductoSearchKeyUp(event) {
-    let observable = fromEvent(event.target, 'keyup')
-      .pipe (
-        map(value => event.target.value),
-        debounceTime(500),
-        distinctUntilChanged(),
-        mergeMap((search) => {
-          return this.apiService.DoGETWithObservable("productos/search?filter=" + encodeURIComponent(search), /* headers */ null);
-        })
-      )
-   observable.subscribe((data) => {
-      var result = <ApiResult<AutocompleteResultDTO<ProductoListDTO>>>data;
-      if (!result.success) {
-        this.confirmDialogService.showError("Se ha producido un error interno.");
-      }
-      else {
-        this.productosSearch = result.data.results;
-      }
-   });
   }
 
   onQuitarDetalleClick(index) {
@@ -409,6 +359,9 @@ export class PedidoCrudComponent implements OnInit {
 
   ngOnInit(): void {
 
+    this.bindAutocompleteEvents<ProductoListDTO>("productoSearch", "productos/search?filter=", (data) => { this.productosSearch = data; }, () => { this.productosSearch = undefined; });
+    this.bindAutocompleteEvents<ClienteDTO>("clienteSearch", "clientes/search?filter=", (data) => { this.clientesSearch = data; }, () => { this.clientesSearch = undefined; });
+
     this.dtDetalle = {
       pagingType: 'simple_numbers',
       pageLength: 100,
@@ -481,6 +434,32 @@ export class PedidoCrudComponent implements OnInit {
         this.confirmDialogService.showError(errorMessage);
       });
     
+  }
+
+  bindAutocompleteEvents<TDTO>(id: string, url: string, onResult: (data: TDTO[]) => void, onBlur: () => void) {
+    let observableKeyUp = fromEvent(document.getElementById(id), 'keyup')
+      .pipe (
+        map(value => (<any>document.getElementById(id)).value),
+        debounceTime(500),
+        distinctUntilChanged(),
+        mergeMap((search) => {
+          return this.apiService.DoGETWithObservable(url + encodeURIComponent(search), /* headers */ null);
+        })
+      )
+      observableKeyUp.subscribe((data) => {
+        var result = <ApiResult<AutocompleteResultDTO<TDTO>>>data;
+        if (!result.success) {
+          this.confirmDialogService.showError("Se ha producido un error interno.");
+        }
+        else {
+          onResult(result.data.results);
+        }
+    });
+
+    let observableBlur = fromEvent(document.getElementById(id), 'blur');
+    observableBlur.subscribe(() => {
+      setTimeout(onBlur, 200);
+    });
   }
 
 }

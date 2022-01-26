@@ -81,35 +81,12 @@ export class PrecioCrudComponent implements OnInit {
   onProductoSearchSelectItem (producto: ProductoListDTO) {
     this.crud.model.producto_encrypted_id = producto.encrypted_id;
     this.crud.model.producto = "(" + producto.codigo + ") " + producto.marca + " " + producto.descripcion;
-    this.closeProductoSearchPopUp();
-  }
-
-  closeProductoSearchPopUp() {
-    setTimeout(() => { this.productosSearch = undefined; }, 200);    
-  }
-
-  onProductoSearchKeyUp(event) {
-    let observable = fromEvent(event.target, 'keyup')
-      .pipe (
-        map(value => event.target.value),
-        debounceTime(1000),
-        distinctUntilChanged(),
-        mergeMap((search) => {
-          return this.apiService.DoGETWithObservable("productos/search?filter=" + encodeURIComponent(search), /* headers */ null);
-        })
-      )
-   observable.subscribe((data) => {
-      var result = <ApiResult<AutocompleteResultDTO<ProductoListDTO>>>data;
-      if (!result.success) {
-        this.confirmDialogService.showError("Se ha producido un error interno.");
-      }
-      else {
-        this.productosSearch = result.data.results;
-      }
-   });
+    this.productosSearch = undefined;
   }
 
   ngOnInit(): void {
+
+    this.bindAutocompleteEvents<ProductoListDTO>("productoSearch", "productos/search?filter=", (data) => { this.productosSearch = data; }, () => { this.productosSearch = undefined; });
 
     this.apiService.DoGET<ApiResult<any>>("precios/basics/data" + (this.crud.isRenewMode ? "?encryptedId=" + encodeURIComponent(this.crud.id) : ""), /*headers*/ null,
       (response) => {
@@ -133,4 +110,30 @@ export class PrecioCrudComponent implements OnInit {
     
   }
 
+  bindAutocompleteEvents<TDTO>(id: string, url: string, onResult: (data: TDTO[]) => void, onBlur: () => void) {
+    let observableKeyUp = fromEvent(document.getElementById(id), 'keyup')
+      .pipe (
+        map(value => (<any>document.getElementById(id)).value),
+        debounceTime(500),
+        distinctUntilChanged(),
+        mergeMap((search) => {
+          return this.apiService.DoGETWithObservable(url + encodeURIComponent(search), /* headers */ null);
+        })
+      )
+      observableKeyUp.subscribe((data) => {
+        var result = <ApiResult<AutocompleteResultDTO<TDTO>>>data;
+        if (!result.success) {
+          this.confirmDialogService.showError("Se ha producido un error interno.");
+        }
+        else {
+          onResult(result.data.results);
+        }
+    });
+
+    let observableBlur = fromEvent(document.getElementById(id), 'blur');
+    observableBlur.subscribe(() => {
+      setTimeout(onBlur, 200);
+    });
+  }
+  
 }

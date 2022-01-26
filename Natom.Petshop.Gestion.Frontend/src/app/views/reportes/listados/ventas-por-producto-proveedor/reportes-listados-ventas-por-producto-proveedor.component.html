@@ -19,8 +19,6 @@
             type="text"
             class="form-control"
             [(ngModel)]="productoFilterText"
-            (keyup)='onProductoSearchKeyUp($event)'
-            (blur)='closeProductoSearchPopUp()'
             placeholder="- TODOS -   (Buscar por código o palabra clave...)" />
           <ul class="input-autocomplete-options">
             <li
@@ -51,8 +49,6 @@
             type="text"
             class="form-control"
             [(ngModel)]="proveedor_search"
-            (keyup)='onProveedorSearchKeyUp($event)'
-            (blur)='closeProveedorSearchPopUp()'
             placeholder="- TODOS -   (Buscar por CUIT o Razón social...)" />
           <ul class="input-autocomplete-options">
             <li
