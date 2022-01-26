@@ -19,4 +19,5 @@ export class ClienteDTO {
 	public contactoEmail2: string;
 	public contactoObservaciones: string;
 	public monto_cta_cte: number;
+	public lista_de_precios_encrypted_id: string;
 }

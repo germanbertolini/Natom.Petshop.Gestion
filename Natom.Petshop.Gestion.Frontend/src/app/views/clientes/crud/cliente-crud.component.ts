@@ -3,6 +3,7 @@ import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { NotifierService } from "angular-notifier";
 import { ClienteDTO } from "src/app/classes/dto/clientes/cliente.dto";
+import { ListaDePreciosDTO } from "src/app/classes/dto/precios/lista-de-precios.dto";
 import { ApiResult } from "src/app/classes/dto/shared/api-result.dto";
 import { ZonaDTO } from "src/app/classes/dto/zonas/zona.dto";
 import { CRUDView } from "src/app/classes/views/crud-view.classes";
@@ -19,6 +20,7 @@ export class ClienteCrudComponent implements OnInit {
 
   crud: CRUDView<ClienteDTO>;
   zonas: ZonaDTO[];
+  listasDePrecios: Array<ListaDePreciosDTO>;
 
   constructor(private apiService: ApiService,
               private routerService: Router,
@@ -29,6 +31,7 @@ export class ClienteCrudComponent implements OnInit {
     this.crud = new CRUDView<ClienteDTO>(routeService);
     this.crud.model = new ClienteDTO();
     this.crud.model.zona_encrypted_id = "";
+    this.crud.model.lista_de_precios_encrypted_id = "";
     this.crud.model.monto_cta_cte = 0;
   }
 
@@ -116,6 +119,13 @@ export class ClienteCrudComponent implements OnInit {
       return;
     }
 
+    if (this.crud.model.lista_de_precios_encrypted_id === undefined || this.crud.model.lista_de_precios_encrypted_id.length === 0)
+    {
+      this.confirmDialogService.showError("Debes seleccionar la Lista de precios.");
+      return;
+    }
+
+
     //TAB CONTACTO
     //Todo opcional: No controlamos nada!
     
@@ -147,6 +157,7 @@ export class ClienteCrudComponent implements OnInit {
           this.crud.model = response.data.entity;
 
         this.zonas = response.data.zonas;
+        this.listasDePrecios = <Array<ListaDePreciosDTO>>response.data.listasDePrecios;
 
         setTimeout(function() {
           (<any>$("#title-crud").find('[data-toggle="tooltip"]')).tooltip();

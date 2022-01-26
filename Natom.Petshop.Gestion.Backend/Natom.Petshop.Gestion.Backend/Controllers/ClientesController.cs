@@ -7,6 +7,7 @@ using Natom.Petshop.Gestion.Entities.DTO.Autocomplete;
 using Natom.Petshop.Gestion.Entities.DTO.Clientes;
 using Natom.Petshop.Gestion.Entities.DTO.Clientes.CtaCte;
 using Natom.Petshop.Gestion.Entities.DTO.DataTable;
+using Natom.Petshop.Gestion.Entities.DTO.Precios;
 using Natom.Petshop.Gestion.Entities.DTO.Zonas;
 using Natom.Petshop.Gestion.Entities.Model;
 using Natom.Petshop.Gestion.Entities.Services;
@@ -79,13 +80,17 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
                 var zonasManager = new ZonasManager(_serviceProvider);
                 var zonas = await zonasManager.ObtenerZonasActivasAsync();
 
+                var preciosManager = new PreciosManager(_serviceProvider);
+                var listasDePrecios = await preciosManager.ObtenerListasDePreciosAsync();
+                
                 return Ok(new ApiResultDTO<dynamic>
                 {
                     Success = true,
                     Data = new
                     {
                         entity = entity,
-                        zonas = zonas.Select(zona => new ZonaDTO().From(zona))
+                        zonas = zonas.Select(zona => new ZonaDTO().From(zona)),
+                        listasDePrecios = listasDePrecios.Select(lista => new ListaDePreciosDTO().From(lista))
                     }
                 });
             }

@@ -78,6 +78,8 @@ export class VentaCrudComponent implements OnInit {
     this.crud.model.fechaHora = new Date();
     this.crud.model.usuario = authService.getCurrentUser().first_name;
     this.detalle_ordenDePedido_encrypted_id = "";
+    this.detalle_listaDePrecios_encrypted_id = "";
+    this.detalle_deposito_encrypted_id = "";
     this.cambiar_precio_index = 0;
   }
 
@@ -89,6 +91,7 @@ export class VentaCrudComponent implements OnInit {
     this.crud.model.pedidos = new Array<VentaDetalleDTO>();
     this.crud.model.detalle = new Array<VentaDetalleDTO>();
     this.detalle_ordenDePedido_encrypted_id = "";
+    this.detalle_listaDePrecios_encrypted_id = cliente.lista_de_precios_encrypted_id;
     this.recalcularTotales();
   }
 

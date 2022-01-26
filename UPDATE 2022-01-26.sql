@@ -75,3 +75,7 @@ CREATE TABLE [dbo].[Transporte](
 
 GO
 
+ALTER TABLE Cliente ADD ListaDePreciosId INT;
+
+GO
+

@@ -26,6 +26,9 @@ namespace Natom.Petshop.Gestion.Entities.Model
 		public int? ZonaId { get; set; }
 		public Zona Zona { get; set; }
 
+		public int? ListaDePreciosId { get; set; }
+		public ListaDePrecios ListaDePrecios { get; set; }
+
 		public string Domicilio { get; set; }
 		public string EntreCalles { get; set; }
 		public string Localidad { get; set; }

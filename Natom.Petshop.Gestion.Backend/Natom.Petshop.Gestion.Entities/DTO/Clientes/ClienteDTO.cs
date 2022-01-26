@@ -71,6 +71,9 @@ namespace Natom.Petshop.Gestion.Entities.DTO.Clientes
 		[JsonProperty("monto_cta_cte")]
 		public decimal MontoCtaCte { get; set; }
 
+		[JsonProperty("lista_de_precios_encrypted_id")]
+		public string ListaDePreciosEncryptedId { get; set; }
+
 		[JsonProperty("activo")]
 		public bool Activo { get; set; }
 
@@ -97,6 +100,7 @@ namespace Natom.Petshop.Gestion.Entities.DTO.Clientes
 			MontoCtaCte = entity.MontoCtaCte;
 			Zona = entity.Zona?.Descripcion;
 			ZonaEncryptedId = EncryptionService.Encrypt(entity.ZonaId) ?? "";
+			ListaDePreciosEncryptedId = EncryptionService.Encrypt(entity.ListaDePreciosId) ?? "";
 
 			return this;
 		}

@@ -188,6 +188,24 @@
           </div>
         </div>
       </div>
+
+      <div class="row">
+        <div class="col-md-3">
+          <div class="form-group">
+              <label for="formGroupExampleInput">Lista de precios</label>
+              <div class="input-group">
+                <select
+                      class="form-control"
+                      size="1"
+                      [(ngModel)]="crud.model.lista_de_precios_encrypted_id">
+                  <option value="">Seleccione...</option>
+                  <option *ngFor="let lista of listasDePrecios" value="{{ lista.encrypted_id }}">{{ lista.descripcion }}</option>
+                </select>
+              </div>
+          </div>
+        </div>
+      </div>
+
     </div>
 
     <hr>

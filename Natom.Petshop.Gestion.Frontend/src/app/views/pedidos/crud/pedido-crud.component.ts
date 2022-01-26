@@ -90,6 +90,7 @@ export class PedidoCrudComponent implements OnInit {
     this.crud.model.entrega_localidad = cliente.localidad;
     this.crud.model.entrega_telefono1 = cliente.contactoTelefono1;
     this.crud.model.entrega_telefono2 = cliente.contactoTelefono2;
+    this.detalle_listaDePrecios_encrypted_id = cliente.lista_de_precios_encrypted_id;
     this.clientesSearch = undefined;
   }
 
