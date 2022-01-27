@@ -37,9 +37,12 @@ AS
 	FROM
 		ListaDePrecios L WITH(NOLOCK)
 		INNER JOIN [dbo].[vwPreciosVigentesFijados] P ON P.ListaDePreciosId = L.IncrementoDeListaDePreciosId
+		LEFT JOIN [dbo].[vwPreciosVigentesFijados] DEFINIDO ON DEFINIDO.ProductoId = P.ProductoId AND DEFINIDO.ListaDePreciosId = L.ListaDePreciosId
 	WHERE
 		L.Activo = 1
 		AND L.EsPorcentual = 1
+		AND DEFINIDO.ProductoPrecioId IS NULL --Y QUE NO ESTÉ DEFINIDO DENTRO DE LA LISTA PORCENTUAL
+		
 
 GO
 

@@ -40,7 +40,7 @@ namespace Natom.Petshop.Gestion.Entities.DTO.Precios
             ListaDePrecios = entity.ListaDePrecioDescripcion;
             AplicaDesdeFechaHora = entity.AplicaDesdeFechaHora;
             AplicaDesdeDias = (int)(DateTime.Now.Date - entity.AplicaDesdeFechaHora.Date).TotalDays;
-            EsPorcentual = entity.ListaDePreciosEsPorcentual;
+            EsPorcentual = entity.ListaDePreciosEsPorcentual && !entity.ProductoPrecioId.HasValue;
 
             return this;
         }

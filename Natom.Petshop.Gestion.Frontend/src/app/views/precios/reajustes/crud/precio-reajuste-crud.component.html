@@ -27,7 +27,7 @@
               [(ngModel)]="crud.model.aplicoListaDePrecios_encrypted_id">
           <option value="" selected>Seleccione...</option>
           <option value="-1">Todas</option>
-          <option *ngFor="let lista of ListasDePrecios" [ngStyle]="{display:(lista.esPorcentual ? 'none' : 'inline')}" value="{{ lista.encrypted_id }}">{{ lista.descripcion }}</option>
+          <option *ngFor="let lista of ListasDePrecios" value="{{ lista.encrypted_id }}">{{ lista.descripcion }} {{(lista.esPorcentual ? '(porcentual)' : '')}}</option>
         </select>
       </div>
     </div>
@@ -63,7 +63,16 @@
       </div>
     </div>
   </div>
-
+  <br/><br/><br/>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="alert alert-warning" role="alert">
+        <b>NOTA:</b> Los reajustes sobre listas de precios "porcentuales" van a aplicarse unicamente en aquellos precios que fueron definidos de manera manual.
+      </div>
+    </div>
+  </div>
+  <br/><br/>
+  
   <div class="row crud-footer">
     <div class="col-md-12">
       <button class="btn btn-danger btn-circular left" (click)="onCancelClick()" data-toggle="tooltip" data-placement="right" title="Cancelar"><i class="fa fa-times"></i></button>

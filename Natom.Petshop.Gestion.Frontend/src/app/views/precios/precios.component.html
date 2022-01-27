@@ -10,7 +10,7 @@
         </div>
         <select class="form-control" size="1" #filtroListaDePrecios [(ngModel)]="filterListaValue" (change)="onFiltroListaDePreciosChange(filtroListaDePrecios.value)">
           <option value="">Todas</option>
-          <option *ngFor="let lista of ListasDePrecios" value="{{ lista.encrypted_id }}">{{ lista.descripcion }}</option>
+          <option *ngFor="let lista of ListasDePrecios" value="{{ lista.encrypted_id }}">{{ lista.descripcion }} {{(lista.esPorcentual ? '(porcentual)' : '')}}</option>
         </select>
       </div>
     </div>

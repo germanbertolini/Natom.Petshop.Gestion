@@ -181,8 +181,8 @@ namespace Natom.Petshop.Gestion.Biz.Managers
 
         public async Task<HistoricoReajustePrecio> GuardarReajustePrecioAsync(int usuarioId, PrecioReajusteDTO precioReajusteDto)
         {
-            var todasLasListasDePreciosNoPorcentualesIds = await _db.ListasDePrecios.Where(l => l.Activo && !l.EsPorcentual).Select(l => l.ListaDePreciosId).ToListAsync();
-            var listasDePreciosId = precioReajusteDto.AplicoListaDePreciosEncryptedId == "-1" ? todasLasListasDePreciosNoPorcentualesIds : new List<int> { EncryptionService.Decrypt<int>(precioReajusteDto.AplicoListaDePreciosEncryptedId) };
+            var todasLasListasDePreciosIds = await _db.ListasDePrecios.Where(l => l.Activo).Select(l => l.ListaDePreciosId).ToListAsync();
+            var listasDePreciosId = precioReajusteDto.AplicoListaDePreciosEncryptedId == "-1" ? todasLasListasDePreciosIds : new List<int> { EncryptionService.Decrypt<int>(precioReajusteDto.AplicoListaDePreciosEncryptedId) };
             var marcaId = EncryptionService.Decrypt<int>(precioReajusteDto.AplicoMarcaEncryptedId);
             var preciosActuales = await _db.ProductosPrecios
                                             .Where(p => listasDePreciosId.Contains(p.ListaDePreciosId.Value)
