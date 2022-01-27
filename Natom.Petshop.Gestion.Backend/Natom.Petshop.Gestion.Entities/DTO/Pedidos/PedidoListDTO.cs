@@ -32,6 +32,9 @@ namespace Natom.Petshop.Gestion.Entities.DTO.Pedidos
         [JsonProperty("cliente")]
         public string Cliente { get; set; }
 
+        [JsonProperty("zona")]
+        public string Zona { get; set; }
+
         [JsonProperty("fechaHora")]
         public DateTime FechaHora { get; set; }
 
@@ -69,6 +72,7 @@ namespace Natom.Petshop.Gestion.Entities.DTO.Pedidos
             Remito = string.IsNullOrEmpty(entity.NumeroRemito) ? null : "RTO " + entity.NumeroRemito;
             Factura = string.IsNullOrEmpty(entity.Venta?.NumeroFactura) ? null : entity.Venta.TipoFactura + " " + entity.Venta.NumeroFactura;
             Cliente = entity.Cliente.EsEmpresa ? entity.Cliente.RazonSocial : $"{entity.Cliente.Nombre} {entity.Cliente.Apellido}";
+            Zona = entity.Cliente.Zona?.Descripcion;
             Usuario = entity.Usuario?.Nombre ?? "Admin";
             Estado = ResolverEstado(entity);
             Prepared = entity.PreparacionFechaHoraFin.HasValue;

@@ -21,10 +21,11 @@ namespace Natom.Petshop.Gestion.Biz.Managers
                     => _db.OrdenesDePedido
                             .CountAsync();
 
-        public async Task<List<OrdenDePedido>> ObtenerPedidosDataTableAsync(int start, int size, string filter, int sortColumnIndex, string sortDirection, string statusFilter)
+        public async Task<List<OrdenDePedido>> ObtenerPedidosDataTableAsync(int start, int size, string filter, int sortColumnIndex, string sortDirection, string statusFilter, int? zonaFilter)
         {
             var queryable = _db.OrdenesDePedido
                                     .Include(op => op.Cliente)
+                                        .ThenInclude(c => c.Zona)
                                     .Include(op => op.Usuario)
                                     .Include(op => op.PreparacionUsuario)
                                     .Where(u => true);
@@ -45,6 +46,7 @@ namespace Natom.Petshop.Gestion.Biz.Managers
                     queryable = queryable.Where(p => p.Cliente.RazonSocial.ToLower().Contains(filter.ToLower())
                                                         || p.Cliente.Nombre.ToLower().Contains(filter.ToLower())
                                                         || p.Cliente.Apellido.ToLower().Contains(filter.ToLower())
+                                                        || p.Cliente.Zona.Descripcion.ToLower().Contains(filter.ToLower())
                                                         || p.NumeroRemito.Contains(filter)
                                                         || p.Venta.NumeroFactura.Contains(filter));
                 }
@@ -61,6 +63,12 @@ namespace Natom.Petshop.Gestion.Biz.Managers
                 else if (statusFilter.ToUpper().Equals("EN_RUTA")) queryable = queryable.Where(q => q.Activo == true && !q.RetiraPersonalmente && q.PreparacionFechaHoraInicio != null && q.PreparacionFechaHoraFin != null && q.DespachoFechaHora != null && q.MarcoEntregaFechaHora == null);
                 else if (statusFilter.ToUpper().Equals("ENTREGADO")) queryable = queryable = queryable.Where(q => q.Activo == true && !q.RetiraPersonalmente && q.VentaId.HasValue && q.PreparacionFechaHoraInicio != null && q.PreparacionFechaHoraFin != null && q.DespachoFechaHora != null && q.MarcoEntregaFechaHora != null);
                 else if (statusFilter.ToUpper().Equals("ANULADO")) queryable = queryable.Where(q => q.Activo == false);
+            }
+
+            //FILTRO DE ZONA
+            if (zonaFilter != null)
+            {
+                queryable = queryable.Where(q => q.Cliente.ZonaId == zonaFilter);
             }
 
             //ORDEN

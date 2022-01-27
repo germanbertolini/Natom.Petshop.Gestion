@@ -1,9 +1,9 @@
 <div class="container-fluid">
   <div class="row">
-    <div class="col-md-5">
+    <div class="col-md-4">
       <h3>Ordenes de pedido</h3>
     </div>
-    <div class="col-md-5">
+    <div class="col-md-3">
       <div class="input-group input-group-sm">
         <div class="input-group-prepend">
           <span class="input-group-text" id="basic-addon1">Ver</span>
@@ -18,6 +18,21 @@
           <option value="PENDIENTE_FACTURACION">Entregado - Pendiente de facturación</option>
           <option value="ENTREGADO">Entregado - Completado</option>
           <option value="ANULADO">Anulados</option>
+        </select>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="input-group input-group-sm">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="basic-addon1">Zona</span>
+        </div>
+        <select
+              class="form-control"
+              size="1"
+              #filtroZona
+              (change)="onFiltroZonaChange(filtroZona.value)">
+          <option value="" selected>Todas</option>
+          <option *ngFor="let zona of zonas" value="{{ zona.encrypted_id }}">{{ zona.descripcion }}</option>
         </select>
       </div>
     </div>
@@ -51,7 +66,7 @@
             >
             <td><b>{{ pedido.numero }}</b><br/><small>{{ pedido.numeroVenta }}</small></td>
             <td>{{ pedido.remito }}<br/><small>{{ pedido.factura }}</small></td>
-            <td>{{ pedido.cliente }}</td>
+            <td>{{ pedido.cliente }}<br/><small *ngIf="pedido.zona !== null">{{ pedido.zona }}</small></td>
             <td>{{ pedido.fechaHora  |  date:'dd/MM/yyyy HH:mm' }} hs</td>
             <td>
               <b *ngIf="!pedido.enPreparacion && !pedido.anulado && !pedido.prepared" style="color:brown;">PENDIENTE<br/></b>

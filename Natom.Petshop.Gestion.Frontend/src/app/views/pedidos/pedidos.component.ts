@@ -6,6 +6,7 @@ import { NotifierService } from "angular-notifier";
 import { MarcaDTO } from "src/app/classes/dto/marca.dto";
 import { PedidosListDTO } from "src/app/classes/dto/pedidos/pedidos-list.dto";
 import { ApiResult } from "src/app/classes/dto/shared/api-result.dto";
+import { ZonaDTO } from "src/app/classes/dto/zonas/zona.dto";
 import { HistoricoCambiosService } from "src/app/components/historico-cambios/historico-cambios.service";
 import { ApiService } from "src/app/services/api.service";
 import { AuthService } from "src/app/services/auth.service";
@@ -24,7 +25,9 @@ export class PedidosComponent implements OnInit {
   dtIndex: DataTables.Settings = {};
   Pedidos: PedidosListDTO[];
   Noty: any;
+  zonas: ZonaDTO[];
   filterStatusValue: string;
+  filterZonaValue: string;
 
   constructor(private apiService: ApiService,
               private authService: AuthService,
@@ -33,6 +36,14 @@ export class PedidosComponent implements OnInit {
               private confirmDialogService: ConfirmDialogService,
               private historicoCambiosService: HistoricoCambiosService) {
     this.filterStatusValue = "TODOS";
+    this.filterZonaValue = "";
+  }
+
+  onFiltroZonaChange(newValue: string) {
+    this.filterZonaValue = newValue;
+    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+      dtInstance.ajax.reload()
+    });
   }
 
   onFiltroEstadoChange(newValue: string) {
@@ -231,6 +242,23 @@ export class PedidosComponent implements OnInit {
 
   ngOnInit(): void {
 
+    this.apiService.DoGET<ApiResult<any>>("pedidos/basics/data_list", /*headers*/ null,
+      (response) => {
+        if (!response.success) {
+          this.confirmDialogService.showError(response.message);
+        }
+        else {
+            this.zonas = <Array<ZonaDTO>>response.data.zonas;
+
+            setTimeout(function() {
+              (<any>$("#title-crud").find('[data-toggle="tooltip"]')).tooltip();
+            }, 300);
+        }
+      },
+      (errorMessage) => {
+        this.confirmDialogService.showError(errorMessage);
+      });
+
     this.dtIndex = {
       pagingType: 'simple_numbers',
       pageLength: 10,
@@ -254,7 +282,7 @@ export class PedidosComponent implements OnInit {
       },
       order: [[0, "desc"]],
       ajax: (dataTablesParameters: any, callback) => {
-          this.apiService.DoPOST<ApiResult<DataTableDTO<PedidosListDTO>>>("pedidos/list?status=" + this.filterStatusValue, dataTablesParameters, /*headers*/ null,
+          this.apiService.DoPOST<ApiResult<DataTableDTO<PedidosListDTO>>>("pedidos/list?status=" + this.filterStatusValue + "&zona=" + encodeURIComponent(this.filterZonaValue), dataTablesParameters, /*headers*/ null,
                         (response) => {
                           if (!response.success) {
                             this.confirmDialogService.showError(response.message);

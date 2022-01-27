@@ -8,6 +8,7 @@ using Natom.Petshop.Gestion.Entities.DTO.DataTable;
 using Natom.Petshop.Gestion.Entities.DTO.Pedidos;
 using Natom.Petshop.Gestion.Entities.DTO.Precios;
 using Natom.Petshop.Gestion.Entities.DTO.Stock;
+using Natom.Petshop.Gestion.Entities.DTO.Zonas;
 using Natom.Petshop.Gestion.Entities.Model;
 using Natom.Petshop.Gestion.Entities.Services;
 using System;
@@ -29,13 +30,17 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
         // POST: pedidos/list?status={status}
         [HttpPost]
         [ActionName("list")]
-        public async Task<IActionResult> PostListAsync([FromBody] DataTableRequestDTO request, [FromQuery] string status = null)
+        public async Task<IActionResult> PostListAsync([FromBody] DataTableRequestDTO request, [FromQuery] string status = null, [FromQuery] string zona = null)
         {
             try
             {
+                int? zonaId = null;
+                if (!string.IsNullOrEmpty(zona))
+                    zonaId = EncryptionService.Decrypt<int>(zona);
+
                 var manager = new PedidosManager(_serviceProvider);
                 var pedidosCount = await manager.ObtenerPedidosCountAsync();
-                var pedidos = await manager.ObtenerPedidosDataTableAsync(request.Start, request.Length, request.Search.Value, request.Order.First().ColumnIndex, request.Order.First().Direction, statusFilter: status);
+                var pedidos = await manager.ObtenerPedidosDataTableAsync(request.Start, request.Length, request.Search.Value, request.Order.First().ColumnIndex, request.Order.First().Direction, statusFilter: status, zonaId);
 
                 return Ok(new ApiResultDTO<DataTableResponseDTO<PedidoListDTO>>
                 {
@@ -101,6 +106,37 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
                         listasDePrecios = listasDePrecios.Select(lista => new ListaDePreciosDTO().From(lista)),
                         rangos_horarios = rangosHorarios.Select(rango => new RangoHorarioDTO().From(rango)).ToList(),
                         numero_pedido = numeroPedido
+                    }
+                });
+            }
+            catch (HandledException ex)
+            {
+                return Ok(new ApiResultDTO { Success = false, Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                await LoggingService.LogExceptionAsync(_db, ex, usuarioId: (int)(_token?.UserId ?? 0), _userAgent);
+                return Ok(new ApiResultDTO { Success = false, Message = "Se ha producido un error interno." });
+            }
+        }
+
+        // GET: pedidos/basics/data_list
+        [HttpGet]
+        [ActionName("basics/data_list")]
+        public async Task<IActionResult> GetBasicsDataListAsync()
+        {
+            try
+            {
+                var manager = new ZonasManager(_serviceProvider);
+                var zonas = await manager.ObtenerZonasActivasAsync();
+
+
+                return Ok(new ApiResultDTO<dynamic>
+                {
+                    Success = true,
+                    Data = new
+                    {
+                        zonas = zonas.Select(zona => new ZonaDTO().From(zona)).ToList()
                     }
                 });
             }
