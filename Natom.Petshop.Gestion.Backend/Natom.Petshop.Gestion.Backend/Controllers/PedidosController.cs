@@ -8,6 +8,7 @@ using Natom.Petshop.Gestion.Entities.DTO.DataTable;
 using Natom.Petshop.Gestion.Entities.DTO.Pedidos;
 using Natom.Petshop.Gestion.Entities.DTO.Precios;
 using Natom.Petshop.Gestion.Entities.DTO.Stock;
+using Natom.Petshop.Gestion.Entities.DTO.Transportes;
 using Natom.Petshop.Gestion.Entities.DTO.Zonas;
 using Natom.Petshop.Gestion.Entities.Model;
 using Natom.Petshop.Gestion.Entities.Services;
@@ -30,17 +31,21 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
         // POST: pedidos/list?status={status}
         [HttpPost]
         [ActionName("list")]
-        public async Task<IActionResult> PostListAsync([FromBody] DataTableRequestDTO request, [FromQuery] string status = null, [FromQuery] string zona = null)
+        public async Task<IActionResult> PostListAsync([FromBody] DataTableRequestDTO request, [FromQuery] string status = null, [FromQuery] string zona = null, [FromQuery] string transporte = null)
         {
             try
             {
                 int? zonaId = null;
                 if (!string.IsNullOrEmpty(zona))
-                    zonaId = EncryptionService.Decrypt<int>(zona);
+                    zonaId = EncryptionService.Decrypt<int>(Uri.UnescapeDataString(zona));
+
+                int? transporteId = null;
+                if (!string.IsNullOrEmpty(transporte))
+                    transporteId = EncryptionService.Decrypt<int>(Uri.UnescapeDataString(transporte));
 
                 var manager = new PedidosManager(_serviceProvider);
                 var pedidosCount = await manager.ObtenerPedidosCountAsync();
-                var pedidos = await manager.ObtenerPedidosDataTableAsync(request.Start, request.Length, request.Search.Value, request.Order.First().ColumnIndex, request.Order.First().Direction, statusFilter: status, zonaId);
+                var pedidos = await manager.ObtenerPedidosDataTableAsync(request.Start, request.Length, request.Search.Value, request.Order.First().ColumnIndex, request.Order.First().Direction, statusFilter: status, zonaId, transporteId);
 
                 return Ok(new ApiResultDTO<DataTableResponseDTO<PedidoListDTO>>
                 {
@@ -130,13 +135,16 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
                 var manager = new ZonasManager(_serviceProvider);
                 var zonas = await manager.ObtenerZonasActivasAsync();
 
+                var transporteMgr = new TransportesManager(_serviceProvider);
+                var transportes = await transporteMgr.ObtenerTransportesActivasAsync();
 
                 return Ok(new ApiResultDTO<dynamic>
                 {
                     Success = true,
                     Data = new
                     {
-                        zonas = zonas.Select(zona => new ZonaDTO().From(zona)).ToList()
+                        zonas = zonas.Select(zona => new ZonaDTO().From(zona)).ToList(),
+                        transportes = transportes.Select(tr => new TransporteDTO().From(tr)).ToList()
                     }
                 });
             }
@@ -400,16 +408,20 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
         // POST: pedidos/despachar?encryptedId={encryptedId}
         [HttpPost]
         [ActionName("despachar")]
-        public async Task<IActionResult> MarcarDespachoAsync([FromQuery] string encryptedId)
+        public async Task<IActionResult> MarcarDespachoAsync([FromQuery] string encryptedId, [FromQuery] string transporteId)
         {
             try
             {
                 var ordenDePedidoId = EncryptionService.Decrypt<int>(Uri.UnescapeDataString(encryptedId));
+                var _transporteId = EncryptionService.Decrypt<int>(Uri.UnescapeDataString(transporteId));
 
                 var manager = new PedidosManager(_serviceProvider);
-                await manager.MarcarDespachoAsync((int)(_token?.UserId ?? 0), ordenDePedidoId);
+                await manager.MarcarDespachoAsync((int)(_token?.UserId ?? 0), ordenDePedidoId, _transporteId);
 
-                await RegistrarAccionAsync(ordenDePedidoId, nameof(OrdenDePedido), "Orden despachada");
+                var transporteMgr = new TransportesManager(_serviceProvider);
+                var transporte = await transporteMgr.ObtenerTransporteAsync(_transporteId);
+
+                await RegistrarAccionAsync(ordenDePedidoId, nameof(OrdenDePedido), $"Orden despachada /// Transporte '{transporte.Descripcion}'");
 
                 return Ok(new ApiResultDTO
                 {

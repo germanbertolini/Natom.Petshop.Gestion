@@ -1,6 +1,6 @@
 <div class="container-fluid">
   <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-3">
       <h3>Ordenes de pedido</h3>
     </div>
     <div class="col-md-3">
@@ -21,7 +21,7 @@
         </select>
       </div>
     </div>
-    <div class="col-md-3">
+    <div class="col-md-2">
       <div class="input-group input-group-sm">
         <div class="input-group-prepend">
           <span class="input-group-text" id="basic-addon1">Zona</span>
@@ -36,7 +36,22 @@
         </select>
       </div>
     </div>
-    <div class="col-md-2">
+    <div class="col-md-3">
+      <div class="input-group input-group-sm">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="basic-addon1">Transporte</span>
+        </div>
+        <select
+              class="form-control"
+              size="1"
+              #filtroTransporte
+              (change)="onFiltroTransporteChange(filtroTransporte.value)">
+          <option value="" selected>Todas</option>
+          <option *ngFor="let transporte of transportes" value="{{ transporte.encrypted_id }}">{{ transporte.descripcion }}</option>
+        </select>
+      </div>
+    </div>
+    <div class="col-md-1">
       <button class="btn btn-sm btn-success right" [routerLink]="['/pedidos/new']">[+] Nueva</button>
     </div>
   </div>
@@ -72,8 +87,9 @@
               <b *ngIf="!pedido.enPreparacion && !pedido.anulado && !pedido.prepared" style="color:brown;">PENDIENTE<br/></b>
               <b *ngIf="pedido.enPreparacion && !pedido.anulado" style="color:chocolate">EN PREPARACIÓN<br/></b>
               <b *ngIf="!pedido.enPreparacion && pedido.prepared">{{ pedido.fechaHoraPreparado  |  date:'dd/MM/yyyy HH:mm' }} hs<br/></b>
-              <small>{{ pedido.preparadoPor }}</small></td>
-            <td>{{ pedido.estado }}</td>
+              <small>{{ pedido.preparadoPor }}</small>
+            </td>
+            <td>{{ pedido.estado }}<br/><small>{{ pedido.transporte }}</small></td>
             <td>{{ (pedido.peso_total_gramos / 1000).toFixed(2).replace('.', ',') }} KG</td>
             <td>
               <a *ngIf="authService.can('pedidos_deposito') && pedido.estado === 'Pendiente de preparación'" class="btn btn-warning btn-sm comenzar-smt-btn spacingLeft" (click)="onIniciarOrdenClick(pedido.encrypted_id)" data-toggle="tooltip" data-placement="top" title="Iniciar preparación"><i class="fa fa-play" aria-hidden="true"></i></a>
@@ -81,7 +97,7 @@
               <a *ngIf="authService.can('pedidos_deposito') && pedido.estado === 'En preparación'" class="btn btn-success btn-sm finalizar-smt-btn spacingLeft" (click)="onCompletarOrdenClick(pedido.encrypted_id)" data-toggle="tooltip" data-placement="top" title="Finalizar orden"><i class="fa fa-check" aria-hidden="true"></i></a>
               <a *ngIf="authService.can('pedidos_deposito') && pedido.estado === 'En preparación'" class="btn btn-warning btn-sm cancelar-preparacion-smt-btn spacingLeft" (click)="onCancelarPreparacionOrdenClick(pedido.encrypted_id)" data-toggle="tooltip" data-placement="top" title="Cancelar preparación"><i class="fa fa-times" aria-hidden="true"></i></a>
 
-              <a *ngIf="authService.can('pedidos_deposito') && pedido.estado === 'Pendiente de despacho'" class="btn btn-warning btn-sm despachar-smt-btn spacingLeft" (click)="onDespacharOrdenClick(pedido.encrypted_id)" data-toggle="tooltip" data-placement="top" title="Despachar orden"><i class="fa fa-truck" aria-hidden="true"></i></a>
+              <a *ngIf="authService.can('pedidos_deposito') && pedido.estado === 'Pendiente de despacho'" class="btn btn-warning btn-sm despachar-smt-btn spacingLeft" (click)="onDespacharPedidoClick(pedido.encrypted_id)" data-toggle="tooltip" data-placement="top" title="Despachar orden"><i class="fa fa-truck" aria-hidden="true"></i></a>
               <a *ngIf="authService.can('pedidos_deposito') && pedido.estado === 'En ruta'" class="btn btn-success btn-sm entregado-smt-btn spacingLeft" (click)="onEntregadoOrdenClick(pedido.encrypted_id)" data-toggle="tooltip" data-placement="top" title="Marcar como entregado"><i class="fa fa-flag-checkered" aria-hidden="true"></i></a>
               <a *ngIf="authService.can('pedidos_deposito') && pedido.estado === 'En ruta'" class="btn btn-danger btn-sm no-entregado-smt-btn spacingLeft" (click)="onNoEntregadoOrdenClick(pedido.encrypted_id)" data-toggle="tooltip" data-placement="top" title="Marcar como entrega NO CONCRETADA"><i class="fa fa-times" aria-hidden="true"></i>&nbsp;<i class="fa fa-flag-checkered" aria-hidden="true"></i></a>
 
@@ -96,3 +112,41 @@
     </div>
   </div>
 </div>
+
+
+<ng-template #despacharPedidoModal let-modal>
+
+  <div class="modal-header">
+    <h5 class="modal-title" id="modal-basic-title">Despacho de pedido</h5>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  
+  <div class="modal-body">
+    
+    <div class="row">
+      <div class="col-md-12">
+        <div class="input-group input-group-sm">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1">Transporte</span>
+          </div>
+          <select
+                class="form-control"
+                size="1"
+                [(ngModel)]="despachar_pedido_transporte_encrypted_id">
+            <option value="" selected>Seleccione...</option>
+            <option *ngFor="let transporte of transportes" value="{{ transporte.encrypted_id }}">{{ transporte.descripcion }}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  
+  </div>
+  
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" style="float:left;" (click)="modal.close()">Cancelar</button>
+    <button type="button" class="btn btn-success" style="float:right;" (click)="onDespacharOrdenConfirmadoClick()">Despachar</button>
+  </div>
+  
+  </ng-template>

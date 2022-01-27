@@ -82,3 +82,6 @@ ALTER TABLE Cliente ADD ListaDePreciosId INT;
 
 GO
 
+ALTER TABLE OrdenDePedido ADD DespachoTransporteId INT;
+
+GO

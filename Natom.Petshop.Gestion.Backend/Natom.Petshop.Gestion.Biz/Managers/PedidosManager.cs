@@ -21,13 +21,14 @@ namespace Natom.Petshop.Gestion.Biz.Managers
                     => _db.OrdenesDePedido
                             .CountAsync();
 
-        public async Task<List<OrdenDePedido>> ObtenerPedidosDataTableAsync(int start, int size, string filter, int sortColumnIndex, string sortDirection, string statusFilter, int? zonaFilter)
+        public async Task<List<OrdenDePedido>> ObtenerPedidosDataTableAsync(int start, int size, string filter, int sortColumnIndex, string sortDirection, string statusFilter, int? zonaFilter, int? transporteFilter)
         {
             var queryable = _db.OrdenesDePedido
                                     .Include(op => op.Cliente)
                                         .ThenInclude(c => c.Zona)
                                     .Include(op => op.Usuario)
                                     .Include(op => op.PreparacionUsuario)
+                                    .Include(op => op.DespachoTransporte)
                                     .Where(u => true);
 
             //FILTROS
@@ -48,6 +49,7 @@ namespace Natom.Petshop.Gestion.Biz.Managers
                                                         || p.Cliente.Apellido.ToLower().Contains(filter.ToLower())
                                                         || p.Cliente.Zona.Descripcion.ToLower().Contains(filter.ToLower())
                                                         || p.NumeroRemito.Contains(filter)
+                                                        || p.DespachoTransporte.Descripcion.ToLower().Contains(filter)
                                                         || p.Venta.NumeroFactura.Contains(filter));
                 }
             }
@@ -69,6 +71,12 @@ namespace Natom.Petshop.Gestion.Biz.Managers
             if (zonaFilter != null)
             {
                 queryable = queryable.Where(q => q.Cliente.ZonaId == zonaFilter);
+            }
+
+            //FILTRO DE TRANSPORTE
+            if (transporteFilter != null)
+            {
+                queryable = queryable.Where(q => q.DespachoTransporteId == transporteFilter);
             }
 
             //ORDEN
@@ -314,12 +322,13 @@ namespace Natom.Petshop.Gestion.Biz.Managers
             return _db.SaveChangesAsync();
         }
 
-        public Task MarcarDespachoAsync(int usuarioId, int ordenDePedidoId)
+        public Task MarcarDespachoAsync(int usuarioId, int ordenDePedidoId, int transporteId)
         {
             var ordenDePedido = this._db.OrdenesDePedido.Find(ordenDePedidoId);
             _db.Entry(ordenDePedido).State = EntityState.Modified;
             ordenDePedido.DespachoUsuarioId = usuarioId;
             ordenDePedido.DespachoFechaHora = DateTime.Now;
+            ordenDePedido.DespachoTransporteId = transporteId;
             return _db.SaveChangesAsync();
         }
 

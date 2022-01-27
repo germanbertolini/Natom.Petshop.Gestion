@@ -3,6 +3,14 @@
     top:5rem;
 }  
 
+thead, tbody { display: block; }
+
+tbody {
+    height: 300px;       /* Just for the demo          */
+    overflow-y: auto;    /* Trigger vertical scroll    */
+    overflow-x: hidden;  /* Hide the horizontal scroll */
+}
+
 @media (min-width: 576px)
 {
     .modal-dialog {

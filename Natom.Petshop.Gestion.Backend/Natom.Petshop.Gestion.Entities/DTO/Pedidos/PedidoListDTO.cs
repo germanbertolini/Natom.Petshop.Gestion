@@ -35,6 +35,9 @@ namespace Natom.Petshop.Gestion.Entities.DTO.Pedidos
         [JsonProperty("zona")]
         public string Zona { get; set; }
 
+        [JsonProperty("transporte")]
+        public string Transporte { get; set; }
+
         [JsonProperty("fechaHora")]
         public DateTime FechaHora { get; set; }
 
@@ -81,6 +84,7 @@ namespace Natom.Petshop.Gestion.Entities.DTO.Pedidos
             FechaHoraPreparado = entity.PreparacionFechaHoraFin;
             PreparadoPor = entity.PreparacionUsuario != null ? entity.PreparacionUsuario.Nombre + " " + entity.PreparacionUsuario.Apellido : null;
             Anulado = !entity.Activo.Value;
+            Transporte = entity.DespachoTransporte?.Descripcion;
 
             return this;
         }

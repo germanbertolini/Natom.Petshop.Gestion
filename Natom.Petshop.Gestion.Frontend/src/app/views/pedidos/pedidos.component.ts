@@ -1,11 +1,13 @@
 import { HttpClient } from "@angular/common/http";
-import { Component, Input, OnInit, ViewChild } from "@angular/core";
+import { Component, Input, OnInit, TemplateRef, ViewChild } from "@angular/core";
 import { Router } from "@angular/router";
+import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { DataTableDirective } from "angular-datatables/src/angular-datatables.directive";
 import { NotifierService } from "angular-notifier";
 import { MarcaDTO } from "src/app/classes/dto/marca.dto";
 import { PedidosListDTO } from "src/app/classes/dto/pedidos/pedidos-list.dto";
 import { ApiResult } from "src/app/classes/dto/shared/api-result.dto";
+import { TransporteDTO } from "src/app/classes/dto/transportes/transporte.dto";
 import { ZonaDTO } from "src/app/classes/dto/zonas/zona.dto";
 import { HistoricoCambiosService } from "src/app/components/historico-cambios/historico-cambios.service";
 import { ApiService } from "src/app/services/api.service";
@@ -19,17 +21,24 @@ import { ConfirmDialogService } from "../../components/confirm-dialog/confirm-di
   templateUrl: './pedidos.component.html'
 })
 export class PedidosComponent implements OnInit {
+  @ViewChild('despacharPedidoModal', { static: false }) despacharPedidoModal : TemplateRef<any>; // Note: TemplateRef
   @ViewChild(DataTableDirective, { static: false })
   dtElement: DataTableDirective;
   dtInstance: Promise<DataTables.Api>;
   dtIndex: DataTables.Settings = {};
   Pedidos: PedidosListDTO[];
+  transportes: TransporteDTO[];
   Noty: any;
   zonas: ZonaDTO[];
   filterStatusValue: string;
   filterZonaValue: string;
+  filterTransporteValue: string;
+  despachar_pedido_modal: NgbModalRef;
+  despachar_pedido_encrypted_id: string;
+  despachar_pedido_transporte_encrypted_id: string;
 
-  constructor(private apiService: ApiService,
+  constructor(private modalService: NgbModal,
+              private apiService: ApiService,
               private authService: AuthService,
               private routerService: Router,
               private notifierService: NotifierService,
@@ -37,10 +46,24 @@ export class PedidosComponent implements OnInit {
               private historicoCambiosService: HistoricoCambiosService) {
     this.filterStatusValue = "TODOS";
     this.filterZonaValue = "";
+    this.filterTransporteValue = "";
+  }
+
+  onDespacharPedidoClick(id: string) {
+    this.despachar_pedido_encrypted_id = id;
+    this.despachar_pedido_transporte_encrypted_id = "";
+    this.despachar_pedido_modal = this.modalService.open(this.despacharPedidoModal);
   }
 
   onFiltroZonaChange(newValue: string) {
     this.filterZonaValue = newValue;
+    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+      dtInstance.ajax.reload()
+    });
+  }
+
+  onFiltroTransporteChange(newValue: string) {
+    this.filterTransporteValue = newValue;
     this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
       dtInstance.ajax.reload()
     });
@@ -165,19 +188,28 @@ export class PedidosComponent implements OnInit {
                                           });
   }
 
-  onDespacharOrdenClick(id: string) {
+  onDespacharOrdenConfirmadoClick() {
     let notifier = this.notifierService;
     let confirmDialogService = this.confirmDialogService;
     let apiService = this.apiService;
     let dataTableInstance = this.dtElement.dtInstance;
+    let pedidoId = this.despachar_pedido_encrypted_id;
+    let transporteId = this.despachar_pedido_transporte_encrypted_id;
+    let modalInstance = this.despachar_pedido_modal;
+
+    if (transporteId === undefined || transporteId.length === 0) {
+      this.confirmDialogService.showError("Debes seleccionar un Transporte.");
+      return;
+    }
 
     this.confirmDialogService.showConfirm("Desea marcar el pedido como 'Despachado'?", function () {  
-      apiService.DoPOST<ApiResult<any>>("pedidos/despachar?encryptedId=" + encodeURIComponent(id), {}, /*headers*/ null,
+      apiService.DoPOST<ApiResult<any>>("pedidos/despachar?encryptedId=" + encodeURIComponent(pedidoId) + "&transporteId=" + encodeURIComponent(transporteId), {}, /*headers*/ null,
                                             (response) => {
                                               if (!response.success) {
                                                 confirmDialogService.showError(response.message);
                                               }
                                               else {
+                                                modalInstance.close();
                                                 notifier.notify('success', 'Orden despachada correctamente.');
                                                 dataTableInstance.then((dtInstance: DataTables.Api) => {
                                                   dtInstance.ajax.reload()
@@ -249,6 +281,7 @@ export class PedidosComponent implements OnInit {
         }
         else {
             this.zonas = <Array<ZonaDTO>>response.data.zonas;
+            this.transportes = <Array<TransporteDTO>>response.data.transportes;
 
             setTimeout(function() {
               (<any>$("#title-crud").find('[data-toggle="tooltip"]')).tooltip();
@@ -282,7 +315,7 @@ export class PedidosComponent implements OnInit {
       },
       order: [[0, "desc"]],
       ajax: (dataTablesParameters: any, callback) => {
-          this.apiService.DoPOST<ApiResult<DataTableDTO<PedidosListDTO>>>("pedidos/list?status=" + this.filterStatusValue + "&zona=" + encodeURIComponent(this.filterZonaValue), dataTablesParameters, /*headers*/ null,
+          this.apiService.DoPOST<ApiResult<DataTableDTO<PedidosListDTO>>>("pedidos/list?status=" + this.filterStatusValue + "&zona=" + encodeURIComponent(this.filterZonaValue) + "&transporte=" + encodeURIComponent(this.filterTransporteValue), dataTablesParameters, /*headers*/ null,
                         (response) => {
                           if (!response.success) {
                             this.confirmDialogService.showError(response.message);

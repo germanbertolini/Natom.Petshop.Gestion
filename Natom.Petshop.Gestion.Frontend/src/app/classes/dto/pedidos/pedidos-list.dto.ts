@@ -10,9 +10,11 @@ export class PedidosListDTO {
     public peso_total_gramos: number;
     public usuario: string;
     public estado: string;
+    public zona: string;
     public prepared: boolean;
     public fechaHoraPreparado: Date;
     public preparadoPor: string;
+    public transporte: string;
     public enPreparacion: boolean;
     public anulado: boolean;
 }

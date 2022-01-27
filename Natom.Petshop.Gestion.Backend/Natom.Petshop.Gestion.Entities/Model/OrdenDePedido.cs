@@ -55,6 +55,10 @@ namespace Natom.Petshop.Gestion.Entities.Model
 		[ForeignKey("DespachoUsuarioId")]
 		public Usuario DespachoUsuario { get; set; }
 
+		public int? DespachoTransporteId { get; set; }
+		[ForeignKey("DespachoTransporteId")]
+		public Transporte DespachoTransporte { get; set; }
+
 		public DateTime? MarcoEntregaFechaHora { get; set; }
 		public int? MarcoEntregaUsuarioId { get; set; }
 		[ForeignKey("MarcoEntregaUsuarioId")]
