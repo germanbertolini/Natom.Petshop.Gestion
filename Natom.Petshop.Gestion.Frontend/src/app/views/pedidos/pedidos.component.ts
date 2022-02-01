@@ -5,6 +5,7 @@ import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { DataTableDirective } from "angular-datatables/src/angular-datatables.directive";
 import { NotifierService } from "angular-notifier";
 import { MarcaDTO } from "src/app/classes/dto/marca.dto";
+import { PedidoListDetalleDTO } from "src/app/classes/dto/pedidos/pedido-list-detalle.dto";
 import { PedidosListDTO } from "src/app/classes/dto/pedidos/pedidos-list.dto";
 import { ApiResult } from "src/app/classes/dto/shared/api-result.dto";
 import { TransporteDTO } from "src/app/classes/dto/transportes/transporte.dto";
@@ -22,6 +23,7 @@ import { ConfirmDialogService } from "../../components/confirm-dialog/confirm-di
 })
 export class PedidosComponent implements OnInit {
   @ViewChild('despacharPedidoModal', { static: false }) despacharPedidoModal : TemplateRef<any>; // Note: TemplateRef
+  @ViewChild('confirmarPedidoModal', { static: false }) confirmarPedidoModal : TemplateRef<any>; // Note: TemplateRef
   @ViewChild(DataTableDirective, { static: false })
   dtElement: DataTableDirective;
   dtInstance: Promise<DataTables.Api>;
@@ -36,6 +38,10 @@ export class PedidosComponent implements OnInit {
   despachar_pedido_modal: NgbModalRef;
   despachar_pedido_encrypted_id: string;
   despachar_pedido_transporte_encrypted_id: string;
+  confirmar_pedido_modal: NgbModalRef;
+  confirmar_pedido_encrypted_id: string;
+  dtConfirmarPedido: DataTables.Settings = {};
+  PedidoDetail: PedidoListDetalleDTO[];
 
   constructor(private modalService: NgbModal,
               private apiService: ApiService,
@@ -47,6 +53,71 @@ export class PedidosComponent implements OnInit {
     this.filterStatusValue = "TODOS";
     this.filterZonaValue = "";
     this.filterTransporteValue = "";
+  }
+
+  onMarcarEntregaPedidoClick(id: string) {
+    this.confirmar_pedido_encrypted_id = id;
+    this.confirmar_pedido_modal = this.modalService.open(this.confirmarPedidoModal, { windowClass : "modalConfirmarPedido"});
+    this.dtConfirmarPedido = {
+      pagingType: 'simple_numbers',
+      pageLength: 100,
+      serverSide: true,
+      processing: true,
+      info: false,
+      paging: false,
+      search: false,
+      searching: false,
+      language: {
+        emptyTable: '',
+        zeroRecords: 'No hay registros',
+        lengthMenu: 'Mostrar _MENU_ registros',
+        search: 'Buscar:',
+        info: 'Mostrando _START_ a _END_ de _TOTAL_ registros',
+        infoEmpty: 'De 0 a 0 de 0 registros',
+        infoFiltered: '(filtrados de _MAX_ registros totales)',
+        paginate: {
+          first: 'Primero',
+          last: 'Último',
+          next: 'Siguiente',
+          previous: 'Anterior'
+        }
+      },
+      order: [[0, "desc"]],
+      ajax: (dataTablesParameters: any, callback) => {
+          this.apiService.DoPOST<ApiResult<DataTableDTO<PedidoListDetalleDTO>>>("pedidos/detail?id=" + encodeURIComponent(this.confirmar_pedido_encrypted_id), dataTablesParameters, /*headers*/ null,
+                        (response) => {
+                          if (!response.success) {
+                            this.confirmDialogService.showError(response.message);
+                          }
+                          else {
+                            callback({
+                              recordsTotal: response.data.recordsTotal,
+                              recordsFiltered: response.data.recordsFiltered,
+                              data: [] //Siempre vacío para delegarle el render a Angular
+                            });
+                            this.PedidoDetail = response.data.records;
+                            if (this.PedidoDetail.length > 0) {
+                              $('.dataTables_empty').hide();
+                            }
+                            else {
+                              $('.dataTables_empty').show();
+                            }
+                            setTimeout(function() {
+                              (<any>$("tbody tr").find('[data-toggle="tooltip"]')).tooltip();
+                            }, 300);
+                          }
+                        },
+                        (errorMessage) => {
+                          this.confirmDialogService.showError(errorMessage);
+                        });
+      },
+      columns: [
+        { data: 'producto', orderable: false },
+        { data: 'deposito', orderable: false },
+        { data: 'pedido', orderable: false },
+        { data: 'entregado', orderable: false }
+      ]
+    };
   }
 
   onDespacharPedidoClick(id: string) {
@@ -222,19 +293,35 @@ export class PedidosComponent implements OnInit {
                                           });
   }
 
-  onEntregadoOrdenClick(id: string) {
+  onEntregadoOrdenClick() {
     let notifier = this.notifierService;
     let confirmDialogService = this.confirmDialogService;
     let apiService = this.apiService;
     let dataTableInstance = this.dtElement.dtInstance;
+    let pedidoId = this.confirmar_pedido_encrypted_id;
+    let detalle = this.PedidoDetail;
+    let modalInstance = this.despachar_pedido_modal;
+    
+    for (let i = 0; i < this.PedidoDetail.length; i ++) {
+      if (this.PedidoDetail[i].entregado < 0) {
+        this.confirmDialogService.showError("La cantidad entregada no puede ser menor a cero.");
+        return;
+      }
 
-    this.confirmDialogService.showConfirm("Desea marcar el pedido como 'Entregado'?", function () {  
-      apiService.DoPOST<ApiResult<any>>("pedidos/entregado?encryptedId=" + encodeURIComponent(id), {}, /*headers*/ null,
+      if (this.PedidoDetail[i].entregado > this.PedidoDetail[i].cantidad) {
+        this.confirmDialogService.showError("La cantidad entregada no puede ser mayor a la solicitada.");
+        return;
+      }
+    }
+
+    this.confirmDialogService.showConfirm("Desea marcar el pedido como 'Entregado'? La mercaderia no entregada reingresará a su depósito origen.", function () {  
+      apiService.DoPOST<ApiResult<any>>("pedidos/entregado?encryptedId=" + encodeURIComponent(pedidoId), detalle, /*headers*/ null,
                                             (response) => {
                                               if (!response.success) {
                                                 confirmDialogService.showError(response.message);
                                               }
                                               else {
+                                                modalInstance.close();
                                                 notifier.notify('success', 'Orden entregada correctamente.');
                                                 dataTableInstance.then((dtInstance: DataTables.Api) => {
                                                   dtInstance.ajax.reload()

@@ -313,13 +313,42 @@ namespace Natom.Petshop.Gestion.Biz.Managers
             return _db.SaveChangesAsync();
         }
 
-        public Task MarcarEntregaAsync(int usuarioId, int ordenDePedidoId)
+        public async Task<bool> MarcarEntregaAsync(int usuarioId, int ordenDePedidoId, Dictionary<int, int> detalleEntrega)
         {
+            var conDevoluciones = false;
+            var ahora = DateTime.Now;
             var ordenDePedido = this._db.OrdenesDePedido.Find(ordenDePedidoId);
             _db.Entry(ordenDePedido).State = EntityState.Modified;
             ordenDePedido.MarcoEntregaUsuarioId = usuarioId;
-            ordenDePedido.MarcoEntregaFechaHora = DateTime.Now;
-            return _db.SaveChangesAsync();
+            ordenDePedido.MarcoEntregaFechaHora = ahora;
+
+            foreach (var pedidoDetalleId in detalleEntrega.Keys)
+            {
+                var detalle = this._db.OrdenesDePedidoDetalle.Find(pedidoDetalleId);
+                _db.Entry(detalle).State = EntityState.Modified;
+                detalle.CantidadEntregada = detalleEntrega[pedidoDetalleId];
+
+                if (detalle.CantidadEntregada != detalle.Cantidad)
+                {
+                    var devuelto = detalle.Cantidad - detalle.CantidadEntregada;
+                    _db.MovimientosStock.Add(new MovimientoStock
+                    {
+                        Cantidad = devuelto.Value,
+                        DepositoId = detalle.DepositoId,
+                        ConfirmacionFechaHora = ahora,
+                        ConfirmacionUsuarioId = usuarioId,
+                        FechaHora = ahora,
+                        ProductoId = detalle.ProductoId,
+                        UsuarioId = usuarioId,
+                        Tipo = "I",
+                        Observaciones = $"REINGRESO POR MERCADERÍA NO ENTREGADA /// PEDIDO N°{ordenDePedido.NumeroPedido.ToString().PadLeft(8, '0')}"
+                    });
+                    conDevoluciones = true;
+                }
+            }
+
+            await _db.SaveChangesAsync();
+            return conDevoluciones;
         }
 
         public Task MarcarDespachoAsync(int usuarioId, int ordenDePedidoId, int transporteId)

@@ -16,6 +16,7 @@ namespace Natom.Petshop.Gestion.Entities.Model
         public Producto Producto { get; set; }
 
         public int Cantidad { get; set; }
+        public int? CantidadEntregada { get; set; }
 
         public int DepositoId { get; set; }
         public Deposito Deposito { get; set; }

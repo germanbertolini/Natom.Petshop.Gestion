@@ -69,6 +69,40 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
             }
         }
 
+        // POST: pedidos/detail?id={encrypted_id}
+        [HttpPost]
+        [ActionName("detail")]
+        public async Task<IActionResult> PostDetailAsync([FromBody] DataTableRequestDTO request, [FromQuery] string id)
+        {
+            try
+            {
+                int pedidoId = EncryptionService.Decrypt<int>(Uri.UnescapeDataString(id));
+
+                var manager = new PedidosManager(_serviceProvider);
+                var pedido = await manager.ObtenerPedidoAsync(pedidoId);
+
+                return Ok(new ApiResultDTO<DataTableResponseDTO<PedidoListDetalleDTO>>
+                {
+                    Success = true,
+                    Data = new DataTableResponseDTO<PedidoListDetalleDTO>
+                    {
+                        RecordsTotal = pedido.Detalle.Count,
+                        RecordsFiltered = pedido.Detalle.Count,
+                        Records = pedido.Detalle.Select(item => new PedidoListDetalleDTO().From(item)).ToList()
+                    }
+                });
+            }
+            catch (HandledException ex)
+            {
+                return Ok(new ApiResultDTO { Success = false, Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                await LoggingService.LogExceptionAsync(_db, ex, usuarioId: (int)(_token?.UserId ?? 0), _userAgent);
+                return Ok(new ApiResultDTO { Success = false, Message = "Se ha producido un error interno." });
+            }
+        }
+
         // GET: pedidos/basics/data
         // GET: pedidos/basics/data?encryptedId={encryptedId}
         [HttpGet]
@@ -442,16 +476,23 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
         // POST: pedidos/entregado?encryptedId={encryptedId}
         [HttpPost]
         [ActionName("entregado")]
-        public async Task<IActionResult> MarcarEntregadoAsync([FromQuery] string encryptedId)
+        public async Task<IActionResult> MarcarEntregadoAsync([FromQuery] string encryptedId, [FromBody]List<PedidoListDetalleDTO> detalle)
         {
             try
             {
                 var ordenDePedidoId = EncryptionService.Decrypt<int>(Uri.UnescapeDataString(encryptedId));
 
                 var manager = new PedidosManager(_serviceProvider);
-                await manager.MarcarEntregaAsync((int)(_token?.UserId ?? 0), ordenDePedidoId);
+                var detalleEntrega = detalle
+                                        .Select(x => new KeyValuePair<int, int>(EncryptionService.Decrypt<int>(x.EncryptedId), x.Entregado.Value))
+                                        .ToDictionary(x => x.Key, x => x.Value);
+                var conDevoluciones = await manager.MarcarEntregaAsync((int)(_token?.UserId ?? 0), ordenDePedidoId, detalleEntrega);
 
-                await RegistrarAccionAsync(ordenDePedidoId, nameof(OrdenDePedido), "Orden entregada al cliente");
+                string status = "Orden entregada al cliente";
+                if (conDevoluciones)
+                    status += " - Con devoluciones";
+
+                await RegistrarAccionAsync(ordenDePedidoId, nameof(OrdenDePedido), status);
 
                 return Ok(new ApiResultDTO
                 {

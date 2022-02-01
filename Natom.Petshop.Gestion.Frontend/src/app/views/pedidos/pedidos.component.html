@@ -98,7 +98,7 @@
               <a *ngIf="authService.can('pedidos_deposito') && pedido.estado === 'En preparación'" class="btn btn-warning btn-sm cancelar-preparacion-smt-btn spacingLeft" (click)="onCancelarPreparacionOrdenClick(pedido.encrypted_id)" data-toggle="tooltip" data-placement="top" title="Cancelar preparación"><i class="fa fa-times" aria-hidden="true"></i></a>
 
               <a *ngIf="authService.can('pedidos_deposito') && pedido.estado === 'Pendiente de despacho'" class="btn btn-warning btn-sm despachar-smt-btn spacingLeft" (click)="onDespacharPedidoClick(pedido.encrypted_id)" data-toggle="tooltip" data-placement="top" title="Despachar orden"><i class="fa fa-truck" aria-hidden="true"></i></a>
-              <a *ngIf="authService.can('pedidos_deposito') && pedido.estado === 'En ruta'" class="btn btn-success btn-sm entregado-smt-btn spacingLeft" (click)="onEntregadoOrdenClick(pedido.encrypted_id)" data-toggle="tooltip" data-placement="top" title="Marcar como entregado"><i class="fa fa-flag-checkered" aria-hidden="true"></i></a>
+              <a *ngIf="authService.can('pedidos_deposito') && pedido.estado === 'En ruta'" class="btn btn-success btn-sm entregado-smt-btn spacingLeft" (click)="onMarcarEntregaPedidoClick(pedido.encrypted_id)" data-toggle="tooltip" data-placement="top" title="Marcar como entregado"><i class="fa fa-flag-checkered" aria-hidden="true"></i></a>
               <a *ngIf="authService.can('pedidos_deposito') && pedido.estado === 'En ruta'" class="btn btn-danger btn-sm no-entregado-smt-btn spacingLeft" (click)="onNoEntregadoOrdenClick(pedido.encrypted_id)" data-toggle="tooltip" data-placement="top" title="Marcar como entrega NO CONCRETADA"><i class="fa fa-times" aria-hidden="true"></i>&nbsp;<i class="fa fa-flag-checkered" aria-hidden="true"></i></a>
 
               <a *ngIf="authService.can('pedidos_ver')" class="btn btn-secondary btn-sm print-orden-smt-btn spacingLeft" (click)="onPrintOrdenClick(pedido.encrypted_id)" data-toggle="tooltip" data-placement="top" title="Imprimir orden"><i class="fa fa-print" aria-hidden="true"></i></a>
@@ -150,3 +150,51 @@
   </div>
   
   </ng-template>
+
+  <ng-template #confirmarPedidoModal let-modal>
+
+    <div class="modal-header">
+      <h5 class="modal-title" id="modal-basic-title">Confirmación de entrega de pedido</h5>
+      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    
+    <div class="modal-body">
+      
+      <div class="row">
+        <div class="col-md-12">
+          <table datatable [dtOptions]="dtConfirmarPedido" class="table table-striped table-bordered dt-responsive nowrap">
+            <thead>
+              <tr>
+                <th>Producto</th>
+                <th>Depósito</th>
+                <th>Pedido</th>
+                <th>Entregado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let detalle of PedidoDetail">
+                <td>({{ detalle.codigo }}) {{ detalle.descripcion }}</td>
+                <td>{{ detalle.deposito }}</td>
+                <td>{{ detalle.cantidad }}</td>
+                <td>
+                  <input
+                    type="number"
+                    style="width:4rem;"
+                    [(ngModel)]="detalle.entregado">
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    
+    </div>
+    
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" style="float:left;" (click)="modal.close()">Cancelar</button>
+      <button type="button" class="btn btn-success" style="float:right;" (click)="onEntregadoOrdenClick()">Confirmar</button>
+    </div>
+    
+    </ng-template>
