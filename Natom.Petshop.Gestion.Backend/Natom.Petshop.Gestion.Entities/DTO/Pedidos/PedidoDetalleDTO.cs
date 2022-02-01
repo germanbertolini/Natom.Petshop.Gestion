@@ -25,6 +25,9 @@ namespace Natom.Petshop.Gestion.Entities.DTO.Pedidos
         [JsonProperty("cantidad")]
         public int Cantidad { get; set; }
 
+        [JsonProperty("entregado")]
+        public int? Entregado { get; set; }
+
         [JsonProperty("deposito_encrypted_id")]
         public string DepositoEncryptedId { get; set; }
 
@@ -49,6 +52,7 @@ namespace Natom.Petshop.Gestion.Entities.DTO.Pedidos
             ProductoDescripcion = entity.Producto.DescripcionCorta;
             ProductoPesoGramos = entity.PesoUnitarioEnGramos;
             Cantidad = entity.Cantidad;
+            Entregado = entity.CantidadEntregada;
             DepositoEncryptedId = EncryptionService.Encrypt(entity.DepositoId);
             DepositoDescripcion = entity.Deposito?.Descripcion;
             PrecioListaEncryptedId = EncryptionService.Encrypt(entity.ListaDePreciosId);

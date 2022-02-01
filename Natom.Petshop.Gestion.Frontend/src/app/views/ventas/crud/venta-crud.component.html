@@ -166,7 +166,7 @@
                   size="1"
                   [(ngModel)]="detalle_ordenDePedido_encrypted_id">
               <option value="" selected>Seleccione...</option>
-              <option *ngFor="let pedido of listaDeOrdenes" value="{{ pedido.encrypted_id }}">[{{ pedido.fechaHora  |  date:'dd/MM/yy' }}] N° {{ pedido.numero }}</option>
+              <option *ngFor="let pedido of listaDeOrdenes" value="{{ pedido.encrypted_id }}">[{{ pedido.fechaHora  |  date:'dd/MM/yy' }}] N° {{ pedido.numero }} {{ (pedido.entregado === true ? ' -entregado-' : '') }}</option>
             </select>
           </div>
         </div>
@@ -195,7 +195,10 @@
               <tr *ngFor="let pedido of crud.model.pedidos; let i = index">
                 <td><b># {{ pedido.pedido_numero }}</b><br/><small *ngIf='pedido.numero_remito !== ""'>RTO {{ pedido.numero_remito }}</small></td>
                 <td>{{ pedido.producto_descripcion }}</td>
-                <td>{{ pedido.cantidad }}</td>
+                <td>
+                  <b *ngIf="pedido.cantidadPedido !== pedido.cantidad"><del style="color:red;"> {{ pedido.cantidadPedido }} </del>&nbsp;&nbsp;&nbsp;{{ pedido.cantidad }}</b>
+                  <b *ngIf="pedido.cantidadPedido === pedido.cantidad">{{ pedido.cantidad }}</b>
+                </td>
                 <td>{{ ((pedido.producto_peso_gramos * pedido.cantidad) / 1000).toFixed(2).replace('.', ',') }} KG</td>
 
                 <td *ngIf="pedido.precio !== null">{{ pedido.precio_descripcion }}</td>

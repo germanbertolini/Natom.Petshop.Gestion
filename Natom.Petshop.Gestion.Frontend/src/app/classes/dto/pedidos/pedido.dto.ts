@@ -14,6 +14,7 @@ export class PedidoDTO {
     public entrega_localidad: string;
     public entrega_telefono1: string;
     public entrega_telefono2: string;
+    public entregado: boolean;
     public usuario: string;
     public numero_remito: string;
     public observaciones: string;

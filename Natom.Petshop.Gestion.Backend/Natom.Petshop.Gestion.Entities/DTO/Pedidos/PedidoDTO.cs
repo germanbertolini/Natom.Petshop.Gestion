@@ -47,6 +47,9 @@ namespace Natom.Petshop.Gestion.Entities.DTO.Pedidos
         [JsonProperty("entrega_telefono2")]
         public string EntregaTelefono2 { get; set; }
 
+        [JsonProperty("entregado")]
+        public bool Entregado { get; set; }
+
         [JsonProperty("usuario")]
         public string Usuario { get; set; }
 
@@ -80,6 +83,7 @@ namespace Natom.Petshop.Gestion.Entities.DTO.Pedidos
             EntregaLocalidad = entity.EntregaLocalidad;
             EntregaTelefono1 = entity.EntregaTelefono1;
             EntregaTelefono2 = entity.EntregaTelefono2;
+            Entregado = entity.MarcoEntregaUsuarioId.HasValue;
             RetiraPersonalmente = entity.RetiraPersonalmente;
 
             return this;
