@@ -64,6 +64,7 @@ export class PedidoCrudComponent implements OnInit {
     this.crud.model = new PedidoDTO();
     this.detalle_deposito_encrypted_id = "";
     this.detalle_listaDePrecios_encrypted_id = "";
+    this.detalle_producto_encrypted_id = "";
     this.crud.model.retira_personalmente = false;
     this.detalle_cantidad = 0;
     this.detalle_precio = null;
@@ -82,7 +83,6 @@ export class PedidoCrudComponent implements OnInit {
   }
 
   onClienteSearchSelectItem (cliente: ClienteDTO) {
-    this.detalle_producto_encrypted_id = cliente.encrypted_id;
     this.general_cliente = cliente.tipoDocumento + " " + cliente.numeroDocumento + " /// " + (cliente.esEmpresa ? cliente.razonSocial : cliente.nombre + " " + cliente.apellido);
     this.crud.model.cliente_encrypted_id = cliente.encrypted_id;
     this.crud.model.entrega_domicilio = cliente.domicilio;
@@ -95,21 +95,15 @@ export class PedidoCrudComponent implements OnInit {
   }
 
   onAgregarDetalleClick() {
-    if (this.detalle_listaDePrecios_encrypted_id === undefined || this.detalle_listaDePrecios_encrypted_id.length === 0)
+    if (this.detalle_listaDePrecios_encrypted_id === undefined || this.detalle_listaDePrecios_encrypted_id === null || this.detalle_listaDePrecios_encrypted_id.length === 0)
     {
       this.confirmDialogService.showError("Debes seleccionar una Lista de precios.");
       return;
     }
 
-    if (this.detalle_producto_encrypted_id === undefined || this.detalle_producto_encrypted_id.length === 0)
+    if (this.detalle_producto_encrypted_id === undefined || this.detalle_producto_encrypted_id === null || this.detalle_producto_encrypted_id.length === 0)
     {
       this.confirmDialogService.showError("Debes buscar un Producto.");
-      return;
-    }
-
-    if (this.detalle_listaDePrecios_encrypted_id === undefined || this.detalle_listaDePrecios_encrypted_id.length === 0)
-    {
-      this.confirmDialogService.showError("Debes seleccionar una Lista de precios.");
       return;
     }
 
@@ -119,7 +113,7 @@ export class PedidoCrudComponent implements OnInit {
       return;
     }
 
-    if (this.detalle_deposito_encrypted_id === undefined || this.detalle_deposito_encrypted_id.length === 0)
+    if (this.detalle_deposito_encrypted_id === undefined || this.detalle_deposito_encrypted_id === null || this.detalle_deposito_encrypted_id.length === 0)
     {
       this.confirmDialogService.showError("Debes seleccionar un Depósito.");
       return;
@@ -144,6 +138,7 @@ export class PedidoCrudComponent implements OnInit {
       producto_descripcion: this.detalle_producto,
       producto_peso_gramos: this.detalle_peso_unitario_gramos,
       cantidad: this.detalle_cantidad,
+      entregado: null,
       deposito_encrypted_id: this.detalle_deposito_encrypted_id,
       deposito_descripcion: this.detalle_deposito,
       precio_lista_encrypted_id: this.detalle_listaDePrecios_encrypted_id,

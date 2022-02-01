@@ -510,6 +510,39 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
             }
         }
 
+        // POST: pedidos/save_detail?encryptedId={encryptedId}
+        [HttpPost]
+        [ActionName("save_detail")]
+        public async Task<IActionResult> SaveDetailAsync([FromQuery] string encryptedId, [FromBody] List<PedidoListDetalleDTO> detalle)
+        {
+            try
+            {
+                var ordenDePedidoId = EncryptionService.Decrypt<int>(Uri.UnescapeDataString(encryptedId));
+
+                var manager = new PedidosManager(_serviceProvider);
+                var detalleModificacion = detalle
+                                        .Select(x => new KeyValuePair<int, int>(EncryptionService.Decrypt<int>(x.EncryptedId), x.Cantidad))
+                                        .ToDictionary(x => x.Key, x => x.Value);
+                await manager.ModificarCantidadesAsync((int)(_token?.UserId ?? 0), ordenDePedidoId, detalleModificacion);
+
+                await RegistrarAccionAsync(ordenDePedidoId, nameof(OrdenDePedido), "Modificación de cantidades en el pedido");
+
+                return Ok(new ApiResultDTO
+                {
+                    Success = true
+                });
+            }
+            catch (HandledException ex)
+            {
+                return Ok(new ApiResultDTO { Success = false, Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                await LoggingService.LogExceptionAsync(_db, ex, usuarioId: (int)(_token?.UserId ?? 0), _userAgent);
+                return Ok(new ApiResultDTO { Success = false, Message = "Se ha producido un error interno." });
+            }
+        }
+
         // POST: pedidos/no_entrega?encryptedId={encryptedId}
         [HttpPost]
         [ActionName("no_entrega")]

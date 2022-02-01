@@ -24,6 +24,7 @@ import { ConfirmDialogService } from "../../components/confirm-dialog/confirm-di
 export class PedidosComponent implements OnInit {
   @ViewChild('despacharPedidoModal', { static: false }) despacharPedidoModal : TemplateRef<any>; // Note: TemplateRef
   @ViewChild('confirmarPedidoModal', { static: false }) confirmarPedidoModal : TemplateRef<any>; // Note: TemplateRef
+  @ViewChild('modificarPedidoModal', { static: false }) modificarPedidoModal : TemplateRef<any>; // Note: TemplateRef
   @ViewChild(DataTableDirective, { static: false })
   dtElement: DataTableDirective;
   dtInstance: Promise<DataTables.Api>;
@@ -42,6 +43,10 @@ export class PedidosComponent implements OnInit {
   confirmar_pedido_encrypted_id: string;
   dtConfirmarPedido: DataTables.Settings = {};
   PedidoDetail: PedidoListDetalleDTO[];
+  modificar_pedido_modal: NgbModalRef;
+  modificar_pedido_encrypted_id: string;
+  dtModificarPedido: DataTables.Settings = {};
+  PedidoDetailModificar: PedidoListDetalleDTO[];
 
   constructor(private modalService: NgbModal,
               private apiService: ApiService,
@@ -53,6 +58,70 @@ export class PedidosComponent implements OnInit {
     this.filterStatusValue = "TODOS";
     this.filterZonaValue = "";
     this.filterTransporteValue = "";
+  }
+
+  onModificarCantidadesClick(id: string) {
+    this.modificar_pedido_encrypted_id = id;
+    this.modificar_pedido_modal = this.modalService.open(this.modificarPedidoModal, { windowClass : "modalConfirmarPedido"});
+    this.dtModificarPedido = {
+      pagingType: 'simple_numbers',
+      pageLength: 100,
+      serverSide: true,
+      processing: true,
+      info: false,
+      paging: false,
+      search: false,
+      searching: false,
+      language: {
+        emptyTable: '',
+        zeroRecords: 'No hay registros',
+        lengthMenu: 'Mostrar _MENU_ registros',
+        search: 'Buscar:',
+        info: 'Mostrando _START_ a _END_ de _TOTAL_ registros',
+        infoEmpty: 'De 0 a 0 de 0 registros',
+        infoFiltered: '(filtrados de _MAX_ registros totales)',
+        paginate: {
+          first: 'Primero',
+          last: 'Último',
+          next: 'Siguiente',
+          previous: 'Anterior'
+        }
+      },
+      order: [[0, "desc"]],
+      ajax: (dataTablesParameters: any, callback) => {
+          this.apiService.DoPOST<ApiResult<DataTableDTO<PedidoListDetalleDTO>>>("pedidos/detail?id=" + encodeURIComponent(this.modificar_pedido_encrypted_id), dataTablesParameters, /*headers*/ null,
+                        (response) => {
+                          if (!response.success) {
+                            this.confirmDialogService.showError(response.message);
+                          }
+                          else {
+                            callback({
+                              recordsTotal: response.data.recordsTotal,
+                              recordsFiltered: response.data.recordsFiltered,
+                              data: [] //Siempre vacío para delegarle el render a Angular
+                            });
+                            this.PedidoDetailModificar = response.data.records;
+                            if (this.PedidoDetailModificar.length > 0) {
+                              $('.dataTables_empty').hide();
+                            }
+                            else {
+                              $('.dataTables_empty').show();
+                            }
+                            setTimeout(function() {
+                              (<any>$("tbody tr").find('[data-toggle="tooltip"]')).tooltip();
+                            }, 300);
+                          }
+                        },
+                        (errorMessage) => {
+                          this.confirmDialogService.showError(errorMessage);
+                        });
+      },
+      columns: [
+        { data: 'producto', orderable: false },
+        { data: 'deposito', orderable: false },
+        { data: 'pedido', orderable: false }
+      ]
+    };
   }
 
   onMarcarEntregaPedidoClick(id: string) {
@@ -293,6 +362,40 @@ export class PedidosComponent implements OnInit {
                                           });
   }
 
+  onCambiarCantidadesOrdenClick() {
+    let notifier = this.notifierService;
+    let confirmDialogService = this.confirmDialogService;
+    let apiService = this.apiService;
+    let dataTableInstance = this.dtElement.dtInstance;
+    let pedidoId = this.modificar_pedido_encrypted_id;
+    let detalle = this.PedidoDetailModificar;
+    let modalInstance = this.modificar_pedido_modal;
+
+    for (let i = 0; i < this.PedidoDetailModificar.length; i ++) {
+      if (this.PedidoDetailModificar[i].cantidad < 0) {
+        this.confirmDialogService.showError("La cantidad no puede ser menor a cero.");
+        return;
+      }
+    }
+
+    apiService.DoPOST<ApiResult<any>>("pedidos/save_detail?encryptedId=" + encodeURIComponent(pedidoId), detalle, /*headers*/ null,
+                                            (response) => {
+                                              if (!response.success) {
+                                                confirmDialogService.showError(response.message);
+                                              }
+                                              else {
+                                                modalInstance.close();
+                                                notifier.notify('success', 'Orden modificada correctamente.');
+                                                dataTableInstance.then((dtInstance: DataTables.Api) => {
+                                                  dtInstance.ajax.reload()
+                                                });
+                                              }
+                                            },
+                                            (errorMessage) => {
+                                              confirmDialogService.showError(errorMessage);
+                                            });
+  }
+
   onEntregadoOrdenClick() {
     let notifier = this.notifierService;
     let confirmDialogService = this.confirmDialogService;
@@ -300,8 +403,8 @@ export class PedidosComponent implements OnInit {
     let dataTableInstance = this.dtElement.dtInstance;
     let pedidoId = this.confirmar_pedido_encrypted_id;
     let detalle = this.PedidoDetail;
-    let modalInstance = this.despachar_pedido_modal;
-    
+    let modalInstance = this.confirmar_pedido_modal;
+
     for (let i = 0; i < this.PedidoDetail.length; i ++) {
       if (this.PedidoDetail[i].entregado < 0) {
         this.confirmDialogService.showError("La cantidad entregada no puede ser menor a cero.");

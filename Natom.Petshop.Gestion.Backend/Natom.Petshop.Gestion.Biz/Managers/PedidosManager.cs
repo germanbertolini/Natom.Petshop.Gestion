@@ -341,7 +341,7 @@ namespace Natom.Petshop.Gestion.Biz.Managers
                         ProductoId = detalle.ProductoId,
                         UsuarioId = usuarioId,
                         Tipo = "I",
-                        Observaciones = $"REINGRESO POR MERCADERÍA NO ENTREGADA /// PEDIDO N°{ordenDePedido.NumeroPedido.ToString().PadLeft(8, '0')}"
+                        Observaciones = $"Reingreso por mercadería no entregada /// Pedido N°{ordenDePedido.NumeroPedido.ToString().PadLeft(8, '0')}"
                     });
                     conDevoluciones = true;
                 }
@@ -349,6 +349,83 @@ namespace Natom.Petshop.Gestion.Biz.Managers
 
             await _db.SaveChangesAsync();
             return conDevoluciones;
+        }
+
+        public async Task ModificarCantidadesAsync(int usuarioId, int ordenDePedidoId, Dictionary<int, int> detalleCantidades)
+        {
+            var ahora = DateTime.Now;
+            var ordenDePedido = this._db.OrdenesDePedido.Find(ordenDePedidoId);
+            _db.Entry(ordenDePedido).State = EntityState.Modified;
+
+            foreach (var pedidoDetalleId in detalleCantidades.Keys)
+            {
+                var detalle = this._db.OrdenesDePedidoDetalle.Find(pedidoDetalleId);
+                _db.Entry(detalle).State = EntityState.Modified;
+
+                var viejaCantidad = detalle.Cantidad;
+                detalle.Cantidad = detalleCantidades[pedidoDetalleId];
+
+                var cantidadPorVerificar = detalle.Cantidad - viejaCantidad;
+                if (cantidadPorVerificar > 0)
+                {
+                    var stockManager = new StockManager(_serviceProvider);
+                    var disponible = await stockManager.ObtenerStockActualAsync(detalle.ProductoId, detalle.DepositoId);
+                    if (disponible < cantidadPorVerificar)
+                        throw new HandledException($"La cantidad adicionada ({cantidadPorVerificar}) supera la disponible ({disponible})");
+                }
+
+                //SI EL PEDIDO YA ESTÁ ARMADO ENTONCES GENERAMOS UN NUEVO MOVIMIENTO DE STOCK CON MOVIMIENTOS YA CONFIRMADOS
+                if (ordenDePedido.PreparacionFechaHoraFin.HasValue)
+                {
+                    if (viejaCantidad != detalle.Cantidad)
+                    {
+                        var devuelto = viejaCantidad - detalle.Cantidad;
+                        if (devuelto > 0)
+                        {
+                            _db.MovimientosStock.Add(new MovimientoStock
+                            {
+                                Cantidad = devuelto,
+                                DepositoId = detalle.DepositoId,
+                                ConfirmacionFechaHora = ahora,
+                                ConfirmacionUsuarioId = usuarioId,
+                                FechaHora = ahora,
+                                ProductoId = detalle.ProductoId,
+                                UsuarioId = usuarioId,
+                                Tipo = "I",
+                                Observaciones = $"Diferencia por cambio de cantidades /// Pedido N°{ordenDePedido.NumeroPedido.ToString().PadLeft(8, '0')}"
+                            });
+                        }
+                        else if (devuelto < 0)
+                        {
+                            _db.MovimientosStock.Add(new MovimientoStock
+                            {
+                                Cantidad = devuelto * -1,
+                                DepositoId = detalle.DepositoId,
+                                ConfirmacionFechaHora = ahora,
+                                ConfirmacionUsuarioId = usuarioId,
+                                FechaHora = ahora,
+                                ProductoId = detalle.ProductoId,
+                                UsuarioId = usuarioId,
+                                Tipo = "E",
+                                Observaciones = $"Diferencia por cambio de cantidades /// Pedido N°{ordenDePedido.NumeroPedido.ToString().PadLeft(8, '0')}"
+                            });
+                        }
+                    }
+                }
+                //SI EL PEDIDO AUN NO ESTA ARMADO ENTONCES ES CUESTIÓN DE MODIFICAR LAS RESERVAS DE MOVIMIENTO DE STOCK
+                else
+                {
+                    if (detalle.MovimientoStockId.HasValue)
+                    {
+                        var movimiento = this._db.MovimientosStock.Find(detalle.MovimientoStockId.Value);
+                        this._db.Entry(movimiento).State = EntityState.Modified;
+                        movimiento.Cantidad = detalle.Cantidad;
+                    }
+                }
+                
+            }
+
+            await _db.SaveChangesAsync();
         }
 
         public Task MarcarDespachoAsync(int usuarioId, int ordenDePedidoId, int transporteId)
