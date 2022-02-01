@@ -48,6 +48,10 @@ export class StockComponent implements OnInit {
     this.filtroFechaValue = "";
   }
 
+  onImprimirClick() {
+    this.apiService.OpenNewTab("reportes/stock/listas/imprimir?encryptedId=" + encodeURIComponent(this.depositoFilterValue));
+  }
+
   onFiltroDepositoChange(newValue: string) {
     this.depositoFilterValue = newValue;
     this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {

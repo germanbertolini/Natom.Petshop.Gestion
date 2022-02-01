@@ -304,5 +304,37 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
                 return Ok(new ApiResultDTO { Success = false, Message = "Se ha producido un error interno." });
             }
         }
+
+        // GET: reportes/stock/listas/imprimir?encryptedId={encryptedId}
+        [HttpGet]
+        [ActionName("stock/listas/imprimir")]
+        public async Task<IActionResult> GetStockListasImprimirAsync([FromQuery] string encryptedId)
+        {
+            try
+            {
+                int? depositoId = EncryptionService.Decrypt<int?>(encryptedId);
+
+                var manager = new ReportingManager(_serviceProvider);
+                var data = manager.ObtenerDataListaStockReport(depositoId);
+
+                string mimtype = "";
+                int extension = 1;
+                Dictionary<string, string> parameters = new Dictionary<string, string>();
+                var path = Path.Combine(_hostingEnvironment.ContentRootPath, "Reporting", "ListaStockImprimirReport.rdlc");
+                var report = new LocalReport(path);
+                report.AddDataSource("DataSet1", data);
+                var result = report.Execute(RenderType.Pdf, extension, parameters, mimtype);
+                return File(result.MainStream, "application/pdf");
+            }
+            catch (HandledException ex)
+            {
+                return Ok(new ApiResultDTO { Success = false, Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                await LoggingService.LogExceptionAsync(_db, ex, usuarioId: (int)(_token?.UserId ?? 0), _userAgent);
+                return Ok(new ApiResultDTO { Success = false, Message = "Se ha producido un error interno." });
+            }
+        }
     }
 }
