@@ -23,6 +23,7 @@ export class CajaDiariaNewComponent implements OnInit {
   crud: CRUDView<MovimientoCajaDiariaDTO>;
   clientesSearch: ClienteDTO[];
   general_cliente: string;
+  cliente_saldo_deudor: number;
   
   constructor(private apiService: ApiService,
               private authService: AuthService,
@@ -35,12 +36,35 @@ export class CajaDiariaNewComponent implements OnInit {
     this.crud.model = new MovimientoCajaDiariaDTO();
     this.crud.model.tipo = "";
     this.crud.model.usuarioNombre = authService.getCurrentUser().first_name;
+    this.cliente_saldo_deudor = null;
   }
 
   onClienteSearchSelectItem (cliente: ClienteDTO) {
     this.general_cliente = cliente.tipoDocumento + " " + cliente.numeroDocumento + " /// " + (cliente.esEmpresa ? cliente.razonSocial : cliente.nombre + " " + cliente.apellido);
     this.crud.model.cliente_encrypted_id = cliente.encrypted_id;
     this.closeClienteSearchPopUp();
+    this.getSaldoDeudor();
+  }
+
+  getSaldoDeudor() {
+    this.apiService.DoGET<ApiResult<number>>("clientes/saldos/deudor?encryptedId=" + encodeURIComponent(this.crud.model.cliente_encrypted_id), /*headers*/ null,
+      (response) => {
+        if (!response.success) {
+          this.confirmDialogService.showError(response.message);
+        }
+        else {
+          this.cliente_saldo_deudor = response.data;
+          if (this.cliente_saldo_deudor <= 0) {
+            this.notifierService.notify('success', 'El cliente NO presenta saldo deudor.');
+          }
+          else {
+            this.notifierService.notify('warning', 'El cliente presenta saldo deudor.');
+          }
+        }
+      },
+      (errorMessage) => {
+        this.confirmDialogService.showError(errorMessage);
+      });
   }
 
   closeClienteSearchPopUp() {

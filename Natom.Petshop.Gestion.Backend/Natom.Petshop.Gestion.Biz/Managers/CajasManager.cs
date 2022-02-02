@@ -120,7 +120,7 @@ namespace Natom.Petshop.Gestion.Biz.Managers
                     ClienteId = clienteId,
                     FechaHora = ahora,
                     Importe = movimientoDto.Importe,
-                    Observaciones = movimientoDto.Observaciones + " /// NUEVO SALDO DEUDOR: " + saldo.ToString("C2"),
+                    Observaciones = "Cancelación de deuda /// " + movimientoDto.Observaciones + " /// Nuevo saldo deudor: " + (saldo - movimientoDto.Importe).ToString("C2"),
                     Tipo = "C",
                     UsuarioId = usuarioId
                 };
@@ -224,6 +224,8 @@ namespace Natom.Petshop.Gestion.Biz.Managers
 
         public async Task<MovimientoCajaFuerte> GuardarMovimientoCajaFuerteAsync(MovimientoCajaFuerteDTO movimientoDto, int usuarioId)
         {
+            var ahora = DateTime.Now;
+
             if (movimientoDto.Tipo == "D")
             {
                 var saldoActual = await ObtenerSaldoActualCajaFuerteAsync();
@@ -231,9 +233,32 @@ namespace Natom.Petshop.Gestion.Biz.Managers
                     throw new HandledException($"No es posible realizar el Egreso ya que el importe ingresado ({movimientoDto.Importe.ToString("C2")}) es superior al saldo disponible actual ({saldoActual.ToString("C2")})");
             }
 
+            if (movimientoDto.Tipo == "D" && movimientoDto.EsCtaCte)
+            {
+                var ctaCteManager = new CuentasCorrientesManager(_serviceProvider);
+                var proveedorId = EncryptionService.Decrypt<int>(movimientoDto.ProveedorEncryptedId);
+                var monto = await ctaCteManager.ObtenerMontoActualCtaCteProveedorAsync(proveedorId);
+
+                if (monto == 0)
+                    throw new HandledException("El proveedor seleccionado no posee Cuenta Corriente.");
+
+                var disponible = await ctaCteManager.ObtenerDisponibleActualCtaCteProveedorAsync(proveedorId);
+                var saldo = monto - disponible;
+                var movimientoCtaCte = new MovimientoCtaCteProveedor
+                {
+                    ProveedorId = proveedorId,
+                    FechaHora = ahora,
+                    Importe = movimientoDto.Importe,
+                    Observaciones = "Cancelación de deuda /// " + movimientoDto.Observaciones + " /// Nuevo saldo deudor: " + (saldo - movimientoDto.Importe).ToString("C2"),
+                    Tipo = "C",
+                    UsuarioId = usuarioId
+                };
+                _db.MovimientosCtaCteProveedor.Add(movimientoCtaCte);
+            }
+
             var movimiento = new MovimientoCajaFuerte()
             {
-                FechaHora = DateTime.Now,
+                FechaHora = ahora,
                 Importe = movimientoDto.Importe,
                 Observaciones = movimientoDto.Observaciones,
                 Tipo = movimientoDto.Tipo,

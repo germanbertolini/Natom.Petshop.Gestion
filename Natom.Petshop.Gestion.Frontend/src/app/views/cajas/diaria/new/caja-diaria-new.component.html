@@ -68,7 +68,7 @@
       </div>
       &nbsp;&nbsp;&nbsp;<b>ES CTA CTE</b>
     </div>
-    <div class="col-md-6">
+    <div class="col-md-5">
       <div class="input-group">
         <div class="input-group-prepend">
           <span class="input-group-text" id="basic-addon1">Cancelar saldo de Cliente</span>
@@ -96,6 +96,18 @@
               <small *ngIf="!cliente.esEmpresa">{{ cliente.tipoDocumento }} {{ cliente.numeroDocumento }} /// {{ cliente.nombre }} {{ cliente.apellido }}</small>
           </li>
         </ul>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <span class="input-group-text">Saldo deudor&nbsp;&nbsp;$</span>
+        </div>
+        <input type="text"
+          class="form-control"
+          placeholder="-"
+          readonly
+          value="{{ cliente_saldo_deudor | currency:'ARS':'symbol':'1.2-2':'es-AR' }}" />
       </div>
     </div>
   </div>

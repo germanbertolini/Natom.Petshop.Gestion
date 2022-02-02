@@ -71,6 +71,7 @@ export class ProveedorCuentaCorrienteComponent implements OnInit {
           previous: 'Anterior'
         },
       },
+      order: [[0, 'desc']],
       ajax: (dataTablesParameters: any, callback) => {
         this.apiService.DoPOST<ApiResult<DataTableDTO<MovimientoCajaDiariaDTO>>>("proveedores/cta_cte/list?encryptedProveedorId=" + encodeURIComponent(this.proveedorId) + (this.filtroFechaFinal === undefined ? "" : "&filterDate=" + encodeURIComponent(this.filtroFechaFinal)), dataTablesParameters, /*headers*/ null,
                       (response) => {
@@ -86,6 +87,14 @@ export class ProveedorCuentaCorrienteComponent implements OnInit {
                           this.Movimientos = response.data.records;
                           this.disponible = response.data.extraData.disponible;
                           this.monto = response.data.extraData.monto;
+
+                          if ((this.monto - this.disponible) <= 0) {
+                            this.notifierService.notify('success', 'El proveedor NO presenta saldo deudor.');
+                          }
+                          else {
+                            this.notifierService.notify('warning', 'El proveedor presenta saldo deudor.');
+                          }
+
                           if (this.Movimientos.length > 0) {
                             $('.dataTables_empty').hide();
                           }

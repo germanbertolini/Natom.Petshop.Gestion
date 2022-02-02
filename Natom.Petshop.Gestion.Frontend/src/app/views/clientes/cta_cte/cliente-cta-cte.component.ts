@@ -72,6 +72,7 @@ export class ClienteCuentaCorrienteComponent implements OnInit {
           previous: 'Anterior'
         },
       },
+      order: [[0, 'desc']],
       ajax: (dataTablesParameters: any, callback) => {
         this.apiService.DoPOST<ApiResult<DataTableDTO<MovimientoCajaDiariaDTO>>>("clientes/cta_cte/list?encryptedClienteId=" + encodeURIComponent(this.clienteId) + (this.filtroFechaFinal === undefined ? "" : "&filterDate=" + encodeURIComponent(this.filtroFechaFinal)), dataTablesParameters, /*headers*/ null,
                       (response) => {
@@ -87,6 +88,14 @@ export class ClienteCuentaCorrienteComponent implements OnInit {
                           this.Movimientos = response.data.records;
                           this.disponible = response.data.extraData.disponible;
                           this.monto = response.data.extraData.monto;
+
+                          if ((this.monto - this.disponible) <= 0) {
+                            this.notifierService.notify('success', 'El cliente NO presenta saldo deudor.');
+                          }
+                          else {
+                            this.notifierService.notify('warning', 'El cliente presenta saldo deudor.');
+                          }
+
                           if (this.Movimientos.length > 0) {
                             $('.dataTables_empty').hide();
                           }

@@ -56,6 +56,59 @@
       &nbsp;&nbsp;&nbsp;<b>ES CHEQUE</b>
     </div>
   </div>
+  <div class="row" [hidden]="crud.model.tipo !== 'D'" style="margin-bottom:20px;">
+    <div class="col-md-2 offset-md-1" style="padding-top: 5px;">
+      <div class="material-switch pull-left"><!-- <div class="material-switch pull-right"> -->
+          <input
+            id="switchEsCtaCte"
+            type="checkbox"
+            [(ngModel)]="crud.model.esCtaCte"
+            />
+          <label for="switchEsCtaCte" class="switch-danger"></label>
+      </div>
+      &nbsp;&nbsp;&nbsp;<b>ES CTA CTE</b>
+    </div>
+    <div class="col-md-5">
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="basic-addon1">Cancelar saldo de Proveedor</span>
+        </div>
+        <input
+          id="proveedorSearch"
+          type="text"
+          class="form-control"
+          [(ngModel)]="proveedor_search"
+          placeholder="Buscar por CUIT o Razón social..." />
+        <ul class="input-autocomplete-options">
+          <li
+            class="no-results"
+            *ngIf="proveedoresSearch !== undefined && proveedoresSearch.length === 0"
+            >
+              <small>SIN RESULTADOS</small>
+          </li>
+          <li
+            *ngFor="let proveedor of proveedoresSearch; let i = index"
+            (click)="onProveedorSearchSelectItem(proveedor)"
+            >
+              <small *ngIf="proveedor.esEmpresa">{{ proveedor.tipoDocumento }} {{ proveedor.numeroDocumento }} /// {{ proveedor.razonSocial }}</small>
+              <small *ngIf="!proveedor.esEmpresa">{{ proveedor.tipoDocumento }} {{ proveedor.numeroDocumento }} /// {{ proveedor.nombre }} {{ proveedor.apellido }}</small>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <span class="input-group-text">Saldo deudor&nbsp;&nbsp;$</span>
+        </div>
+        <input type="text"
+          class="form-control"
+          placeholder="-"
+          readonly
+          value="{{ proveedor_saldo_deudor | currency:'ARS':'symbol':'1.2-2':'es-AR' }}" />
+      </div>
+    </div>
+  </div>
   <div class="row">
     <div class="col-md-10 offset-md-1">
       <div class="form-group">

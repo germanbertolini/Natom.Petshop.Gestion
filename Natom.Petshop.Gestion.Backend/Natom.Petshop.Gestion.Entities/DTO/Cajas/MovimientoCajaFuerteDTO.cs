@@ -32,6 +32,12 @@ namespace Natom.Petshop.Gestion.Entities.DTO.Cajas
         [JsonProperty("esCheque")]
         public bool EsCheque { get; set; }
 
+        [JsonProperty("esCtaCte")]
+        public bool EsCtaCte { get; set; }
+
+        [JsonProperty("proveedor_encrypted_id")]
+        public string ProveedorEncryptedId { get; set; }
+
         public MovimientoCajaFuerteDTO From(MovimientoCajaFuerte entity)
         {
             EncryptedId = EncryptionService.Encrypt(entity.MovimientoCajaFuerteId);

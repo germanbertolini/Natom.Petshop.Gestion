@@ -288,5 +288,45 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
                 return Ok(new ApiResultDTO { Success = false, Message = "Se ha producido un error interno." });
             }
         }
+
+        // GET: proveedores/saldos/deudor?encryptedId={encryptedId}
+        [HttpGet]
+        [ActionName("saldos/deudor")]
+        public async Task<IActionResult> GetSaldoDeudorAsync([FromQuery] string encryptedId)
+        {
+            try
+            {
+                var proveedorId = EncryptionService.Decrypt<int>(Uri.UnescapeDataString(encryptedId));
+
+                var manager = new CuentasCorrientesManager(_serviceProvider);
+                var monto = await manager.ObtenerMontoActualCtaCteProveedorAsync(proveedorId);
+                decimal saldo = 0;
+
+                if (monto > 0)
+                {
+                    var disponible = await manager.ObtenerDisponibleActualCtaCteProveedorAsync(proveedorId);
+                    saldo = monto - disponible;
+                }
+                else
+                {
+                    saldo = 0;
+                }
+
+                return Ok(new ApiResultDTO<decimal>
+                {
+                    Success = true,
+                    Data = saldo
+                });
+            }
+            catch (HandledException ex)
+            {
+                return Ok(new ApiResultDTO { Success = false, Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                await LoggingService.LogExceptionAsync(_db, ex, usuarioId: (int?)_token?.UserId, _userAgent);
+                return Ok(new ApiResultDTO { Success = false, Message = "Se ha producido un error interno." });
+            }
+        }
     }
 }

@@ -4,6 +4,8 @@ export class MovimientoCajaFuerteDTO {
     public usuarioNombre: String;
     public tipo: String;
     public importe: number;
+    public proveedor_encrypted_id: string;
     public observaciones: String;
+    public esCtaCte: boolean;
     public esCheque: boolean;
 }
