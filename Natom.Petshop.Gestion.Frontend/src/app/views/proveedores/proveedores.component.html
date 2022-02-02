@@ -37,7 +37,8 @@
             <td>{{ proveedor.tipoDocumento }} {{ proveedor.numeroDocumento }}</td>
             <td>{{ proveedor.localidad }}</td>
             <td>
-              <a *ngIf="authService.can('proveedores_crud')" class="btn btn-primary btn-sm edit-smt-btn" (click)="onEditClick(proveedor.encrypted_id)" data-toggle="tooltip" data-placement="top" title="Editar"><i class="fa fa-edit" aria-hidden="true"></i></a>
+              <a *ngIf="authService.can('proveedores_cta_cte_ver') && proveedor.monto_cta_cte > 0" class="btn btn-warning btn-sm cta-cte-smt-btn spacingLeft" (click)="onVerCtaCteClick(proveedor.encrypted_id)" data-toggle="tooltip" data-placement="top" title="Ver Cuenta Corriente"><i class="fa fa-dollar" aria-hidden="true"></i></a>
+              <a *ngIf="authService.can('proveedores_crud')" class="btn btn-primary btn-sm edit-smt-btn spacingLeft" (click)="onEditClick(proveedor.encrypted_id)" data-toggle="tooltip" data-placement="top" title="Editar"><i class="fa fa-edit" aria-hidden="true"></i></a>
               <a *ngIf="authService.can('proveedores_crud') && proveedor.activo" class="btn btn-danger btn-sm disable-smt-btn spacingLeft" (click)="onDisableClick(proveedor.encrypted_id)" data-toggle="tooltip" data-placement="top" title="Dar de baja"><i class="fa fa-times" aria-hidden="true"></i></a>
               <a *ngIf="authService.can('proveedores_crud') && !proveedor.activo" class="btn btn-success btn-sm enable-smt-btn spacingLeft" (click)="onEnableClick(proveedor.encrypted_id)" data-toggle="tooltip" data-placement="top" title="Dar de alta"><i class="fa fa-check" aria-hidden="true"></i></a>
             </td>

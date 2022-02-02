@@ -10,6 +10,7 @@ ul.input-autocomplete-options {
     margin-top: 38px;
     list-style-type: none;
     min-width: 300px;
+    z-index:1;
 }
 
 ul.input-autocomplete-options li {

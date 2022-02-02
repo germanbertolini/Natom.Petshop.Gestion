@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Natom.Petshop.Gestion.Entities.DTO.Proveedores.CtaCte;
 
 namespace Natom.Petshop.Gestion.Backend.Controllers
 {
@@ -210,6 +211,80 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
             catch (Exception ex)
             {
                 await LoggingService.LogExceptionAsync(_db, ex, usuarioId: (int)(_token?.UserId ?? 0), _userAgent);
+                return Ok(new ApiResultDTO { Success = false, Message = "Se ha producido un error interno." });
+            }
+        }
+
+        // POST: proveedores/cta_cte/list?encryptedProveedorId={encryptedProveedorId}&filterDate={filterDate}
+        [HttpPost]
+        [ActionName("cta_cte/list")]
+        public async Task<IActionResult> PostMovimientosCtaCteListAsync([FromBody] DataTableRequestDTO request, [FromQuery] string encryptedProveedorId, [FromQuery] string filterDate = null)
+        {
+            try
+            {
+                int proveedorId = EncryptionService.Decrypt<int>(Uri.UnescapeDataString(encryptedProveedorId));
+
+                DateTime dt;
+                DateTime? dtFilter = null;
+                if (DateTime.TryParse(filterDate, out dt))
+                    dtFilter = dt;
+
+                var manager = new CuentasCorrientesManager(_serviceProvider);
+                var movimientosCount = await manager.ObtenerMovimientosCtaCteProveedorCountAsync(proveedorId);
+                var movimientos = await manager.ObtenerMovimientosCtaCteProveedorDataTableAsync(proveedorId, request.Start, request.Length, request.Search.Value, request.Order.First().ColumnIndex, request.Order.First().Direction, dtFilter);
+                var disponible = await manager.ObtenerDisponibleActualCtaCteProveedorAsync(proveedorId);
+                var monto = await manager.ObtenerMontoActualCtaCteProveedorAsync(proveedorId);
+
+                return Ok(new ApiResultDTO<DataTableResponseDTO<ProveedorCtaCteMovimientoDTO>>
+                {
+                    Success = true,
+                    Data = new DataTableResponseDTO<ProveedorCtaCteMovimientoDTO>
+                    {
+                        RecordsTotal = movimientosCount,
+                        RecordsFiltered = movimientos.FirstOrDefault()?.CantidadFiltrados ?? 0,
+                        Records = movimientos.Select(movimiento => new ProveedorCtaCteMovimientoDTO().From(movimiento)).ToList(),
+                        ExtraData = new
+                        {
+                            monto = monto,
+                            disponible = disponible
+                        }
+                    }
+                });
+            }
+            catch (HandledException ex)
+            {
+                return Ok(new ApiResultDTO { Success = false, Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                await LoggingService.LogExceptionAsync(_db, ex, usuarioId: (int?)_token?.UserId, _userAgent);
+                return Ok(new ApiResultDTO { Success = false, Message = "Se ha producido un error interno." });
+            }
+        }
+
+        // POST: proveedores/cta_cte/save
+        [HttpPost]
+        [ActionName("cta_cte/save")]
+        public async Task<IActionResult> PostMovimientoCtaCteSaveAsync([FromBody] ProveedorCtaCteMovimientoDTO movimientoDto)
+        {
+            try
+            {
+                var manager = new CuentasCorrientesManager(_serviceProvider);
+                var movimiento = await manager.GuardarMovimientoCtaCteProveedorAsync(movimientoDto, (int)(_token?.UserId ?? 0));
+
+                return Ok(new ApiResultDTO<ProveedorCtaCteMovimientoDTO>
+                {
+                    Success = true,
+                    Data = new ProveedorCtaCteMovimientoDTO().From(movimiento)
+                });
+            }
+            catch (HandledException ex)
+            {
+                return Ok(new ApiResultDTO { Success = false, Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                await LoggingService.LogExceptionAsync(_db, ex, usuarioId: (int?)_token?.UserId, _userAgent);
                 return Ok(new ApiResultDTO { Success = false, Message = "Se ha producido un error interno." });
             }
         }

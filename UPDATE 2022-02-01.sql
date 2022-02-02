@@ -94,3 +94,36 @@ END
 
 GO
 
+ALTER TABLE Proveedor ADD MontoCtaCte DECIMAL(18,2) DEFAULT 0;
+
+GO
+
+UPDATE Proveedor SET MontoCtaCte = 0;
+
+GO
+
+
+INSERT INTO Permiso
+VALUES
+('CLIENTES_CTA_CTE_NUEVO', 'Clientes: Nuevo movimiento en Cuenta Corriente'),
+('PROVEEDORES_CTA_CTE_VER', 'Proveedores: Consultar Cuenta Corriente'),
+('PROVEEDORES_CTA_CTE_NUEVO', 'Proveedores: Nuevo movimiento en Cuenta Corriente');
+
+GO
+
+CREATE TABLE [dbo].[MovimientoCtaCteProveedor] (
+	[MovimientoCtaCteProveedorId] [int] IDENTITY(1,1) NOT NULL,
+	[FechaHora] [datetime] NOT NULL,
+	[ProveedorId] [int] NOT NULL,
+	[UsuarioId] [int] NULL,
+	[Tipo] [char](1) NOT NULL,
+	[Importe] [decimal](18, 2) NOT NULL,
+	[Observaciones] [nvarchar](200) NULL,
+	[CompraMovimientoStockId] [int] NULL,
+	PRIMARY KEY ([MovimientoCtaCteProveedorId]),
+	FOREIGN KEY ([ProveedorId]) REFERENCES Proveedor([ProveedorId]),
+	FOREIGN KEY ([CompraMovimientoStockId]) REFERENCES MovimientoStock(MovimientoStockId)
+);
+
+GO
+

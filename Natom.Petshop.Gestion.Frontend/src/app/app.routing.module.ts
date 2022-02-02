@@ -76,6 +76,11 @@ import { ZonaCrudComponent } from "./views/zonas/crud/zona-crud.component";
 import { ABMTransportesGuard } from "./guards/transportes/abm.transportes.guards";
 import { TransportesComponent } from "./views/transportes/transportes.component";
 import { TransporteCrudComponent } from "./views/transportes/crud/transporte-crud.component";
+import { ClienteCtaCteNuevoGuard } from "./guards/clientes/clientes.cta-cte-nuevo.guards";
+import { ProveedoresCtaCteVerGuard } from "./guards/proveedores/proveedores.cta-cte-ver.guards";
+import { ProveedoresCtaCteNuevoGuard } from "./guards/proveedores/proveedores.cta-cte-nuevo.guards";
+import { ProveedorCuentaCorrienteComponent } from "./views/proveedores/cta_cte/proveedor-cta-cte.component";
+import { ProveedorCuentaCorrienteNewComponent } from "./views/proveedores/cta_cte/new/proveedor-cta-cte-new.component";
 
 const appRoutes: Routes = [
     { path: 'login', component: LoginComponent, pathMatch: 'full' },
@@ -106,11 +111,13 @@ const appRoutes: Routes = [
     { canActivate: [ AuthGuard, CRUDClientesGuard ], path: "clientes/new", component: ClienteCrudComponent },
     { canActivate: [ AuthGuard, CRUDClientesGuard ], path: "clientes/edit/:id", component: ClienteCrudComponent },
     { canActivate: [ AuthGuard, ClienteCtaCteVerGuard ], path: 'clientes/cta_cte/:id', component: ClienteCuentaCorrienteComponent },
-    { canActivate: [ AuthGuard, ClienteCtaCteVerGuard ], path: 'clientes/cta_cte/:id/new', component: ClienteCuentaCorrienteNewComponent },
+    { canActivate: [ AuthGuard, ClienteCtaCteNuevoGuard ], path: 'clientes/cta_cte/:id/new', component: ClienteCuentaCorrienteNewComponent },
     { canActivate: [ AuthGuard, CRUDClientesGuard ], path: "clientes/new", component: ClienteCrudComponent },
     { canActivate: [ AuthGuard, VerProveedoresGuard ], path: 'proveedores', component: ProveedoresComponent },
     { canActivate: [ AuthGuard, CRUDProveedoresGuard ], path: "proveedores/new", component: ProveedorCrudComponent },
     { canActivate: [ AuthGuard, CRUDProveedoresGuard ], path: "proveedores/edit/:id", component: ProveedorCrudComponent },
+    { canActivate: [ AuthGuard, ProveedoresCtaCteVerGuard ], path: 'proveedores/cta_cte/:id', component: ProveedorCuentaCorrienteComponent },
+    { canActivate: [ AuthGuard, ProveedoresCtaCteNuevoGuard ], path: 'proveedores/cta_cte/:id/new', component: ProveedorCuentaCorrienteNewComponent },
     { canActivate: [ AuthGuard, VerProductosGuard ], path: 'productos', component: ProductosComponent },
     { canActivate: [ AuthGuard, CRUDProductosGuard ], path: "productos/new", component: ProductoCrudComponent },
     { canActivate: [ AuthGuard, CRUDProductosGuard ], path: "productos/edit/:id", component: ProductoCrudComponent },

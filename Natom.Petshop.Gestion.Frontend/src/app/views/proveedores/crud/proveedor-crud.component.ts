@@ -26,6 +26,7 @@ export class ProveedorCrudComponent implements OnInit {
                 
     this.crud = new CRUDView<ProveedorDTO>(routeService);
     this.crud.model = new ProveedorDTO();
+    this.crud.model.monto_cta_cte = 0;
   }
 
   onCancelClick() {
@@ -103,6 +104,12 @@ export class ProveedorCrudComponent implements OnInit {
     if (this.crud.model.localidad === undefined || this.crud.model.localidad.length === 0)
     {
       this.confirmDialogService.showError("Debes ingresar la Localidad.");
+      return;
+    }
+
+    if (this.crud.model.monto_cta_cte === undefined || this.crud.model.monto_cta_cte < 0)
+    {
+      this.confirmDialogService.showError("El monto de la Cuenta Corriente no puede ser inferior a cero.");
       return;
     }
 

@@ -42,6 +42,10 @@ export class ProveedoresComponent implements OnInit {
     this.routerService.navigate(['/proveedores/edit/' + encodeURIComponent(id)]);
   }
 
+  onVerCtaCteClick(id: string) {
+    this.routerService.navigate(['/proveedores/cta_cte/' + encodeURIComponent(id)]);
+  }
+
   onEnableClick(id: string) {
     let notifier = this.notifierService;
     let confirmDialogService = this.confirmDialogService;

@@ -65,6 +65,9 @@ namespace Natom.Petshop.Gestion.Entities.DTO.Proveedores
 		[JsonProperty("contactoObservaciones")]
 		public string ContactoObservaciones { get; set; }
 
+		[JsonProperty("monto_cta_cte")]
+		public decimal MontoCtaCte { get; set; }
+
 
 		[JsonProperty("activo")]
 		public bool Activo { get; set; }
@@ -89,6 +92,7 @@ namespace Natom.Petshop.Gestion.Entities.DTO.Proveedores
 			ContactoEmail2 = entity.ContactoEmail2;
 			ContactoObservaciones = entity.ContactoObservaciones;
 			Activo = entity.Activo;
+			MontoCtaCte = entity.MontoCtaCte;
 			EsPresupuesto = entity.EsPresupuesto;
 
 			return this;

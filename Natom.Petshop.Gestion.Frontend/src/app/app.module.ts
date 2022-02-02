@@ -75,6 +75,8 @@ import { ZonasComponent } from './views/zonas/zonas.component';
 import { ZonaCrudComponent } from './views/zonas/crud/zona-crud.component';
 import { TransportesComponent } from './views/transportes/transportes.component';
 import { TransporteCrudComponent } from './views/transportes/crud/transporte-crud.component';
+import { ProveedorCuentaCorrienteComponent } from './views/proveedores/cta_cte/proveedor-cta-cte.component';
+import { ProveedorCuentaCorrienteNewComponent } from './views/proveedores/cta_cte/new/proveedor-cta-cte-new.component';
 
 
 export function OnInit(jsonAppConfigService: JsonAppConfigService) {
@@ -133,6 +135,8 @@ export function OnInit(jsonAppConfigService: JsonAppConfigService) {
     ReportesEstadisticaGananciasComponent,
     ClienteCuentaCorrienteComponent,
     ClienteCuentaCorrienteNewComponent,
+    ProveedorCuentaCorrienteComponent,
+    ProveedorCuentaCorrienteNewComponent,
     NgbdDatepickerPopup
   ],
   imports: [

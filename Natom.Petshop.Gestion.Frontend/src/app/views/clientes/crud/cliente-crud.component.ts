@@ -125,6 +125,12 @@ export class ClienteCrudComponent implements OnInit {
       return;
     }
 
+    if (this.crud.model.monto_cta_cte === undefined || this.crud.model.monto_cta_cte < 0)
+    {
+      this.confirmDialogService.showError("El monto de la Cuenta Corriente no puede ser inferior a cero.");
+      return;
+    }
+
 
     //TAB CONTACTO
     //Todo opcional: No controlamos nada!
