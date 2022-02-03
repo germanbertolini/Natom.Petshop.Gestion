@@ -7,5 +7,7 @@ export class MovimientoCajaDiariaDTO {
     public observaciones: String;
     public esCheque: boolean;
     public esCtaCte: boolean;
+    public medio_de_pago: string;
+    public pago_referencia: string;
     public cliente_encrypted_id: string;
 }

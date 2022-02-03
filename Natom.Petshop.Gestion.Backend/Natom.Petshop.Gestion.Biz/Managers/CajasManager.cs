@@ -134,7 +134,9 @@ namespace Natom.Petshop.Gestion.Biz.Managers
                 Observaciones = movimientoDto.Observaciones,
                 Tipo = movimientoDto.Tipo,
                 UsuarioId = usuarioId,
-                EsCheque = movimientoDto.EsCheque
+                EsCheque = movimientoDto.MedioDePago.Equals("Cheque"),
+                MedioDePago = movimientoDto.MedioDePago,
+                Referencia = movimientoDto.PagoReferencia
             };
 
             _db.MovimientosCajaDiaria.Add(movimiento);
@@ -263,7 +265,9 @@ namespace Natom.Petshop.Gestion.Biz.Managers
                 Observaciones = movimientoDto.Observaciones,
                 Tipo = movimientoDto.Tipo,
                 UsuarioId = usuarioId,
-                EsCheque = movimientoDto.EsCheque
+                EsCheque = movimientoDto.MedioDePago.Equals("Cheque"),
+                MedioDePago = movimientoDto.MedioDePago,
+                Referencia = movimientoDto.PagoReferencia
             };
 
             _db.MovimientosCajaFuerte.Add(movimiento);

@@ -35,6 +35,7 @@ export class CajaDiariaNewComponent implements OnInit {
     this.crud = new CRUDView<MovimientoCajaDiariaDTO>(routeService);
     this.crud.model = new MovimientoCajaDiariaDTO();
     this.crud.model.tipo = "";
+    this.crud.model.medio_de_pago = "Efectivo";
     this.crud.model.usuarioNombre = authService.getCurrentUser().first_name;
     this.cliente_saldo_deudor = null;
   }

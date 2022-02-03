@@ -35,6 +35,12 @@ namespace Natom.Petshop.Gestion.Entities.DTO.Cajas
         [JsonProperty("esCtaCte")]
         public bool EsCtaCte { get; set; }
 
+        [JsonProperty("medio_de_pago")]
+        public string MedioDePago { get; set; }
+
+        [JsonProperty("pago_referencia")]
+        public string PagoReferencia { get; set; }
+
         [JsonProperty("cliente_encrypted_id")]
         public string ClienteEncryptedId { get; set; }
 
@@ -47,6 +53,8 @@ namespace Natom.Petshop.Gestion.Entities.DTO.Cajas
             Importe = entity.Importe;
             Observaciones = entity.Observaciones;
             EsCheque = entity.EsCheque;
+            MedioDePago = entity.MedioDePago;
+            PagoReferencia = entity.Referencia;
 
             return this;
         }

@@ -36,6 +36,7 @@ export class CajaFuerteNewComponent implements OnInit {
     this.crud = new CRUDView<MovimientoCajaFuerteDTO>(routeService);
     this.crud.model = new MovimientoCajaFuerteDTO();
     this.crud.model.tipo = "";
+    this.crud.model.medio_de_pago = "";
     this.crud.model.usuarioNombre = authService.getCurrentUser().first_name;
     this.proveedor_saldo_deudor = null;
   }
@@ -76,6 +77,12 @@ export class CajaFuerteNewComponent implements OnInit {
     if (this.crud.model.observaciones === undefined || this.crud.model.observaciones === "")
     {
       this.confirmDialogService.showError("Debes ingresar una observación.");
+      return;
+    }
+
+    if (this.crud.model.medio_de_pago === undefined || this.crud.model.medio_de_pago === "")
+    {
+      this.confirmDialogService.showError("Debes seleccionar un medio de pago.");
       return;
     }
 

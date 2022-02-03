@@ -7,7 +7,7 @@
   <hr class="divider" />
   <br>
   <div class="row">
-    <div class="col-md-3 offset-md-1">
+    <div class="col-md-3">
       <div class="form-group">
         <label for="formGroupExampleInput">Tipo</label>
         <select size="1"
@@ -34,7 +34,7 @@
         </div>
       </div>
     </div>
-    <div class="col-md-3">
+    <div class="col-md-2">
       <div class="form-group">
         <label for="formGroupExampleInput">Efectuado por</label>
         <input type="text"
@@ -44,20 +44,34 @@
             [(ngModel)]="crud.model.usuarioNombre" />
       </div>
     </div>
-    <div class="col-md-2" style="padding-top: 40px;">
-      <div class="material-switch pull-left"><!-- <div class="material-switch pull-right"> -->
+    <div class="col-md-5">
+      <div class="form-group">
+        <label for="formGroupExampleInput">Medio de pago</label>
+        <div class="input-group">
+          <select
+            [(ngModel)]="crud.model.medio_de_pago"
+            disabled
+            class="form-control">
+            <option value="" selected>Seleccione...</option>
+            <option value="Efectivo">Efectivo</option>
+            <option value="Cheque">Cheque</option>
+            <option value="Mercado Pago">Mercado Pago</option>
+            <option value="Tarjeta">Tarjeta</option>
+            <option value="Transferencia">Transferencia</option>
+          </select>
           <input
-            id="switchEsCheque"
-            type="checkbox"
-            [(ngModel)]="crud.model.esCheque"
-            />
-          <label for="switchEsCheque" class="switch-danger"></label>
+            type="text"
+            class="form-control"
+            [(ngModel)]="crud.model.pago_referencia"
+            maxlength="50"
+            readonly
+            placeholder="(opcional)" />
+        </div>
       </div>
-      &nbsp;&nbsp;&nbsp;<b>ES CHEQUE</b>
     </div>
   </div>
   <div class="row" *ngIf="crud.model.tipo === 'C'" style="margin-bottom:20px;">
-    <div class="col-md-2 offset-md-1" style="padding-top: 5px;">
+    <div class="col-md-2" style="padding-top: 5px;">
       <div class="material-switch pull-left"><!-- <div class="material-switch pull-right"> -->
           <input
             id="switchEsCtaCte"
@@ -68,7 +82,7 @@
       </div>
       &nbsp;&nbsp;&nbsp;<b>ES CTA CTE</b>
     </div>
-    <div class="col-md-5">
+    <div class="col-md-7">
       <div class="input-group">
         <div class="input-group-prepend">
           <span class="input-group-text" id="basic-addon1">Cancelar saldo de Cliente</span>
@@ -112,7 +126,7 @@
     </div>
   </div>
   <div class="row">
-    <div class="col-md-8 offset-md-1">
+    <div class="col-md-12">
       <div class="form-group">
         <label for="formGroupExampleInput">Observaciones</label>
         <textarea type="text"
