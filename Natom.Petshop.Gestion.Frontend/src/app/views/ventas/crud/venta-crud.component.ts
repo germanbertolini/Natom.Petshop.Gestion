@@ -159,6 +159,14 @@ export class VentaCrudComponent implements OnInit {
       }
       else {
         let ordenDePedido = <PedidoDTO>response.data.entity;
+        let medioDePago = ordenDePedido.medio_de_pago;
+        let model = this.crud.model;
+
+        if (ordenDePedido.medio_de_pago !== undefined && ordenDePedido.medio_de_pago !== null && ordenDePedido.medio_de_pago.length > 0) {
+          this.confirmDialogService.showConfirm("ATENCIÓN: El medio de pago indicado en el pedido es '" + medioDePago + "'. ¿Desea utilizar este medio de pago?", function() {
+            model.medio_de_pago = medioDePago;
+          });
+        }
 
         for (let i = 0; i < ordenDePedido.detalle.length; i ++) {
           this.crud.model.pedidos.push(<VentaDetalleDTO>{

@@ -10,4 +10,5 @@ export class VentasListDTO {
     public peso_total_gramos: number;
     public usuario: string;
     public anulado: boolean;
+    public medio_de_pago: string;
 }

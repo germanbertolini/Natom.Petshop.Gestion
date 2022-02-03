@@ -127,3 +127,5 @@ CREATE TABLE [dbo].[MovimientoCtaCteProveedor] (
 
 GO
 
+ALTER TABLE [dbo].[OrdenDePedido]
+	ADD PagoReferencia nvarchar(50), MedioDePago nvarchar(30);

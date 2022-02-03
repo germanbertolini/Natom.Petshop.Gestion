@@ -62,6 +62,9 @@ namespace Natom.Petshop.Gestion.Entities.DTO.Pedidos
         [JsonProperty("enPreparacion")]
         public bool EnPreparacion { get; set; }
 
+        [JsonProperty("medio_de_pago")]
+        public string MedioDePago { get; set; }
+
         [JsonProperty("anulado")]
         public bool Anulado { get; set; }
 
@@ -85,6 +88,7 @@ namespace Natom.Petshop.Gestion.Entities.DTO.Pedidos
             PreparadoPor = entity.PreparacionUsuario != null ? entity.PreparacionUsuario.Nombre + " " + entity.PreparacionUsuario.Apellido : null;
             Anulado = !entity.Activo.Value;
             Transporte = entity.DespachoTransporte?.Descripcion;
+            MedioDePago = entity.MedioDePago;
 
             return this;
         }

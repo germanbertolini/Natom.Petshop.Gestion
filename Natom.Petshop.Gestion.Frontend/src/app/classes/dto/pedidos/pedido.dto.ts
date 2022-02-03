@@ -17,6 +17,7 @@ export class PedidoDTO {
     public entregado: boolean;
     public usuario: string;
     public numero_remito: string;
+    public medio_de_pago: string;
     public observaciones: string;
 
     public detalle: PedidoDetalleDTO[];

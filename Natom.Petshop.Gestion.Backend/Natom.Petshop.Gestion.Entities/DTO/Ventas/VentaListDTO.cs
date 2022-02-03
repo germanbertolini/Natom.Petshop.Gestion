@@ -38,6 +38,9 @@ namespace Natom.Petshop.Gestion.Entities.DTO.Ventas
         [JsonProperty("usuario")]
         public string Usuario { get; set; }
 
+        [JsonProperty("medio_de_pago")]
+        public string MedioDePago { get; set; }
+
         [JsonProperty("peso_total_gramos")]
         public int PesoTotalGramos { get; set; }
 
@@ -58,6 +61,7 @@ namespace Natom.Petshop.Gestion.Entities.DTO.Ventas
             Usuario = entity.Usuario?.Nombre ?? "Admin";
             PesoTotalGramos = entity.PesoTotalEnGramos;
             Anulado = !entity.Activo;
+            MedioDePago = entity.MedioDePago;
 
             return this;
         }

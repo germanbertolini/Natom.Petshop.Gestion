@@ -59,6 +59,12 @@ namespace Natom.Petshop.Gestion.Entities.DTO.Pedidos
         [JsonProperty("observaciones")]
         public string Observaciones { get; set; }
 
+        [JsonProperty("medio_de_pago")]
+        public string MedioDePago { get; set; }
+
+        [JsonProperty("pago_referencia")]
+        public string PagoReferencia { get; set; }
+
         [JsonProperty("retira_personalmente")]
         public bool RetiraPersonalmente { get; set; }
 
@@ -84,6 +90,8 @@ namespace Natom.Petshop.Gestion.Entities.DTO.Pedidos
             EntregaTelefono1 = entity.EntregaTelefono1;
             EntregaTelefono2 = entity.EntregaTelefono2;
             Entregado = entity.MarcoEntregaUsuarioId.HasValue;
+            MedioDePago = entity.MedioDePago;
+            PagoReferencia = entity.PagoReferencia;
             RetiraPersonalmente = entity.RetiraPersonalmente;
 
             return this;

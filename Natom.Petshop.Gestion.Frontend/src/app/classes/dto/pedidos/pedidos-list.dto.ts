@@ -17,4 +17,5 @@ export class PedidosListDTO {
     public transporte: string;
     public enPreparacion: boolean;
     public anulado: boolean;
+    public medio_de_pago: string;
 }

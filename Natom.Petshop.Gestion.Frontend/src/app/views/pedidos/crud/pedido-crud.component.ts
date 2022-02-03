@@ -73,6 +73,7 @@ export class PedidoCrudComponent implements OnInit {
     this.crud.model.entrega_estimada_rango_horario_encrypted_id = "";
     this.crud.model.detalle = new Array<PedidoDetalleDTO>();
     this.crud.model.fechaHora = new Date();
+    this.crud.model.medio_de_pago = "";
     this.crud.model.usuario = authService.getCurrentUser().first_name;
   }
 

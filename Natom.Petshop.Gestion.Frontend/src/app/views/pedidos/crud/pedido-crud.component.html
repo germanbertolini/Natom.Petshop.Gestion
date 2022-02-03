@@ -98,6 +98,35 @@
           </div>
         </div>
       </div>
+      <div class="row">
+        <div class="col-md-7">
+          
+        </div>
+        <div class="col-md-5">
+          <div class="input-group input-group-sm">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="basic-addon1">Medio de pago</span>
+            </div>
+            <select
+              [(ngModel)]="crud.model.medio_de_pago"
+              class="form-control">
+              <option value="" selected>Seleccione... (opcional - solo informativo)</option>
+              <option value="Efectivo">Efectivo</option>
+              <option value="Cheque">Cheque</option>
+              <option value="Mercado Pago">Mercado Pago</option>
+              <option value="Tarjeta">Tarjeta</option>
+              <option value="Transferencia">Transferencia</option>
+              <option value="Cuenta Corriente">Cuenta Corriente</option>
+            </select>
+            <!-- <input
+              type="text"
+              class="form-control"
+              [(ngModel)]="crud.model.pago_referencia"
+              maxlength="50"
+              placeholder="(opcional)" /> -->
+          </div>
+        </div>
+      </div>
       <br/>
       <div class="row">
         <div class="col-md-12">

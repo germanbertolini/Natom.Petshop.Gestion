@@ -42,7 +42,7 @@
                 'anulado' : venta.anulado === true
               }">
             <td><b>{{ venta.numeroVenta }}</b></td>
-            <td>{{ venta.factura }}</td>
+            <td>{{ venta.factura }}<br/><small>{{ venta.medio_de_pago }}</small></td>
             <td>{{ venta.cliente }}</td>
             <td>{{ venta.fechaHora  |  date:'dd/MM/yyyy HH:mm' }} hs</td>
             <td>

@@ -226,6 +226,8 @@ namespace Natom.Petshop.Gestion.Biz.Managers
                 NumeroRemito = pedidoDto.NumeroRemito,
                 VentaId = null,
                 Activo = true,
+                MedioDePago = pedidoDto.MedioDePago,
+                PagoReferencia = pedidoDto.PagoReferencia,
                 Observaciones = pedidoDto.Observaciones,
                 PesoTotalEnGramos = pedidoDto.Detalle.Sum(d => d.ProductoPesoGramos * d.Cantidad),
                 MontoTotal = pedidoDto.Detalle.Sum(d => (d.Precio * d.Cantidad) ?? 0),
