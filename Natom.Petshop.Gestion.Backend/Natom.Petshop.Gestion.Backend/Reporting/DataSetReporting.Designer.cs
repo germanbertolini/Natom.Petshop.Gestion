@@ -5217,6 +5217,8 @@ namespace Natom.Petshop.Gestion.Backend.Reporting {
             
             private global::System.Data.DataColumn columnReal;
             
+            private global::System.Data.DataColumn columnCategoria;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public dtSpStockListaReportResultDataTable() {
@@ -5292,6 +5294,14 @@ namespace Natom.Petshop.Gestion.Backend.Reporting {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn CategoriaColumn {
+                get {
+                    return this.columnCategoria;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -5327,14 +5337,15 @@ namespace Natom.Petshop.Gestion.Backend.Reporting {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
-            public dtSpStockListaReportResultRow AdddtSpStockListaReportResultRow(string Deposito, string Producto, int Confirmado, int Reservado, int Real) {
+            public dtSpStockListaReportResultRow AdddtSpStockListaReportResultRow(string Deposito, string Producto, int Confirmado, int Reservado, int Real, string Categoria) {
                 dtSpStockListaReportResultRow rowdtSpStockListaReportResultRow = ((dtSpStockListaReportResultRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         Deposito,
                         Producto,
                         Confirmado,
                         Reservado,
-                        Real};
+                        Real,
+                        Categoria};
                 rowdtSpStockListaReportResultRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowdtSpStockListaReportResultRow);
                 return rowdtSpStockListaReportResultRow;
@@ -5362,6 +5373,7 @@ namespace Natom.Petshop.Gestion.Backend.Reporting {
                 this.columnConfirmado = base.Columns["Confirmado"];
                 this.columnReservado = base.Columns["Reservado"];
                 this.columnReal = base.Columns["Real"];
+                this.columnCategoria = base.Columns["Categoria"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -5377,6 +5389,8 @@ namespace Natom.Petshop.Gestion.Backend.Reporting {
                 base.Columns.Add(this.columnReservado);
                 this.columnReal = new global::System.Data.DataColumn("Real", typeof(int), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnReal);
+                this.columnCategoria = new global::System.Data.DataColumn("Categoria", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnCategoria);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -9678,6 +9692,23 @@ namespace Natom.Petshop.Gestion.Backend.Reporting {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string Categoria {
+                get {
+                    try {
+                        return ((string)(this[this.tabledtSpStockListaReportResult.CategoriaColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'Categoria\' de la tabla \'dtSpStockListaReportResult\' es DB" +
+                                "Null.", e);
+                    }
+                }
+                set {
+                    this[this.tabledtSpStockListaReportResult.CategoriaColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public bool IsDepositoNull() {
                 return this.IsNull(this.tabledtSpStockListaReportResult.DepositoColumn);
             }
@@ -9734,6 +9765,18 @@ namespace Natom.Petshop.Gestion.Backend.Reporting {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public void SetRealNull() {
                 this[this.tabledtSpStockListaReportResult.RealColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsCategoriaNull() {
+                return this.IsNull(this.tabledtSpStockListaReportResult.CategoriaColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetCategoriaNull() {
+                this[this.tabledtSpStockListaReportResult.CategoriaColumn] = global::System.Convert.DBNull;
             }
         }
         

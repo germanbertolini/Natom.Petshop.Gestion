@@ -11,6 +11,7 @@ namespace Natom.Petshop.Gestion.Entities.Model.Results
     public class spStockListaReportResult
     {
         public string Deposito { get; set; }
+        public string Categoria { get; set; }
         public string Producto { get; set; }
         public int Confirmado { get; set; }
         public int Reservado { get; set; }
