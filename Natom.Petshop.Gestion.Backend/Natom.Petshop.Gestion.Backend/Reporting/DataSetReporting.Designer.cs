@@ -4924,6 +4924,8 @@ namespace Natom.Petshop.Gestion.Backend.Reporting {
             
             private global::System.Data.DataColumn columnPrecio;
             
+            private global::System.Data.DataColumn columnCategoria;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public dtSpPreciosListaReportResultDataTable() {
@@ -4983,6 +4985,14 @@ namespace Natom.Petshop.Gestion.Backend.Reporting {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn CategoriaColumn {
+                get {
+                    return this.columnCategoria;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -5018,12 +5028,13 @@ namespace Natom.Petshop.Gestion.Backend.Reporting {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
-            public dtSpPreciosListaReportResultRow AdddtSpPreciosListaReportResultRow(string ListaDePrecios, string Producto, decimal Precio) {
+            public dtSpPreciosListaReportResultRow AdddtSpPreciosListaReportResultRow(string ListaDePrecios, string Producto, decimal Precio, string Categoria) {
                 dtSpPreciosListaReportResultRow rowdtSpPreciosListaReportResultRow = ((dtSpPreciosListaReportResultRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         ListaDePrecios,
                         Producto,
-                        Precio};
+                        Precio,
+                        Categoria};
                 rowdtSpPreciosListaReportResultRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowdtSpPreciosListaReportResultRow);
                 return rowdtSpPreciosListaReportResultRow;
@@ -5049,6 +5060,7 @@ namespace Natom.Petshop.Gestion.Backend.Reporting {
                 this.columnListaDePrecios = base.Columns["ListaDePrecios"];
                 this.columnProducto = base.Columns["Producto"];
                 this.columnPrecio = base.Columns["Precio"];
+                this.columnCategoria = base.Columns["Categoria"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -5060,6 +5072,8 @@ namespace Natom.Petshop.Gestion.Backend.Reporting {
                 base.Columns.Add(this.columnProducto);
                 this.columnPrecio = new global::System.Data.DataColumn("Precio", typeof(decimal), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnPrecio);
+                this.columnCategoria = new global::System.Data.DataColumn("Categoria", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnCategoria);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -9499,6 +9513,23 @@ namespace Natom.Petshop.Gestion.Backend.Reporting {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string Categoria {
+                get {
+                    try {
+                        return ((string)(this[this.tabledtSpPreciosListaReportResult.CategoriaColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'Categoria\' de la tabla \'dtSpPreciosListaReportResult\' es " +
+                                "DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tabledtSpPreciosListaReportResult.CategoriaColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public bool IsListaDePreciosNull() {
                 return this.IsNull(this.tabledtSpPreciosListaReportResult.ListaDePreciosColumn);
             }
@@ -9531,6 +9562,18 @@ namespace Natom.Petshop.Gestion.Backend.Reporting {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public void SetPrecioNull() {
                 this[this.tabledtSpPreciosListaReportResult.PrecioColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsCategoriaNull() {
+                return this.IsNull(this.tabledtSpPreciosListaReportResult.CategoriaColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetCategoriaNull() {
+                this[this.tabledtSpPreciosListaReportResult.CategoriaColumn] = global::System.Convert.DBNull;
             }
         }
         

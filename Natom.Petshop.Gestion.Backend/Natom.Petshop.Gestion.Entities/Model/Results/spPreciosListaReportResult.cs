@@ -11,6 +11,7 @@ namespace Natom.Petshop.Gestion.Entities.Model.Results
     public class spPreciosListaReportResult
     {
         public string ListaDePrecios { get; set; }
+        public string Categoria { get; set; }
         public string Producto { get; set; }
         public decimal Precio { get; set; }
     }
