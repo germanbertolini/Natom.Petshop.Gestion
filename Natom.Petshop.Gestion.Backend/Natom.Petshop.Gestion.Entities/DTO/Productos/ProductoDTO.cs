@@ -32,6 +32,9 @@ namespace Natom.Petshop.Gestion.Entities.DTO.Productos
 		[JsonProperty("pesoUnitario")]
 		public decimal PesoUnitario { get; set; }
 
+		[JsonProperty("categoria_encrypted_id")]
+		public string CategoriaEncryptedId { get; set; }
+
 		[JsonProperty("mueveStock")]
 		public bool MueveStock { get; set; }
 
@@ -43,6 +46,7 @@ namespace Natom.Petshop.Gestion.Entities.DTO.Productos
 			DescripcionCorta = entity.DescripcionCorta;
 			DescripcionLarga = entity.DescripcionLarga;
 			UnidadPesoEncryptedId = EncryptionService.Encrypt(entity.UnidadPesoId);
+			CategoriaEncryptedId = string.IsNullOrEmpty(entity.CategoriaProductoId) ? string.Empty : EncryptionService.Encrypt(entity.CategoriaProductoId);
 			PesoUnitario = entity.PesoUnitario;
 			MueveStock = entity.MueveStock;
 

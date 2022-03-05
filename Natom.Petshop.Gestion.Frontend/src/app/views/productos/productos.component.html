@@ -28,6 +28,7 @@
             <th>Codigo</th>
             <th>Descripción</th>
             <th>Marca</th>
+            <th>Categoría</th>
             <th></th>
           </tr>
         </thead>
@@ -36,6 +37,7 @@
             <td>{{ producto.codigo }}</td>
             <td>{{ producto.descripcion }}</td>
             <td>{{ producto.marca }}</td>
+            <td>{{ producto.categoria }}</td>
             <td>
               <a *ngIf="authService.can('productos_crud')" class="btn btn-primary btn-sm edit-smt-btn" (click)="onEditClick(producto.encrypted_id)" data-toggle="tooltip" data-placement="top" title="Editar"><i class="fa fa-edit" aria-hidden="true"></i></a>
               <a *ngIf="authService.can('productos_crud') && producto.activo" class="btn btn-danger btn-sm disable-smt-btn spacingLeft" (click)="onDisableClick(producto.encrypted_id)" data-toggle="tooltip" data-placement="top" title="Dar de baja"><i class="fa fa-times" aria-hidden="true"></i></a>

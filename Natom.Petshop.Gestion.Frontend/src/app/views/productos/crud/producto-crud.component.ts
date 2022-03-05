@@ -3,6 +3,7 @@ import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { NotifierService } from "angular-notifier";
 import { MarcaDTO } from "src/app/classes/dto/marca.dto";
+import { CategoriaProductoDTO } from "src/app/classes/dto/productos/producto-categoria.dto";
 import { ProductoDTO } from "src/app/classes/dto/productos/producto.dto";
 import { UnidadPesoDTO } from "src/app/classes/dto/productos/unidad-peso.dto";
 import { ApiResult } from "src/app/classes/dto/shared/api-result.dto";
@@ -21,6 +22,7 @@ export class ProductoCrudComponent implements OnInit {
   crud: CRUDView<ProductoDTO>;
   marcas: Array<MarcaDTO>;
   unidades: Array<UnidadPesoDTO>;
+  categorias: Array<CategoriaProductoDTO>;
 
   constructor(private apiService: ApiService,
               private routerService: Router,
@@ -32,6 +34,7 @@ export class ProductoCrudComponent implements OnInit {
     this.crud.model = new ProductoDTO();
     this.crud.model.marca_encrypted_id = "";
     this.crud.model.unidadPeso_encrypted_id = "";
+    this.crud.model.categoria_encrypted_id = "";
     this.crud.model.mueveStock = true;
   }
 
@@ -57,6 +60,12 @@ export class ProductoCrudComponent implements OnInit {
     if (this.crud.model.descripcionCorta === undefined || this.crud.model.descripcionCorta.length === 0)
     {
       this.confirmDialogService.showError("Debes ingresar la Descripción Corta.");
+      return;
+    }
+
+    if (this.crud.model.categoria_encrypted_id === undefined || this.crud.model.categoria_encrypted_id.length === 0)
+    {
+      this.confirmDialogService.showError("Debes seleccionar una Categoría.");
       return;
     }
 
@@ -95,10 +104,11 @@ export class ProductoCrudComponent implements OnInit {
           this.confirmDialogService.showError(response.message);
         }
         else {
-          if (response.data.entity !== null)
-            this.crud.model = response.data.entity;
+            if (response.data.entity !== null)
+              this.crud.model = response.data.entity;
             this.marcas = response.data.marcas;
             this.unidades = response.data.unidades;
+            this.categorias = response.data.categorias;
 
             setTimeout(function() {
               (<any>$("#title-crud").find('[data-toggle="tooltip"]')).tooltip();

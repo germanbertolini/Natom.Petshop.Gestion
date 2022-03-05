@@ -148,7 +148,8 @@ export class ProductosComponent implements OnInit {
         { data: 'codigo' },
         { data: 'descripcion' },
         { data: 'marca' },
-        { data: '' } //BOTONERA
+        { data: 'categoria' },
+        { data: '', orderable: false } //BOTONERA
       ]
     };
   }

@@ -70,7 +70,7 @@
   <br/><br/>
 
   <div class="row">
-    <div class="col-md-4" style="margin-top:40px;">
+    <div class="col-md-3" style="margin-top:40px;">
       <div class="material-switch pull-left" style="margin-top: 2px;"><!-- <div class="material-switch pull-right"> -->
           <input
             id="switchMueveStock"
@@ -81,7 +81,22 @@
       </div>
       &nbsp;&nbsp;&nbsp;<b>MUEVE STOCK</b>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-3">
+      <div class="form-group">
+          <label for="formGroupExampleInput">Categoría</label>
+          <div class="input-group">
+            <select
+              size="1"
+              class="form-control"
+              [(ngModel)]="crud.model.categoria_encrypted_id">
+
+                <option value="" disabled selected>Seleccione...</option>
+                <option *ngFor="let categoria of categorias; let i = index" value="{{ categoria.encrypted_id }}">{{ categoria.descripcion }}</option>
+            </select>
+          </div>
+      </div>
+    </div>
+    <div class="col-md-3">
       <div class="form-group">
           <label for="formGroupExampleInput">Peso unitario</label>
           <div class="input-group">
@@ -96,7 +111,7 @@
       </div>
     </div>
     
-    <div class="col-md-4">
+    <div class="col-md-3">
       <div class="form-group">
           <label for="formGroupExampleInput">Unidad de medida</label>
           <div class="input-group">

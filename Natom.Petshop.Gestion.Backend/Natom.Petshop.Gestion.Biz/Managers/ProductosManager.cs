@@ -22,7 +22,10 @@ namespace Natom.Petshop.Gestion.Biz.Managers
 
         public Task<List<Producto>> BuscarProductosAsync(int size, string filter)
         {
-            var queryable = _db.Productos.Include(p => p.Marca).Include(p => p.UnidadPeso).Where(u => true);
+            var queryable = _db.Productos
+                                    .Include(p => p.Marca)
+                                    .Include(p => p.UnidadPeso)
+                                    .Where(u => true);
 
             //FILTROS
             if (!string.IsNullOrEmpty(filter))
@@ -50,6 +53,7 @@ namespace Natom.Petshop.Gestion.Biz.Managers
             var queryable = _db.Productos
                                     .Include(p => p.Marca)
                                     .Include(p => p.UnidadPeso)
+                                    .Include(p => p.CategoriaProducto)
                                     .Where(u => true);
 
             //FILTROS
@@ -57,7 +61,8 @@ namespace Natom.Petshop.Gestion.Biz.Managers
             {
                 queryable = queryable.Where(p => p.Codigo.ToLower().Contains(filter.ToLower())
                                                     || p.DescripcionCorta.ToLower().Contains(filter.ToLower())
-                                                    || p.Marca.Descripcion.ToLower().Contains(filter.ToLower()));
+                                                    || p.Marca.Descripcion.ToLower().Contains(filter.ToLower())
+                                                    || p.CategoriaProducto.Descripcion.ToLower().Contains(filter.ToLower()));
             }
 
             //FILTRO DE ESTADO
@@ -108,6 +113,7 @@ namespace Natom.Petshop.Gestion.Biz.Managers
                     MueveStock = productoDto.MueveStock,
                     PesoUnitario = productoDto.PesoUnitario,
                     UnidadPesoId = EncryptionService.Decrypt<int>(productoDto.UnidadPesoEncryptedId),
+                    CategoriaProductoId = EncryptionService.Decrypt<string>(productoDto.CategoriaEncryptedId),
                     Activo = true
                 };
 
@@ -132,6 +138,7 @@ namespace Natom.Petshop.Gestion.Biz.Managers
                 producto.MueveStock = productoDto.MueveStock;
                 producto.PesoUnitario = productoDto.PesoUnitario;
                 producto.UnidadPesoId = EncryptionService.Decrypt<int>(productoDto.UnidadPesoEncryptedId);
+                producto.CategoriaProductoId = EncryptionService.Decrypt<string>(productoDto.CategoriaEncryptedId);
 
                 await _db.SaveChangesAsync();
             }
@@ -164,6 +171,12 @@ namespace Natom.Petshop.Gestion.Biz.Managers
         public Task<Producto> ObtenerProductoAsync(int productoId)
                         => _db.Productos
                                 .FirstAsync(u => u.ProductoId.Equals(productoId));
+
+        public Task<List<CategoriaProducto>> ObtenerCategoriasActivasAsync()
+                        => _db.CategoriasProducto
+                                .Where(u => !u.Eliminado)
+                                .OrderBy(u => u.CategoriaProductoId)
+                                .ToListAsync();
 
         public Task<List<UnidadPeso>> ObtenerUnidadesPesoAsync()
                         => _db.UnidadesPeso

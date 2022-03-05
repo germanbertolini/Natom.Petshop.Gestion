@@ -109,6 +109,7 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
 
                 var marcas = await marcasManager.ObtenerMarcasActivasAsync();
                 var unidades = await manager.ObtenerUnidadesPesoAsync();
+                var categorias = await manager.ObtenerCategoriasActivasAsync();
 
                 return Ok(new ApiResultDTO<dynamic>
                 {
@@ -118,6 +119,7 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
                         entity = entity,
                         marcas = marcas.Select(marca => new MarcaDTO().From(marca)).ToList(),
                         unidades = unidades.Select(unidad => new UnidadPesoDTO().From(unidad)).ToList(),
+                        categorias = categorias.Select(categoria => new CategoriaProductoDTO().From(categoria)).ToList()
                     }
                 });
             }

@@ -10,6 +10,7 @@ namespace Natom.Petshop.Gestion.Biz
         public DbSet<Cliente> Clientes { get; set; }
         public DbSet<Proveedor> Proveedores { get; set; }
         public DbSet<Deposito> Depositos { get; set; }
+        public DbSet<CategoriaProducto> CategoriasProducto { get; set; }
         public DbSet<HistoricoCambios> HistoricosCambios { get; set; }
         public DbSet<HistoricoCambiosMotivo> HistoricosCambiosMotivos { get; set; }
         public DbSet<HistoricoReajustePrecio> HistoricosReajustePrecios { get; set; }
