@@ -116,6 +116,33 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
             }
         }
 
+        // GET: ventas/comprobantes/next?tipo={tipo}
+        [HttpGet]
+        [ActionName("comprobantes/next")]
+        public async Task<IActionResult> GetComprobanteNextNumeroAsync([FromQuery] string tipo)
+        {
+            try
+            {
+                var manager = new VentasManager(_serviceProvider);
+                var nextNumero = await manager.ObtenerSiguienteNumeroComprobanteAsync(tipo);
+
+                return Ok(new ApiResultDTO<string>
+                {
+                    Success = true,
+                    Data = nextNumero
+                });
+            }
+            catch (HandledException ex)
+            {
+                return Ok(new ApiResultDTO { Success = false, Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                await LoggingService.LogExceptionAsync(_db, ex, usuarioId: (int)(_token?.UserId ?? 0), _userAgent);
+                return Ok(new ApiResultDTO { Success = false, Message = "Se ha producido un error interno." });
+            }
+        }
+
         // POST: ventas/save
         [HttpPost]
         [ActionName("save")]

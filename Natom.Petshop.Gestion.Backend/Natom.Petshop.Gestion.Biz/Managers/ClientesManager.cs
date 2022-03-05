@@ -105,7 +105,7 @@ namespace Natom.Petshop.Gestion.Biz.Managers
                     ContactoObservaciones = clienteDto.ContactoObservaciones,
                     MontoCtaCte = clienteDto.MontoCtaCte,
                     ZonaId = EncryptionService.Decrypt<int>(clienteDto.ZonaEncryptedId),
-                    ListaDePreciosId = EncryptionService.Decrypt<int>(clienteDto.ListaDePreciosEncryptedId),
+                    ListaDePreciosId = EncryptionService.Decrypt<int?>(clienteDto.ListaDePreciosEncryptedId),
                     Activo = true
                 };
 
@@ -139,7 +139,7 @@ namespace Natom.Petshop.Gestion.Biz.Managers
                 cliente.ContactoTelefono2 = clienteDto.ContactoTelefono2;
                 cliente.ContactoObservaciones = clienteDto.ContactoObservaciones;
                 cliente.ZonaId = EncryptionService.Decrypt<int>(clienteDto.ZonaEncryptedId);
-                cliente.ListaDePreciosId = EncryptionService.Decrypt<int>(clienteDto.ListaDePreciosEncryptedId);
+                cliente.ListaDePreciosId = EncryptionService.Decrypt<int?>(clienteDto.ListaDePreciosEncryptedId);
                 cliente.MontoCtaCte = clienteDto.MontoCtaCte;
 
                 await _db.SaveChangesAsync();

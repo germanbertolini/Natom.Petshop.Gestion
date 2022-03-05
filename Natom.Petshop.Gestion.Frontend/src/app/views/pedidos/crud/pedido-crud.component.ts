@@ -93,6 +93,30 @@ export class PedidoCrudComponent implements OnInit {
     this.crud.model.entrega_telefono2 = cliente.contactoTelefono2;
     this.detalle_listaDePrecios_encrypted_id = cliente.lista_de_precios_encrypted_id;
     this.clientesSearch = undefined;
+
+    if (this.crud.model.numero_remito === undefined || this.crud.model.numero_remito === null || this.crud.model.numero_remito.length === 0)
+      this.getNextNumeroRemito();
+  }
+
+  getNextNumeroRemito () {
+    this.apiService.DoGET<ApiResult<string>>("pedidos/comprobantes/next", /*headers*/ null,
+        (response) => {
+          if (!response.success) {
+            this.confirmDialogService.showError(response.message);
+          }
+          else {
+            if (response.data !== null) {
+              let _siguienteNumero = response.data;
+              let _model = this.crud.model;
+              this.confirmDialogService.showConfirm("¿Utilizar '" + _siguienteNumero + "' como Numero de remito?", function() {
+                _model.numero_remito = _siguienteNumero;
+              });
+            }
+          }
+        },
+        (errorMessage) => {
+          this.confirmDialogService.showError(errorMessage);
+        });
   }
 
   onAgregarDetalleClick() {
@@ -421,6 +445,7 @@ export class PedidoCrudComponent implements OnInit {
             this.rangosHorarios = <RangoHorarioDTO[]>response.data.rangos_horarios;
             this.listasDePrecios = <Array<ListaDePreciosDTO>>response.data.listasDePrecios;
             this.crud.model.numero = response.data.numero_pedido;
+            this.crud.model.numero_remito = response.data.numero_remito;
 
             setTimeout(function() {
               (<any>$("#title-crud").find('[data-toggle="tooltip"]')).tooltip();

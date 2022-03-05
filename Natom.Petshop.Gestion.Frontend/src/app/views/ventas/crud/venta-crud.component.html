@@ -92,6 +92,8 @@
             </div>
             <select
               [(ngModel)]="crud.model.tipo_factura"
+              #comboTipoComprobante
+              (change)="onTipoComprobanteChange(comboTipoComprobante.value)"
               class="form-control">
               <option value="" selected>Seleccione...</option>
               <option value="FCE-A">Factura Electrónica "A"</option>

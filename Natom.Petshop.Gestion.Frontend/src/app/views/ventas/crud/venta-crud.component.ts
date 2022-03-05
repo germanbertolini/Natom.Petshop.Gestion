@@ -95,6 +95,29 @@ export class VentaCrudComponent implements OnInit {
     this.recalcularTotales();
   }
 
+  onTipoComprobanteChange (tipo: string) {
+    if (tipo !== "") {
+      this.apiService.DoGET<ApiResult<string>>("ventas/comprobantes/next?tipo=" + encodeURIComponent(tipo), /*headers*/ null,
+          (response) => {
+            if (!response.success) {
+              this.confirmDialogService.showError(response.message);
+            }
+            else {
+              if (response.data !== null) {
+                let _siguienteNumero = response.data;
+                let _model = this.crud.model;
+                this.confirmDialogService.showConfirm("¿Utilizar '" + _siguienteNumero + "' como Numero de comprobante?", function() {
+                  _model.numero_factura = _siguienteNumero;
+                });
+              }
+            }
+          },
+          (errorMessage) => {
+            this.confirmDialogService.showError(errorMessage);
+          });
+    }
+  }
+
   obtenerOrdenesDePedido() {
     this.apiService.DoGET<ApiResult<any>>("pedidos/list_by_cliente?encryptedId=" + encodeURIComponent(this.crud.model.cliente_encrypted_id), /*headers*/ null,
       (response) => {

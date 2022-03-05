@@ -50,11 +50,11 @@ export class ClienteCrudComponent implements OnInit {
         return;
       }
 
-      if (this.crud.model.nombreFantasia === undefined || this.crud.model.nombreFantasia.length === 0)
-      {
-        this.confirmDialogService.showError("Debes ingresar el Nombre fantasía.");
-        return;
-      }
+      // if (this.crud.model.nombreFantasia === undefined || this.crud.model.nombreFantasia.length === 0)
+      // {
+      //   this.confirmDialogService.showError("Debes ingresar el Nombre fantasía.");
+      //   return;
+      // }
 
       if (this.crud.model.numeroDocumento === undefined || this.crud.model.numeroDocumento.length === 0)
       {
@@ -101,17 +101,17 @@ export class ClienteCrudComponent implements OnInit {
       return;
     }
 
-    if (this.crud.model.entreCalles === undefined || this.crud.model.entreCalles.length === 0)
-    {
-      this.confirmDialogService.showError("Debes ingresar las Entre calles.");
-      return;
-    }
+    // if (this.crud.model.entreCalles === undefined || this.crud.model.entreCalles.length === 0)
+    // {
+    //   this.confirmDialogService.showError("Debes ingresar las Entre calles.");
+    //   return;
+    // }
 
-    if (this.crud.model.localidad === undefined || this.crud.model.localidad.length === 0)
-    {
-      this.confirmDialogService.showError("Debes ingresar la Localidad.");
-      return;
-    }
+    // if (this.crud.model.localidad === undefined || this.crud.model.localidad.length === 0)
+    // {
+    //   this.confirmDialogService.showError("Debes ingresar la Localidad.");
+    //   return;
+    // }
 
     if (this.crud.model.zona_encrypted_id === undefined || this.crud.model.zona_encrypted_id.length === 0)
     {
@@ -119,11 +119,11 @@ export class ClienteCrudComponent implements OnInit {
       return;
     }
 
-    if (this.crud.model.lista_de_precios_encrypted_id === undefined || this.crud.model.lista_de_precios_encrypted_id.length === 0)
-    {
-      this.confirmDialogService.showError("Debes seleccionar la Lista de precios.");
-      return;
-    }
+    // if (this.crud.model.lista_de_precios_encrypted_id === undefined || this.crud.model.lista_de_precios_encrypted_id.length === 0)
+    // {
+    //   this.confirmDialogService.showError("Debes seleccionar la Lista de precios.");
+    //   return;
+    // }
 
     if (this.crud.model.monto_cta_cte === undefined || this.crud.model.monto_cta_cte < 0)
     {

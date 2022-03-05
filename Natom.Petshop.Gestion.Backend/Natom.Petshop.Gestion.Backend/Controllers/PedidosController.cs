@@ -103,6 +103,33 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
             }
         }
 
+        // GET: pedidos/comprobantes/next
+        [HttpGet]
+        [ActionName("comprobantes/next")]
+        public async Task<IActionResult> GetComprobanteNextNumeroAsync()
+        {
+            try
+            {
+                var manager = new PedidosManager(_serviceProvider);
+                var nextNumero = await manager.ObtenerSiguienteNumeroRemitoAsync();
+
+                return Ok(new ApiResultDTO<string>
+                {
+                    Success = true,
+                    Data = nextNumero
+                });
+            }
+            catch (HandledException ex)
+            {
+                return Ok(new ApiResultDTO { Success = false, Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                await LoggingService.LogExceptionAsync(_db, ex, usuarioId: (int)(_token?.UserId ?? 0), _userAgent);
+                return Ok(new ApiResultDTO { Success = false, Message = "Se ha producido un error interno." });
+            }
+        }
+
         // GET: pedidos/basics/data
         // GET: pedidos/basics/data?encryptedId={encryptedId}
         [HttpGet]
@@ -134,6 +161,7 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
                 var listasDePrecios = await preciosManager.ObtenerListasDePreciosAsync();
 
                 var rangosHorarios = await manager.ObtenerRangosHorariosActivosAsync();
+
 
                 return Ok(new ApiResultDTO<dynamic>
                 {

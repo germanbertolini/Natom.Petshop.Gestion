@@ -266,6 +266,35 @@ namespace Natom.Petshop.Gestion.Biz.Managers
             return pedido;
         }
 
+        public async Task<string> ObtenerSiguienteNumeroRemitoAsync()
+        {
+            string siguienteNumero = null;
+            var ultimoPedido = await _db.OrdenesDePedido
+                                    .Where(v => v.Activo == true && v.NumeroRemito != null)
+                                    .OrderByDescending(v => v.OrdenDePedidoId)
+                                    .FirstOrDefaultAsync();
+
+            if (!string.IsNullOrEmpty(ultimoPedido?.NumeroRemito))
+            {
+                var partes = ultimoPedido.NumeroRemito.Split('-');
+                long ultimaParte;
+                if (long.TryParse(partes.Last(), out ultimaParte))
+                {
+                    ultimaParte++;
+                    siguienteNumero = "";
+                    for (int i = 0; i < partes.Length; i++)
+                    {
+                        if (i + 1 != partes.Length) //SI NO ES LA ULTIMA
+                            siguienteNumero += partes[i] + "-";
+                        else
+                            siguienteNumero += ultimaParte.ToString().PadLeft(8, '0');
+                    }
+                }
+            }
+
+            return siguienteNumero;
+        }
+
         public async Task AnularPedidoAsync(int usuarioId, int ordenDePedidoId)
         {
             var ahora = DateTime.Now;

@@ -124,6 +124,35 @@ namespace Natom.Petshop.Gestion.Biz.Managers
                         .FirstAsync(op => op.VentaId == ventaId);
         }
 
+        public async Task<string> ObtenerSiguienteNumeroComprobanteAsync(string tipo)
+        {
+            string siguienteNumero = null;
+            var ultimaVenta = await _db.Ventas
+                                    .Where(v => v.Activo && v.TipoFactura.ToUpper().Equals(tipo.ToUpper()) && v.NumeroFactura != null)
+                                    .OrderByDescending(v => v.VentaId)
+                                    .FirstOrDefaultAsync();
+
+            if (!string.IsNullOrEmpty(ultimaVenta?.NumeroFactura))
+            {
+                var partes = ultimaVenta.NumeroFactura.Split('-');
+                long ultimaParte;
+                if (long.TryParse(partes.Last(), out ultimaParte))
+                {
+                    ultimaParte++;
+                    siguienteNumero = "";
+                    for (int i = 0; i < partes.Length; i ++)
+                    {
+                        if (i + 1 != partes.Length) //SI NO ES LA ULTIMA
+                            siguienteNumero += partes[i] + "-";
+                        else
+                            siguienteNumero += ultimaParte.ToString().PadLeft(8, '0');
+                    }
+                }
+            }
+
+            return siguienteNumero;
+        }
+
         public async Task<Venta> GuardarVentaAsync(int usuarioId, VentaDTO ventaDto)
         {
             var ahora = DateTime.Now;
