@@ -730,6 +730,8 @@ namespace Natom.Petshop.Gestion.Backend.Reporting {
             
             private global::System.Data.DataColumn columnDetallePesoTotalEnKilogramos;
             
+            private global::System.Data.DataColumn columnPagado;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public dtSpReportOrdenDePedidoResultDataTable() {
@@ -1029,6 +1031,14 @@ namespace Natom.Petshop.Gestion.Backend.Reporting {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn PagadoColumn {
+                get {
+                    return this.columnPagado;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -1097,7 +1107,8 @@ namespace Natom.Petshop.Gestion.Backend.Reporting {
                         string DetalleDeposito, 
                         string DetalleListaDePrecios, 
                         decimal DetallePrecioTotal, 
-                        decimal DetallePesoTotalEnKilogramos) {
+                        decimal DetallePesoTotalEnKilogramos, 
+                        string Pagado) {
                 dtSpReportOrdenDePedidoResultRow rowdtSpReportOrdenDePedidoResultRow = ((dtSpReportOrdenDePedidoResultRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         Numero,
@@ -1132,7 +1143,8 @@ namespace Natom.Petshop.Gestion.Backend.Reporting {
                         DetalleDeposito,
                         DetalleListaDePrecios,
                         DetallePrecioTotal,
-                        DetallePesoTotalEnKilogramos};
+                        DetallePesoTotalEnKilogramos,
+                        Pagado};
                 rowdtSpReportOrdenDePedidoResultRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowdtSpReportOrdenDePedidoResultRow);
                 return rowdtSpReportOrdenDePedidoResultRow;
@@ -1188,6 +1200,7 @@ namespace Natom.Petshop.Gestion.Backend.Reporting {
                 this.columnDetalleListaDePrecios = base.Columns["DetalleListaDePrecios"];
                 this.columnDetallePrecioTotal = base.Columns["DetallePrecioTotal"];
                 this.columnDetallePesoTotalEnKilogramos = base.Columns["DetallePesoTotalEnKilogramos"];
+                this.columnPagado = base.Columns["Pagado"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1259,6 +1272,8 @@ namespace Natom.Petshop.Gestion.Backend.Reporting {
                 base.Columns.Add(this.columnDetallePrecioTotal);
                 this.columnDetallePesoTotalEnKilogramos = new global::System.Data.DataColumn("DetallePesoTotalEnKilogramos", typeof(decimal), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnDetallePesoTotalEnKilogramos);
+                this.columnPagado = new global::System.Data.DataColumn("Pagado", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnPagado);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -6094,6 +6109,23 @@ namespace Natom.Petshop.Gestion.Backend.Reporting {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string Pagado {
+                get {
+                    try {
+                        return ((string)(this[this.tabledtSpReportOrdenDePedidoResult.PagadoColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'Pagado\' de la tabla \'dtSpReportOrdenDePedidoResult\' es DB" +
+                                "Null.", e);
+                    }
+                }
+                set {
+                    this[this.tabledtSpReportOrdenDePedidoResult.PagadoColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public bool IsNumeroNull() {
                 return this.IsNull(this.tabledtSpReportOrdenDePedidoResult.NumeroColumn);
             }
@@ -6486,6 +6518,18 @@ namespace Natom.Petshop.Gestion.Backend.Reporting {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public void SetDetallePesoTotalEnKilogramosNull() {
                 this[this.tabledtSpReportOrdenDePedidoResult.DetallePesoTotalEnKilogramosColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsPagadoNull() {
+                return this.IsNull(this.tabledtSpReportOrdenDePedidoResult.PagadoColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetPagadoNull() {
+                this[this.tabledtSpReportOrdenDePedidoResult.PagadoColumn] = global::System.Convert.DBNull;
             }
         }
         

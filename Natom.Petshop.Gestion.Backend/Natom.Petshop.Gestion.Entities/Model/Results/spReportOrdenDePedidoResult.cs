@@ -31,6 +31,7 @@ namespace Natom.Petshop.Gestion.Entities.Model.Results
 		public string Observaciones { get; set; }
 		public string Anulado { get; set; }
 		public string Facturado { get; set; }
+		public string Pagado { get; set; }
 		public string Entregado { get; set; }
 		public decimal MontoTotal { get; set; }
 		public decimal PesoTotalEnKilogramos { get; set; }
