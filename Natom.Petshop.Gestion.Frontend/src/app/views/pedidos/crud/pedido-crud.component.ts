@@ -6,6 +6,7 @@ import { NotifierService } from "angular-notifier";
 import { fromEvent } from "rxjs";
 import { debounceTime, distinctUntilChanged, map, mergeMap } from "rxjs/operators";
 import { ClienteDTO } from "src/app/classes/dto/clientes/cliente.dto";
+import { ClienteCtaCteResumeDTO } from "src/app/classes/dto/clientes/cta-cte/cliente-cta-cte-resume.dto";
 import { PedidoDetalleDTO } from "src/app/classes/dto/pedidos/pedido-detalle.dto";
 import { PedidoDTO } from "src/app/classes/dto/pedidos/pedido.dto";
 import { RangoHorarioDTO } from "src/app/classes/dto/pedidos/rango-horario.dto";
@@ -35,6 +36,7 @@ export class PedidoCrudComponent implements OnInit {
   productosSearch: ProductoListDTO[];
   clientesSearch: ClienteDTO[];
   depositos: DepositoDTO[];
+  cliente_cta_cte: ClienteCtaCteResumeDTO;
   listasDePrecios: Array<ListaDePreciosDTO>;
   rangosHorarios: RangoHorarioDTO[];
   entrega_fecha_estimada: string;
@@ -59,7 +61,7 @@ export class PedidoCrudComponent implements OnInit {
               private routeService: ActivatedRoute,
               private notifierService: NotifierService,
               private confirmDialogService: ConfirmDialogService) {
-                
+    this.cliente_cta_cte = null;
     this.crud = new CRUDView<PedidoDTO>(routeService);
     this.crud.model = new PedidoDTO();
     this.detalle_deposito_encrypted_id = "";
@@ -96,6 +98,23 @@ export class PedidoCrudComponent implements OnInit {
 
     if (this.crud.model.numero_remito === undefined || this.crud.model.numero_remito === null || this.crud.model.numero_remito.length === 0)
       this.getNextNumeroRemito();
+
+    this.getCuentaCorrienteResume();
+  }
+
+  getCuentaCorrienteResume () {
+    this.apiService.DoGET<ApiResult<ClienteCtaCteResumeDTO>>("clientes/cta_cte/resume?encryptedClienteId=" + encodeURIComponent(this.crud.model.cliente_encrypted_id), /*headers*/ null,
+        (response) => {
+          if (!response.success) {
+            this.confirmDialogService.showError(response.message);
+          }
+          else {
+            this.cliente_cta_cte = response.data;
+          }
+        },
+        (errorMessage) => {
+          this.confirmDialogService.showError(errorMessage);
+        });
   }
 
   getNextNumeroRemito () {

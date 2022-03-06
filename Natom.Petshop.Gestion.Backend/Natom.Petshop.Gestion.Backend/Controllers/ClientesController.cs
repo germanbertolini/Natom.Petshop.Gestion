@@ -272,6 +272,51 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
             }
         }
 
+        // GET: clientes/cta_cte/resume?encryptedClienteId={encryptedClienteId}
+        [HttpGet]
+        [ActionName("cta_cte/resume")]
+        public async Task<IActionResult> GetCtaCteResumeAsync([FromQuery] string encryptedClienteId)
+        {
+            try
+            {
+                ClienteCtaCteResumeDTO resume = null;
+
+                int clienteId = EncryptionService.Decrypt<int>(Uri.UnescapeDataString(encryptedClienteId));
+
+                var clienteMgr = new ClientesManager(_serviceProvider);
+                var cliente = await clienteMgr.ObtenerClienteAsync(clienteId);
+
+                //SI TIENE CUENTA CORRIENTE
+                if (cliente.MontoCtaCte > 0)
+                {
+                    var manager = new CuentasCorrientesManager(_serviceProvider);
+                    var disponible = await manager.ObtenerDisponibleActualCtaCteClienteAsync(clienteId);
+                    var monto = await manager.ObtenerMontoActualCtaCteClienteAsync(clienteId);
+                    resume = new ClienteCtaCteResumeDTO
+                    {
+                        Monto = monto,
+                        Disponible = disponible,
+                        Deudor = monto - disponible
+                    };
+                }
+
+                return Ok(new ApiResultDTO<ClienteCtaCteResumeDTO>
+                {
+                    Success = true,
+                    Data = resume
+                });
+            }
+            catch (HandledException ex)
+            {
+                return Ok(new ApiResultDTO { Success = false, Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                await LoggingService.LogExceptionAsync(_db, ex, usuarioId: (int?)_token?.UserId, _userAgent);
+                return Ok(new ApiResultDTO { Success = false, Message = "Se ha producido un error interno." });
+            }
+        }
+
         // POST: clientes/cta_cte/save
         [HttpPost]
         [ActionName("cta_cte/save")]

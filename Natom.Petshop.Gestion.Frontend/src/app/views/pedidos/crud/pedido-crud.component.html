@@ -127,7 +127,37 @@
           </div>
         </div>
       </div>
-      <br/>
+      <hr>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="input-group input-group-sm">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="basic-addon1">Monto Cta. Cte.</span>
+            </div>
+            <input *ngIf="cliente_cta_cte !== null" type="text" class="form-control" value="{{ cliente_cta_cte.monto | currency:'ARS':'symbol':'1.2-2':'es-AR' }}" readonly />
+            <input *ngIf="cliente_cta_cte === null" type="text" class="form-control" value="- SIN CUENTA -" readonly />
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="input-group input-group-sm">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="basic-addon1">Saldo Deudor</span>
+            </div>
+            <input *ngIf="cliente_cta_cte !== null" type="text" class="form-control" value="{{ cliente_cta_cte.deudor | currency:'ARS':'symbol':'1.2-2':'es-AR' }}" readonly />
+            <input *ngIf="cliente_cta_cte === null" type="text" class="form-control" value="- SIN CUENTA -" readonly />
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="input-group input-group-sm">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="basic-addon1">Saldo disponible</span>
+            </div>
+            <input *ngIf="cliente_cta_cte !== null" type="text" class="form-control" value="{{ cliente_cta_cte.disponible | currency:'ARS':'symbol':'1.2-2':'es-AR' }}" readonly />
+            <input *ngIf="cliente_cta_cte === null" type="text" class="form-control" value="- SIN CUENTA -" readonly />
+          </div>
+        </div>
+      </div>
+      <hr>
       <div class="row">
         <div class="col-md-12">
           <div class="form-group">
