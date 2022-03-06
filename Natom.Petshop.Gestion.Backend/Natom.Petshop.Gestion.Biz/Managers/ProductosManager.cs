@@ -25,7 +25,7 @@ namespace Natom.Petshop.Gestion.Biz.Managers
             var queryable = _db.Productos
                                     .Include(p => p.Marca)
                                     .Include(p => p.UnidadPeso)
-                                    .Where(u => true);
+                                    .Where(u => u.Activo);
 
             //FILTROS
             if (!string.IsNullOrEmpty(filter))
