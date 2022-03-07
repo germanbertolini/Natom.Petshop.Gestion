@@ -76,14 +76,25 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
                 var manager = new PreciosManager(_serviceProvider);
                 PrecioDTO entity = null;
 
+                var listasDePrecios = await manager.ObtenerListasDePreciosAsync();
+
                 if (!string.IsNullOrEmpty(encryptedId))
                 {
                     var productoPrecioId = EncryptionService.Decrypt<int>(Uri.UnescapeDataString(encryptedId));
                     var precio = await manager.ObtenerPrecioAsync(productoPrecioId);
                     entity = new PrecioDTO().From(precio);
-                }
 
-                var listasDePrecios = await manager.ObtenerListasDePreciosAsync();
+                    //BUSCAMOS LOS PRECIOS ACTUALES DEL PRODUCTO
+                    var preciosActuales = manager.ObtenerPreciosActuales(precio.ProductoId);
+                    preciosActuales.ForEach(p =>
+                    {
+                        var lista = listasDePrecios.FirstOrDefault(l => l.ListaDePreciosId.Equals(p.ListaDePreciosId));
+
+                        if (p.ProductoPrecioId.HasValue && lista.EsPorcentual) //SI LA LISTA ES PORCENTUAL PERO EL PRECIO YA FUE DEFINIDO ENTONCES MARCAMOS LA LISTA COMO -NO PORCENTUAL-
+                            lista.EsPorcentual = false;
+                    });
+                }
+                                
 
                 return Ok(new ApiResultDTO<dynamic>
                 {

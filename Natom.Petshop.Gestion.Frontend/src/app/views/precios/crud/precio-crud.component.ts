@@ -63,25 +63,62 @@ export class PrecioCrudComponent implements OnInit {
       return;
     }
 
-    this.apiService.DoPOST<ApiResult<PrecioDTO>>("precios/save", this.crud.model, /*headers*/ null,
-      (response) => {
-        if (!response.success) {
-          this.confirmDialogService.showError(response.message);
-        }
-        else {
-          this.notifierService.notify('success', 'Precio guardado correctamente.');
-          this.routerService.navigate(['/precios']);
-        }
-      },
-      (errorMessage) => {
-        this.confirmDialogService.showError(errorMessage);
-      });
+    let saveAction = () => {
+      this.apiService.DoPOST<ApiResult<PrecioDTO>>("precios/save", this.crud.model, /*headers*/ null,
+        (response) => {
+          if (!response.success) {
+            this.confirmDialogService.showError(response.message);
+          }
+          else {
+            this.notifierService.notify('success', 'Precio guardado correctamente.');
+            this.routerService.navigate(['/precios']);
+          }
+        },
+        (errorMessage) => {
+          this.confirmDialogService.showError(errorMessage);
+        });
+    };
+
+    if (this.getSelectedPrecio().esPorcentual === true) {
+      this.confirmDialogService.showConfirm("La lista de precios seleccionada es Porcentual por lo que este nuevo precio reemplazará el precio heredado 'porcentual'. ¿Desea continuar?", saveAction);
+    }
+    else {
+      saveAction();
+    }
+  }
+
+  getPrecioActual() {
+    if (this.crud.model.producto_encrypted_id !== undefined && this.crud.model.producto_encrypted_id !== null && this.crud.model.producto_encrypted_id.length > 0
+          && this.crud.model.listaDePrecios_encrypted_id !== undefined && this.crud.model.listaDePrecios_encrypted_id !== null && this.crud.model.listaDePrecios_encrypted_id.length > 0)
+    {
+        this.apiService.DoGET<ApiResult<any>>("precios/get?producto=" + encodeURIComponent(this.crud.model.producto_encrypted_id) + "&lista=" + encodeURIComponent(this.crud.model.listaDePrecios_encrypted_id), /*headers*/ null,
+              (response) => {
+                if (!response.success) {
+                  this.confirmDialogService.showError(response.message);
+                }
+                else {
+                  this.crud.model.precio = <number>response.data;
+        
+                  setTimeout(function() {
+                    (<any>$("#title-crud").find('[data-toggle="tooltip"]')).tooltip();
+                  }, 300);
+                }
+              },
+              (errorMessage) => {
+                this.confirmDialogService.showError(errorMessage);
+              });
+    }
+  }
+
+  onListaDePreciosChange() {
+    this.getPrecioActual();
   }
 
   onProductoSearchSelectItem (producto: ProductoListDTO) {
     this.crud.model.producto_encrypted_id = producto.encrypted_id;
     this.crud.model.producto = "(" + producto.codigo + ") " + producto.marca + " " + producto.descripcion;
     this.productosSearch = undefined;
+    this.getPrecioActual();
   }
 
   ngOnInit(): void {
@@ -136,4 +173,16 @@ export class PrecioCrudComponent implements OnInit {
     });
   }
   
+  getSelectedPrecio(): ListaDePreciosDTO {
+    let selected : ListaDePreciosDTO = null;
+    if (this.crud.model.listaDePrecios_encrypted_id !== undefined && this.crud.model.listaDePrecios_encrypted_id !== null && this.crud.model.listaDePrecios_encrypted_id.length > 0) {
+      for (let i = 0; i < this.ListasDePrecios.length; i ++) {
+        if (this.ListasDePrecios[i].encrypted_id === this.crud.model.listaDePrecios_encrypted_id) {
+          selected = this.ListasDePrecios[i];
+          break;
+        }
+      }
+    }
+    return selected;
+  }
 }

@@ -156,3 +156,25 @@ END
 
 GO
 
+ALTER PROCEDURE [dbo].[spPrecioGet]
+(
+	@ListaDePreciosId INT = NULL,
+	@ProductoId INT
+)
+AS
+BEGIN
+
+	SELECT
+		ProductoPrecioId,
+		Precio,
+		ListaDePreciosId
+	FROM
+		vwPreciosVigentes PV
+	WHERE
+		PV.ListaDePreciosId = COALESCE(@ListaDePreciosId, PV.ListaDePreciosId)
+		AND PV.ProductoId = @ProductoId;
+
+END
+
+GO
+

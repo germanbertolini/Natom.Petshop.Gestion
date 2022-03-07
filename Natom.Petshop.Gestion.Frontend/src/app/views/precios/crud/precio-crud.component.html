@@ -19,6 +19,7 @@
             type="text"
             class="form-control"
             [(ngModel)]="crud.model.producto"
+            [readonly]="crud.isRenewMode"
             placeholder="Buscar por código o palabra clave..." />
           <ul class="input-autocomplete-options">
             <li
@@ -43,7 +44,9 @@
         <select
               class="form-control"
               size="1"
-              [(ngModel)]="crud.model.listaDePrecios_encrypted_id">
+              [(ngModel)]="crud.model.listaDePrecios_encrypted_id"
+              #comboListaDePrecios
+              (change)="onListaDePreciosChange()">
           <option value="">Seleccione...</option>
           <option *ngFor="let lista of ListasDePrecios" value="{{ lista.encrypted_id }}">{{ lista.descripcion }} {{(lista.esPorcentual ? '(porcentual)' : '')}}</option>
         </select>

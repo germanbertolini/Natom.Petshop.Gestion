@@ -90,6 +90,11 @@ namespace Natom.Petshop.Gestion.Biz.Managers
             return _db.spPrecioGetResult.FromSqlRaw("spPrecioGet {0}, {1}", listaDePreciosId, productoId).AsEnumerable().FirstOrDefault()?.Precio;
         }
 
+        public List<spPrecioGetResult> ObtenerPreciosActuales(int productoId, int? listaDePreciosId = null)
+        {
+            return _db.spPrecioGetResult.FromSqlRaw("spPrecioGet {0}, {1}", listaDePreciosId, productoId).AsEnumerable().ToList();
+        }
+
         public Task<ProductoPrecio> ObtenerPrecioAsync(int productoPrecioId)
         {
             return _db.ProductosPrecios
