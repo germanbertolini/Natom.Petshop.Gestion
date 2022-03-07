@@ -11,6 +11,21 @@ namespace Natom.Petshop.Gestion.Entities.DTO
     {
         [JsonProperty("stock")]
         public FeatureFlagsStockDTO Stock { get; set; }
+
+        [JsonProperty("acceso")]
+        public FeatureFlagsAccesoDTO Acceso { get; set; }
+    }
+
+    public class FeatureFlagsAccesoDTO
+    {
+        [JsonProperty("restringir_por_horario")]
+        public bool RestringirPorHorario { get; set; }
+
+        [JsonProperty("rango_horario_permitido_desde")]
+        public int RangoHorarioPermitidoDesde { get; set; }
+
+        [JsonProperty("rango_horario_permitido_hasta")]
+        public int RangoHorarioPermitidoHasta { get; set; }
     }
 
     public class FeatureFlagsStockDTO

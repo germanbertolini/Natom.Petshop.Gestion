@@ -1,4 +1,9 @@
 ﻿{
+  "acceso": {
+    "restringir_por_horario": true,
+    "rango_horario_permitido_desde": 6,
+    "rango_horario_permitido_hasta": 21
+  },
   "stock": {
     "permitir_venta_con_stock_negativo": true
   }

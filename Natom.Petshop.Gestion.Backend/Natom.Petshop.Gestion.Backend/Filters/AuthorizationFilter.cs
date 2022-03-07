@@ -12,6 +12,7 @@ using Natom.Petshop.Gestion.Backend.Services;
 using Natom.Petshop.Gestion.Entities;
 using Natom.Petshop.Gestion.Biz.Exceptions;
 using Natom.Petshop.Gestion.Biz;
+using Natom.Petshop.Gestion.Biz.Services;
 
 namespace Natom.Petshop.Gestion.Backend.Filters
 {
@@ -19,6 +20,7 @@ namespace Natom.Petshop.Gestion.Backend.Filters
     {
         private readonly IHttpContextAccessor _accessor;
         private readonly TransactionService _transaction;
+        private readonly FeatureFlagsService _featureFlagsService;
         private readonly BizDbContext _db;
 
         private string _controller = null;
@@ -27,6 +29,7 @@ namespace Natom.Petshop.Gestion.Backend.Filters
         public AuthorizationFilter(IServiceProvider serviceProvider)
         {
             _transaction = (TransactionService)serviceProvider.GetService(typeof(TransactionService));
+            _featureFlagsService = (FeatureFlagsService)serviceProvider.GetService(typeof(FeatureFlagsService));
             _accessor = (IHttpContextAccessor)serviceProvider.GetService(typeof(IHttpContextAccessor));
             _db = (BizDbContext)serviceProvider.GetService(typeof(BizDbContext));
         }
@@ -59,8 +62,9 @@ namespace Natom.Petshop.Gestion.Backend.Filters
                         throw new HandledException("Token expirado.");
 
                     //FUERA DE HORARIO LABORAL SOLO EL ADMIN PUEDE OPERAR
-                    if (token.UserId != 0 && (DateTime.Now.Hour >= 21 || DateTime.Now.Hour <= 6))
-                        throw new HandledException("Acceso denegado.");
+                    if (_featureFlagsService.FeatureFlags.Acceso.RestringirPorHorario)
+                        if (token.UserId != 0 && (DateTime.Now.Hour >= _featureFlagsService.FeatureFlags.Acceso.RangoHorarioPermitidoHasta || DateTime.Now.Hour <= _featureFlagsService.FeatureFlags.Acceso.RangoHorarioPermitidoDesde))
+                            throw new HandledException("Acceso denegado.");
 
                     //START LOG
                     _transaction.Token = token;
