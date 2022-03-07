@@ -96,7 +96,7 @@
           </div>
       </div>
     </div>
-    <div class="col-md-3">
+    <div class="col-md-2">
       <div class="form-group">
           <label for="formGroupExampleInput">Peso unitario</label>
           <div class="input-group">
@@ -111,7 +111,7 @@
       </div>
     </div>
     
-    <div class="col-md-3">
+    <div class="col-md-2">
       <div class="form-group">
           <label for="formGroupExampleInput">Unidad de medida</label>
           <div class="input-group">
@@ -123,6 +123,22 @@
                 <option *ngFor="let unidad of unidades; let i = index" value="{{ unidad.encrypted_id }}">{{ unidad.descripcion }}</option>
             </select>
           </div>
+      </div>
+    </div>
+
+    <div class="col-md-2">
+      <div class="form-group">
+        <label for="formGroupExampleInput">Costo unitario</label>
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text">$</span>
+          </div>
+          <input type="number"
+            class="form-control"
+            placeholder="- Sin especificar -"
+            onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode === 44"
+            [(ngModel)]="crud.model.costo_unitario" />
+        </div>
       </div>
     </div>
   </div>

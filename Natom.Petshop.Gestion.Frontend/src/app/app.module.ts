@@ -77,11 +77,14 @@ import { TransportesComponent } from './views/transportes/transportes.component'
 import { TransporteCrudComponent } from './views/transportes/crud/transporte-crud.component';
 import { ProveedorCuentaCorrienteComponent } from './views/proveedores/cta_cte/proveedor-cta-cte.component';
 import { ProveedorCuentaCorrienteNewComponent } from './views/proveedores/cta_cte/new/proveedor-cta-cte-new.component';
+import { FeatureFlagsService } from './services/feature-flags.service';
+import { FeatureFlags } from './classes/feature-flags';
 
 
-export function OnInit(jsonAppConfigService: JsonAppConfigService) {
+export function OnInit(jsonAppConfigService: JsonAppConfigService, featureFlagsService: FeatureFlagsService) {
   return () => {
-    return jsonAppConfigService.load();
+    return jsonAppConfigService.load()
+            .then(() => featureFlagsService.load());
   };
 }
 
@@ -170,9 +173,14 @@ export function OnInit(jsonAppConfigService: JsonAppConfigService) {
       useExisting: JsonAppConfigService
     },
     {
+      provide: FeatureFlags,
+      deps: [HttpClient],
+      useExisting: FeatureFlagsService
+    },
+    {
       provide: APP_INITIALIZER,
       multi: true,
-      deps: [JsonAppConfigService],
+      deps: [JsonAppConfigService, FeatureFlagsService],
       useFactory: OnInit
     },
     { provide: NgbDateParserFormatter,

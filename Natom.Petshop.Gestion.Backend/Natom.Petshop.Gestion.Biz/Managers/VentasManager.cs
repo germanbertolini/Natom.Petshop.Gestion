@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Natom.Petshop.Gestion.Biz.Exceptions;
+using Natom.Petshop.Gestion.Biz.Services;
 using Natom.Petshop.Gestion.Entities.DTO.Ventas;
 using Natom.Petshop.Gestion.Entities.Model;
 using Natom.Petshop.Gestion.Entities.Model.Results;
@@ -14,8 +15,12 @@ namespace Natom.Petshop.Gestion.Biz.Managers
 {
     public class VentasManager : BaseManager
     {
+        private readonly FeatureFlagsService _featureFlagsService;
+
         public VentasManager(IServiceProvider serviceProvider) : base(serviceProvider)
-        { }
+        {
+            _featureFlagsService = (FeatureFlagsService)serviceProvider.GetService(typeof(FeatureFlagsService));
+        }
 
         public Task<int> ObtenerVentasCountAsync()
                     => _db.Ventas
@@ -153,10 +158,42 @@ namespace Natom.Petshop.Gestion.Biz.Managers
             return siguienteNumero;
         }
 
+        public async Task ValidarStockAsync(List<VentaDetalleDTO> detallePedidoDto)
+        {
+            var stockManager = new StockManager(_serviceProvider);
+            var stockAValidar = detallePedidoDto
+                                    .Where(d => string.IsNullOrEmpty(d.EncryptedId))
+                                    .GroupBy(k => new
+                                    {
+                                        ProductoId = EncryptionService.Decrypt<int>(k.ProductoEncryptedId),
+                                        ProductoDescripcion = k.ProductoDescripcion,
+                                        DepositoId = EncryptionService.Decrypt<int>(k.DepositoEncryptedId),
+                                        DepositoDescripcion = k.DepositoDescripcion
+                                    },
+                                             (k, v) => new
+                                             {
+                                                 ProductoId = k.ProductoId,
+                                                 ProductoDescripcion = k.ProductoDescripcion,
+                                                 DepositoId = k.DepositoId,
+                                                 DepositoDescripcion = k.DepositoDescripcion,
+                                                 Cantidad = v.Sum(p => p.Cantidad)
+                                             })
+                                    .ToList();
+            foreach (var item in stockAValidar)
+            {
+                int cantidad = await stockManager.ObtenerStockActualAsync(item.ProductoId, item.DepositoId);
+                if (cantidad < item.Cantidad)
+                    throw new HandledException($"No hay stock disponible para '{item.ProductoDescripcion}' en '{item.DepositoDescripcion}'. Cantidad pedido: {item.Cantidad} / Cantidad disponible actual: {cantidad}");
+            }
+        }
+
         public async Task<Venta> GuardarVentaAsync(int usuarioId, VentaDTO ventaDto)
         {
             var ahora = DateTime.Now;
             Venta venta = null;
+
+            if (!_featureFlagsService.FeatureFlags.Stock.PermitirVentaConStockNegativo)
+                await ValidarStockAsync(ventaDto.Detalle);
 
             if (_db.Ventas.Any(v => v.Activo && v.TipoFactura == ventaDto.TipoFactura && v.NumeroFactura == ventaDto.NumeroFactura))
                 throw new HandledException("Ya existe una Facturación con mismo comprobante.");

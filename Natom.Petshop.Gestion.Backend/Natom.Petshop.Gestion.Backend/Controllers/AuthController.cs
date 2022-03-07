@@ -1,15 +1,11 @@
-﻿using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Natom.Petshop.Gestion.Backend.Services;
-using Natom.Petshop.Gestion.Biz;
 using Natom.Petshop.Gestion.Biz.Exceptions;
 using Natom.Petshop.Gestion.Biz.Managers;
+using Natom.Petshop.Gestion.Biz.Services;
 using Natom.Petshop.Gestion.Entities.DTO;
 using Natom.Petshop.Gestion.Entities.DTO.Auth;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -19,8 +15,11 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
     [Route("[controller]/[action]")]
     public class AuthController : BaseController
     {
+        private readonly FeatureFlagsService _featureFlagsService;
+
         public AuthController(IServiceProvider serviceProvider) : base(serviceProvider)
         {
+            _featureFlagsService = (FeatureFlagsService)serviceProvider.GetService(typeof(FeatureFlagsService));
         }
 
         // POST: auth/login
@@ -86,6 +85,30 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
             else
             {
                 throw new HandledException("No se pudo obtener el client y secret");
+            }
+        }
+
+        // GET: auth/feature_flags
+        [HttpGet]
+        [ActionName("feature_flags")]
+        public async Task<IActionResult> GetFeatureFlagsAsync()
+        {
+            try
+            {
+                return Ok(new ApiResultDTO<FeatureFlagsDTO>
+                {
+                    Success = true,
+                    Data = _featureFlagsService.FeatureFlags
+                });
+            }
+            catch (HandledException ex)
+            {
+                return Ok(new ApiResultDTO { Success = false, Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                await LoggingService.LogExceptionAsync(_db, ex, usuarioId: (int)(_token?.UserId ?? 0), _userAgent);
+                return Ok(new ApiResultDTO { Success = false, Message = "Se ha producido un error interno." });
             }
         }
     }

@@ -1,0 +1,5 @@
+﻿{
+  "stock": {
+    "permitir_venta_con_stock_negativo": true
+  }
+}

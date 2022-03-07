@@ -119,26 +119,26 @@ export class StockNewComponent implements OnInit {
       return;
     }
 
-    if (this.crud.model.esCompra) {
-      if (this.crud.model.tipo !== "I")
-      {
-        this.confirmDialogService.showError("Si ES COMPRA entonces el movimiento debe ser INGRESO.");
-        return;
-      }
+    // if (this.crud.model.esCompra) {
+    //   if (this.crud.model.tipo !== "I")
+    //   {
+    //     this.confirmDialogService.showError("Si ES COMPRA entonces el movimiento debe ser INGRESO.");
+    //     return;
+    //   }
 
-      if (this.crud.model.proveedor_encrypted_id === undefined || this.crud.model.proveedor_encrypted_id.length === 0)
-      {
-        this.confirmDialogService.showError("Debes buscar y seleccionar un Proveedor.");
-        return;
-      }
+    //   if (this.crud.model.proveedor_encrypted_id === undefined || this.crud.model.proveedor_encrypted_id.length === 0)
+    //   {
+    //     this.confirmDialogService.showError("Debes buscar y seleccionar un Proveedor.");
+    //     return;
+    //   }
 
-      if (this.crud.model.costoUnitario === undefined || this.crud.model.costoUnitario <= 0)
-      {
-        this.confirmDialogService.showError("Costo unitario inválido.");
-        return;
-      }
-    }
-    else
+    //   if (this.crud.model.costoUnitario === undefined || this.crud.model.costoUnitario <= 0)
+    //   {
+    //     this.confirmDialogService.showError("Costo unitario inválido.");
+    //     return;
+    //   }
+    // }
+    // else
     {
       this.crud.model.proveedor_encrypted_id = null;
       this.crud.model.costoUnitario = null;

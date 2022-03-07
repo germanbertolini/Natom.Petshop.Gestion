@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Natom.Petshop.Gestion.Biz.Exceptions;
+using Natom.Petshop.Gestion.Biz.Services;
 using Natom.Petshop.Gestion.Entities.DTO.Pedidos;
 using Natom.Petshop.Gestion.Entities.Model;
 using Natom.Petshop.Gestion.Entities.Model.Results;
@@ -14,8 +15,12 @@ namespace Natom.Petshop.Gestion.Biz.Managers
 {
     public class PedidosManager : BaseManager
     {
+        private readonly FeatureFlagsService _featureFlagsService;
+
         public PedidosManager(IServiceProvider serviceProvider) : base(serviceProvider)
-        { }
+        {
+            _featureFlagsService = (FeatureFlagsService)serviceProvider.GetService(typeof(FeatureFlagsService));
+        }
 
         public Task<int> ObtenerPedidosCountAsync()
                     => _db.OrdenesDePedido
@@ -199,7 +204,8 @@ namespace Natom.Petshop.Gestion.Biz.Managers
             var ahora = DateTime.Now;
             OrdenDePedido pedido = null;
             
-            await ValidarStockAsync(pedidoDto.Detalle);
+            if (!_featureFlagsService.FeatureFlags.Stock.PermitirVentaConStockNegativo)
+                await ValidarStockAsync(pedidoDto.Detalle);
 
             if (pedidoDto.EntregaEstimadaFecha.Date < ahora.Date)
                 throw new HandledException("La Fecha estimada de entrega debe ser mayor.");

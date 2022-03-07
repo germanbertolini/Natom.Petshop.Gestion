@@ -56,16 +56,16 @@ namespace Natom.Petshop.Gestion.Biz.Managers
                 EsCompra = movimientoDto.EsCompra
             };
 
-            if (movimientoDto.EsCompra)
-            {
-                movimiento.ProveedorId = EncryptionService.Decrypt<int>(movimientoDto.ProveedorEncryptedId);
-                movimiento.CostoUnitario = movimientoDto.CostoUnitario;
+            //if (movimientoDto.EsCompra)
+            //{
+            //    movimiento.ProveedorId = EncryptionService.Decrypt<int>(movimientoDto.ProveedorEncryptedId);
+            //    movimiento.CostoUnitario = movimientoDto.CostoUnitario;
 
-                var producto = await _db.Productos.FindAsync(productoId);
-                _db.Entry(producto).State = EntityState.Modified;
-                producto.ProveedorId = movimiento.ProveedorId;
-                producto.CostoUnitario = (movimiento.CostoUnitario ?? producto.CostoUnitario);
-            }
+            //    var producto = await _db.Productos.FindAsync(productoId);
+            //    _db.Entry(producto).State = EntityState.Modified;
+            //    producto.ProveedorId = movimiento.ProveedorId;
+            //    producto.CostoUnitario = (movimiento.CostoUnitario ?? producto.CostoUnitario);
+            //}
 
             _db.MovimientosStock.Add(movimiento);
             await _db.SaveChangesAsync();

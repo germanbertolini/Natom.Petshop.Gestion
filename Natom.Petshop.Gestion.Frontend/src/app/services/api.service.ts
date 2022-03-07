@@ -52,6 +52,24 @@ export class ApiService {
                 });
     }
 
+    public DoHiddenGET<TResponse>(relativeUrl: string, headers: HttpHeaders = null, onSuccess: (response: TResponse) => void, onError: (errorMessage: string) => void) {
+        headers = this.SetAPIHeaders(headers);
+        this.DoGETWithObservable(relativeUrl, headers)
+                .subscribe({
+                    next: response => {
+                        onSuccess(<TResponse>response);
+                    },
+                    error: error => {
+                        if (error.status === 403 && this.onForbidden !== null) {
+                            this.onForbidden();
+                        }
+                        else {
+                            onError(error.message);
+                        }
+                    }
+                });
+    }
+
     public DoPOST<TResponse>(relativeUrl: string, body: any, headers: HttpHeaders = null, onSuccess: (response: TResponse) => void, onError: (errorMessage: string) => void) {
         this.loadingService.show();
         headers = this.SetAPIHeaders(headers);

@@ -19,6 +19,7 @@ import { CRUDView } from "src/app/classes/views/crud-view.classes";
 import { ConfirmDialogService } from "src/app/components/confirm-dialog/confirm-dialog.service";
 import { ApiService } from "src/app/services/api.service";
 import { AuthService } from "src/app/services/auth.service";
+import { FeatureFlagsService } from "src/app/services/feature-flags.service";
 
 @Component({
   selector: 'app-venta-crud',
@@ -65,7 +66,8 @@ export class VentaCrudComponent implements OnInit {
               private routerService: Router,
               private routeService: ActivatedRoute,
               private notifierService: NotifierService,
-              private confirmDialogService: ConfirmDialogService) {
+              private confirmDialogService: ConfirmDialogService,
+              private featureFlagsService: FeatureFlagsService) {
                 
     this.crud = new CRUDView<VentaDTO>(routeService);
     this.crud.model = new VentaDTO();
@@ -469,7 +471,7 @@ export class VentaCrudComponent implements OnInit {
       return;
     }
 
-    if (this.detalle_cantidad > this.detalle_stock_actual)
+    if (this.detalle_cantidad > this.detalle_stock_actual && !this.featureFlagsService.current.stock.permitir_venta_con_stock_negativo)
     {
       this.confirmDialogService.showError("No hay stock disponible para esa cantidad.");
       return;

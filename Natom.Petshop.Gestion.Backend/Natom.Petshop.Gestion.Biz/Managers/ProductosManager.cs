@@ -118,6 +118,7 @@ namespace Natom.Petshop.Gestion.Biz.Managers
                     PesoUnitario = productoDto.PesoUnitario,
                     UnidadPesoId = EncryptionService.Decrypt<int>(productoDto.UnidadPesoEncryptedId),
                     CategoriaProductoId = EncryptionService.Decrypt<string>(productoDto.CategoriaEncryptedId),
+                    CostoUnitario = productoDto.CostoUnitario,
                     Activo = true
                 };
 
@@ -143,6 +144,7 @@ namespace Natom.Petshop.Gestion.Biz.Managers
                 producto.PesoUnitario = productoDto.PesoUnitario;
                 producto.UnidadPesoId = EncryptionService.Decrypt<int>(productoDto.UnidadPesoEncryptedId);
                 producto.CategoriaProductoId = EncryptionService.Decrypt<string>(productoDto.CategoriaEncryptedId);
+                producto.CostoUnitario = productoDto.CostoUnitario;
 
                 await _db.SaveChangesAsync();
             }

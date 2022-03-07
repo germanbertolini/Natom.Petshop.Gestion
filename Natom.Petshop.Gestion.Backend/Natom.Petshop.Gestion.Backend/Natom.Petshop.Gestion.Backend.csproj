@@ -24,6 +24,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Update="featureflags.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="Reporting\DataSetReporting.xsd">
       <SubType>Designer</SubType>
       <LastGenOutput>DataSetReporting.Designer.cs</LastGenOutput>

@@ -7,5 +7,6 @@ export class ProductoDTO {
 	public unidadPeso_encrypted_id: string;
 	public categoria_encrypted_id: string;
 	public pesoUnitario: number;
+	public costo_unitario: number;
 	public mueveStock: boolean;
 }
