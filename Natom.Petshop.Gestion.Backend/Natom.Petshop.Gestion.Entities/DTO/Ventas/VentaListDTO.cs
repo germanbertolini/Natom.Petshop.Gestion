@@ -58,6 +58,10 @@ namespace Natom.Petshop.Gestion.Entities.DTO.Ventas
             Pedidos = entity.Detalle.Select(d => d.OrdenDePedido?.NumeroPedido.ToString().PadLeft(8, '0')).GroupBy(k => k, (k, v) => k).Where(r => !string.IsNullOrEmpty(r)).ToList();
             Factura = string.IsNullOrEmpty(entity.NumeroFactura) ? null : entity.TipoFactura + " " + entity.NumeroFactura;
             Cliente = entity.Cliente.EsEmpresa ? entity.Cliente.RazonSocial : $"{entity.Cliente.Nombre} {entity.Cliente.Apellido}";
+
+            if (string.IsNullOrEmpty(Cliente.Trim()))
+                Cliente = $"{entity.Cliente.Domicilio}, {entity.Cliente.Localidad}";
+
             Usuario = entity.Usuario?.Nombre ?? "Admin";
             PesoTotalGramos = entity.PesoTotalEnGramos;
             Anulado = !entity.Activo;

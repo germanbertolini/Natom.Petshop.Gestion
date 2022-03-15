@@ -78,6 +78,10 @@ namespace Natom.Petshop.Gestion.Entities.DTO.Pedidos
             Remito = string.IsNullOrEmpty(entity.NumeroRemito) ? null : "RTO " + entity.NumeroRemito;
             Factura = string.IsNullOrEmpty(entity.Venta?.NumeroFactura) ? null : entity.Venta.TipoFactura + " " + entity.Venta.NumeroFactura;
             Cliente = entity.Cliente.EsEmpresa ? entity.Cliente.RazonSocial : $"{entity.Cliente.Nombre} {entity.Cliente.Apellido}";
+
+            if (string.IsNullOrEmpty(Cliente.Trim()))
+                Cliente = $"{entity.Cliente.Domicilio}, {entity.Cliente.Localidad}";
+
             Zona = entity.Cliente.Zona?.Descripcion;
             Usuario = entity.Usuario?.Nombre ?? "Admin";
             Estado = ResolverEstado(entity);

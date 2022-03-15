@@ -67,7 +67,7 @@
               type="text"
               class="form-control"
               [(ngModel)]="general_cliente"
-              placeholder="Buscar por CUIT o Razón social..." />
+              placeholder="Buscar por CUIT, Razón social o Domicilio..." />
             <ul class="input-autocomplete-options">
               <li
                 class="no-results"
@@ -79,8 +79,8 @@
                 *ngFor="let cliente of clientesSearch; let i = index"
                 (click)="onClienteSearchSelectItem(cliente)"
                 >
-                  <small *ngIf="cliente.esEmpresa">{{ cliente.tipoDocumento }} {{ cliente.numeroDocumento }} /// {{ cliente.razonSocial }}</small>
-                  <small *ngIf="!cliente.esEmpresa">{{ cliente.tipoDocumento }} {{ cliente.numeroDocumento }} /// {{ cliente.nombre }} {{ cliente.apellido }}</small>
+                <small *ngIf="cliente.esEmpresa">{{ cliente.tipoDocumento }} {{ cliente.numeroDocumento }} /// {{ cliente.razonSocial }} /// {{ cliente.domicilio }}, {{ cliente.localidad }}</small>
+                <small *ngIf="!cliente.esEmpresa">{{ cliente.tipoDocumento }} {{ cliente.numeroDocumento }} /// {{ cliente.nombre }} {{ cliente.apellido }} /// {{ cliente.domicilio }}, {{ cliente.localidad }}</small>
               </li>
             </ul>
           </div>

@@ -86,7 +86,8 @@ export class VentaCrudComponent implements OnInit {
   }
 
   onClienteSearchSelectItem (cliente: ClienteDTO) {
-    this.general_cliente = cliente.tipoDocumento + " " + cliente.numeroDocumento + " /// " + (cliente.esEmpresa ? cliente.razonSocial : cliente.nombre + " " + cliente.apellido);
+    this.general_cliente = cliente.tipoDocumento + " " + (cliente.numeroDocumento || "") + " /// " + (cliente.esEmpresa ? (cliente.razonSocial || "") : (cliente.nombre || "") + " " + (cliente.apellido || "")) + " /// " + cliente.domicilio + ", " + (cliente.localidad || "");
+
     this.crud.model.cliente_encrypted_id = cliente.encrypted_id;
     this.obtenerOrdenesDePedido();
     this.clientesSearch = undefined;

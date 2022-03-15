@@ -27,6 +27,7 @@
           <tr>
             <th>Cliente</th>
             <th>Documento</th>
+            <th>Domicilio</th>
             <th>Localidad</th>
             <th></th>
           </tr>
@@ -35,6 +36,7 @@
           <tr *ngFor="let cliente of Clientes">
             <td>{{ cliente.razonSocial || cliente.nombre }}</td>
             <td>{{ cliente.tipoDocumento }} {{ cliente.numeroDocumento }}</td>
+            <td>{{ cliente.domicilio }}</td>
             <td>{{ cliente.localidad }}</td>
             <td>
               <a *ngIf="authService.can('clientes_cta_cte_ver') && cliente.monto_cta_cte > 0" class="btn btn-warning btn-sm cta-cte-smt-btn spacingLeft" (click)="onVerCtaCteClick(cliente.encrypted_id)" data-toggle="tooltip" data-placement="top" title="Ver Cuenta Corriente"><i class="fa fa-dollar" aria-hidden="true"></i></a>

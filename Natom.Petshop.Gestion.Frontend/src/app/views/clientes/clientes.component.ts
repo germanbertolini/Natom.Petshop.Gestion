@@ -150,6 +150,7 @@ export class ClientesComponent implements OnInit {
       columns: [
         { data: 'cliente' },
         { data: 'documento' },
+        { data: 'domicilio' },
         { data: 'localidad' },
         { data: '' } //BOTONERA
       ]

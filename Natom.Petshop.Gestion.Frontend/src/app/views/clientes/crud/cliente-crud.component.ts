@@ -9,6 +9,7 @@ import { ZonaDTO } from "src/app/classes/dto/zonas/zona.dto";
 import { CRUDView } from "src/app/classes/views/crud-view.classes";
 import { ConfirmDialogService } from "src/app/components/confirm-dialog/confirm-dialog.service";
 import { ApiService } from "src/app/services/api.service";
+import { FeatureFlagsService } from "src/app/services/feature-flags.service";
 
 @Component({
   selector: 'app-cliente-crud',
@@ -26,7 +27,8 @@ export class ClienteCrudComponent implements OnInit {
               private routerService: Router,
               private routeService: ActivatedRoute,
               private notifierService: NotifierService,
-              private confirmDialogService: ConfirmDialogService) {
+              private confirmDialogService: ConfirmDialogService,
+              private featureFlagsService: FeatureFlagsService) {
                 
     this.crud = new CRUDView<ClienteDTO>(routeService);
     this.crud.model = new ClienteDTO();
@@ -43,55 +45,57 @@ export class ClienteCrudComponent implements OnInit {
 
   onSaveClick() {
     //TAB GENERAL
-    if (this.crud.model.esEmpresa) {
-      if (this.crud.model.razonSocial === undefined || this.crud.model.razonSocial.length === 0)
-      {
-        this.confirmDialogService.showError("Debes ingresar la Razón social.");
-        return;
-      }
+    if (!this.featureFlagsService.current.clientes.validar_solo_domicilio) {
+      if (this.crud.model.esEmpresa) {
+        if (this.crud.model.razonSocial === undefined || this.crud.model.razonSocial.length === 0)
+        {
+          this.confirmDialogService.showError("Debes ingresar la Razón social.");
+          return;
+        }
 
-      // if (this.crud.model.nombreFantasia === undefined || this.crud.model.nombreFantasia.length === 0)
-      // {
-      //   this.confirmDialogService.showError("Debes ingresar el Nombre fantasía.");
-      //   return;
-      // }
+        // if (this.crud.model.nombreFantasia === undefined || this.crud.model.nombreFantasia.length === 0)
+        // {
+        //   this.confirmDialogService.showError("Debes ingresar el Nombre fantasía.");
+        //   return;
+        // }
 
-      if (this.crud.model.numeroDocumento === undefined || this.crud.model.numeroDocumento.length === 0)
-      {
-        this.confirmDialogService.showError("Debes ingresar el CUIT.");
-        return;
-      }
+        if (this.crud.model.numeroDocumento === undefined || this.crud.model.numeroDocumento.length === 0)
+        {
+          this.confirmDialogService.showError("Debes ingresar el CUIT.");
+          return;
+        }
 
-      if (!(/^[0-9]{2}-[0-9]{8}-[0-9]{1}$/.test(this.crud.model.numeroDocumento)))
-      {
-        this.confirmDialogService.showError("Debes ingresar un CUIT válido.");
-        return;
+        if (!(/^[0-9]{2}-[0-9]{8}-[0-9]{1}$/.test(this.crud.model.numeroDocumento)))
+        {
+          this.confirmDialogService.showError("Debes ingresar un CUIT válido.");
+          return;
+        }
       }
-    }
-    else
-    {
-      if (this.crud.model.nombre === undefined || this.crud.model.nombre.length === 0)
+      else
       {
-        this.confirmDialogService.showError("Debes ingresar el Nombre.");
-        return;
-      }
+        if (this.crud.model.nombre === undefined || this.crud.model.nombre.length === 0)
+        {
+          this.confirmDialogService.showError("Debes ingresar el Nombre.");
+          return;
+        }
 
-      if (this.crud.model.apellido === undefined || this.crud.model.apellido.length === 0)
-      {
-        this.confirmDialogService.showError("Debes ingresar el Apellido.");
-        return;
-      }
+        if (this.crud.model.apellido === undefined || this.crud.model.apellido.length === 0)
+        {
+          this.confirmDialogService.showError("Debes ingresar el Apellido.");
+          return;
+        }
 
-      if (this.crud.model.numeroDocumento === undefined || this.crud.model.numeroDocumento.length === 0)
-      {
-        this.confirmDialogService.showError("Debes ingresar el DNI.");
-        return;
-      }
+        if (this.crud.model.numeroDocumento === undefined || this.crud.model.numeroDocumento.length === 0)
+        {
+          this.confirmDialogService.showError("Debes ingresar el DNI.");
+          return;
+        }
 
-      if (!(/^[0-9]{8}$/.test(this.crud.model.numeroDocumento)))
-      {
-        this.confirmDialogService.showError("Debes ingresar un DNI válido.");
-        return;
+        if (!(/^[0-9]{8}$/.test(this.crud.model.numeroDocumento)))
+        {
+          this.confirmDialogService.showError("Debes ingresar un DNI válido.");
+          return;
+        }
       }
     }
 
@@ -101,29 +105,31 @@ export class ClienteCrudComponent implements OnInit {
       return;
     }
 
-    // if (this.crud.model.entreCalles === undefined || this.crud.model.entreCalles.length === 0)
-    // {
-    //   this.confirmDialogService.showError("Debes ingresar las Entre calles.");
-    //   return;
-    // }
+    if (!this.featureFlagsService.current.clientes.validar_solo_domicilio) {
+      // if (this.crud.model.entreCalles === undefined || this.crud.model.entreCalles.length === 0)
+      // {
+      //   this.confirmDialogService.showError("Debes ingresar las Entre calles.");
+      //   return;
+      // }
 
-    // if (this.crud.model.localidad === undefined || this.crud.model.localidad.length === 0)
-    // {
-    //   this.confirmDialogService.showError("Debes ingresar la Localidad.");
-    //   return;
-    // }
+      // if (this.crud.model.localidad === undefined || this.crud.model.localidad.length === 0)
+      // {
+      //   this.confirmDialogService.showError("Debes ingresar la Localidad.");
+      //   return;
+      // }
 
-    if (this.crud.model.zona_encrypted_id === undefined || this.crud.model.zona_encrypted_id.length === 0)
-    {
-      this.confirmDialogService.showError("Debes seleccionar la Zona.");
-      return;
+      if (this.crud.model.zona_encrypted_id === undefined || this.crud.model.zona_encrypted_id.length === 0)
+      {
+        this.confirmDialogService.showError("Debes seleccionar la Zona.");
+        return;
+      }
+
+      // if (this.crud.model.lista_de_precios_encrypted_id === undefined || this.crud.model.lista_de_precios_encrypted_id.length === 0)
+      // {
+      //   this.confirmDialogService.showError("Debes seleccionar la Lista de precios.");
+      //   return;
+      // }
     }
-
-    // if (this.crud.model.lista_de_precios_encrypted_id === undefined || this.crud.model.lista_de_precios_encrypted_id.length === 0)
-    // {
-    //   this.confirmDialogService.showError("Debes seleccionar la Lista de precios.");
-    //   return;
-    // }
 
     if (this.crud.model.monto_cta_cte === undefined || this.crud.model.monto_cta_cte < 0)
     {

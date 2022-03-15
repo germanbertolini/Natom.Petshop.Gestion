@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Natom.Petshop.Gestion.Biz.Exceptions;
+using Natom.Petshop.Gestion.Biz.Services;
 using Natom.Petshop.Gestion.Entities.DTO.Clientes;
 using Natom.Petshop.Gestion.Entities.Model;
 using Natom.Petshop.Gestion.Entities.Services;
@@ -13,8 +14,12 @@ namespace Natom.Petshop.Gestion.Biz.Managers
 {
     public class ClientesManager : BaseManager
     {
+        private readonly FeatureFlagsService _featureFlagsService;
+
         public ClientesManager(IServiceProvider serviceProvider) : base(serviceProvider)
-        { }
+        {
+            _featureFlagsService = (FeatureFlagsService)serviceProvider.GetService(typeof(FeatureFlagsService));
+        }
 
         public Task<int> ObtenerClientesCountAsync()
                     => _db.Clientes
@@ -29,6 +34,7 @@ namespace Natom.Petshop.Gestion.Biz.Managers
             {
                 queryable = queryable.Where(p => p.NumeroDocumento.ToLower().Contains(filter.ToLower())
                                                     || p.Localidad.ToLower().Contains(filter.ToLower())
+                                                    || p.Domicilio.ToLower().Contains(filter.ToLower())
                                                     || 
                                                     (
                                                         p.Nombre != null
@@ -53,7 +59,8 @@ namespace Natom.Petshop.Gestion.Biz.Managers
                                                                             : c.RazonSocial
                                                                     ) :
                                                                  sortColumnIndex == 1 ? c.TipoDocumentoId.ToString() :
-                                                                 sortColumnIndex == 2 ? c.Localidad :
+                                                                 sortColumnIndex == 2 ? c.Domicilio :
+                                                                 sortColumnIndex == 3 ? c.Localidad :
                                                             "")
                                         : queryable.OrderByDescending(c => sortColumnIndex == 0
                                                                     ? (
@@ -62,7 +69,8 @@ namespace Natom.Petshop.Gestion.Biz.Managers
                                                                             : c.RazonSocial
                                                                     ) :
                                                                  sortColumnIndex == 1 ? c.TipoDocumentoId.ToString() :
-                                                                 sortColumnIndex == 2 ? c.Localidad :
+                                                                 sortColumnIndex == 2 ? c.Domicilio :
+                                                                 sortColumnIndex == 3 ? c.Localidad :
                                                             "");
 
             var countFiltrados = queryableOrdered.Count();
@@ -83,8 +91,11 @@ namespace Natom.Petshop.Gestion.Biz.Managers
             Cliente cliente = null;
             if (string.IsNullOrEmpty(clienteDto.EncryptedId)) //NUEVO
             {
-                if (await _db.Clientes.AnyAsync(m => m.NumeroDocumento.ToLower().Equals(clienteDto.NumeroDocumento.ToLower())))
-                    throw new HandledException($"Ya existe un Cliente con ese {(clienteDto.EsEmpresa ? "CUIT" : "DNI")}.");
+                if (!_featureFlagsService.FeatureFlags.Clientes.ValidarSoloDomicilio)
+                {
+                    if (await _db.Clientes.AnyAsync(m => m.NumeroDocumento.ToLower().Equals(clienteDto.NumeroDocumento.ToLower())))
+                        throw new HandledException($"Ya existe un Cliente con ese {(clienteDto.EsEmpresa ? "CUIT" : "DNI")}.");
+                }
 
                 cliente = new Cliente()
                 {
@@ -116,8 +127,11 @@ namespace Natom.Petshop.Gestion.Biz.Managers
             {
                 int clienteId = EncryptionService.Decrypt<int>(clienteDto.EncryptedId);
 
-                if (await _db.Clientes.AnyAsync(m => m.NumeroDocumento.ToLower().Equals(clienteDto.NumeroDocumento.ToLower()) && m.ClienteId != clienteId))
-                    throw new HandledException($"Ya existe un Cliente con ese {(clienteDto.EsEmpresa ? "CUIT" : "DNI")}.");
+                if (!_featureFlagsService.FeatureFlags.Clientes.ValidarSoloDomicilio)
+                {
+                    if (await _db.Clientes.AnyAsync(m => m.NumeroDocumento.ToLower().Equals(clienteDto.NumeroDocumento.ToLower()) && m.ClienteId != clienteId))
+                        throw new HandledException($"Ya existe un Cliente con ese {(clienteDto.EsEmpresa ? "CUIT" : "DNI")}.");
+                }
 
                 cliente = await _db.Clientes
                                     .FirstAsync(u => u.ClienteId.Equals(clienteId));
@@ -190,7 +204,8 @@ namespace Natom.Petshop.Gestion.Biz.Managers
                                                         p.EsEmpresa ? p.RazonSocial.ToLower().Contains(word)
                                                                     : (p.Nombre + " " + p.Apellido).ToLower().Contains(word)
                                                     )
-                                                    || p.NumeroDocumento.ToLower().Contains(word));
+                                                    || p.NumeroDocumento.ToLower().Contains(word)
+                                                    || p.Domicilio.ToLower().Contains(word));
                 }
             }
 

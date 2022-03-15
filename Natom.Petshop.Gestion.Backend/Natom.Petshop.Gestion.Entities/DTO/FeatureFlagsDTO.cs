@@ -12,8 +12,17 @@ namespace Natom.Petshop.Gestion.Entities.DTO
         [JsonProperty("stock")]
         public FeatureFlagsStockDTO Stock { get; set; }
 
+        [JsonProperty("clientes")]
+        public FeatureFlagsClientesDTO Clientes { get; set; }
+
         [JsonProperty("acceso")]
         public FeatureFlagsAccesoDTO Acceso { get; set; }
+    }
+
+    public class FeatureFlagsClientesDTO
+    {
+        [JsonProperty("validar_solo_domicilio")]
+        public bool ValidarSoloDomicilio { get; set; }
     }
 
     public class FeatureFlagsAccesoDTO
