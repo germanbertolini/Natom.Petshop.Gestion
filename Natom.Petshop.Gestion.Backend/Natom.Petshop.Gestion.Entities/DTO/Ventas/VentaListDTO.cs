@@ -59,8 +59,8 @@ namespace Natom.Petshop.Gestion.Entities.DTO.Ventas
             Factura = string.IsNullOrEmpty(entity.NumeroFactura) ? null : entity.TipoFactura + " " + entity.NumeroFactura;
             Cliente = entity.Cliente.EsEmpresa ? entity.Cliente.RazonSocial : $"{entity.Cliente.Nombre} {entity.Cliente.Apellido}";
 
-            if (string.IsNullOrEmpty(Cliente.Trim()))
-                Cliente = $"{entity.Cliente.Domicilio}, {entity.Cliente.Localidad}";
+            if (Cliente != null && string.IsNullOrEmpty(Cliente.Trim()))
+                Cliente = $"{entity?.Cliente?.Domicilio}, {entity?.Cliente?.Localidad}";
 
             Usuario = entity.Usuario?.Nombre ?? "Admin";
             PesoTotalGramos = entity.PesoTotalEnGramos;
