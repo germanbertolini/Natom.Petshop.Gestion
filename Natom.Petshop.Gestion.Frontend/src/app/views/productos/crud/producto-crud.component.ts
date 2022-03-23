@@ -51,11 +51,11 @@ export class ProductoCrudComponent implements OnInit {
       return;
     }
   
-    if (this.crud.model.codigo === undefined || this.crud.model.codigo.length === 0)
-    {
-      this.confirmDialogService.showError("Debes ingresar un Código.");
-      return;
-    }
+    // if (this.crud.model.codigo === undefined || this.crud.model.codigo.length === 0)
+    // {
+    //   this.confirmDialogService.showError("Debes ingresar un Código.");
+    //   return;
+    // }
 
     if (this.crud.model.descripcionCorta === undefined || this.crud.model.descripcionCorta.length === 0)
     {

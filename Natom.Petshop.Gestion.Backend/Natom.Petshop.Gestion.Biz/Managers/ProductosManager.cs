@@ -105,12 +105,13 @@ namespace Natom.Petshop.Gestion.Biz.Managers
             Producto producto = null;
             if (string.IsNullOrEmpty(productoDto.EncryptedId)) //NUEVO
             {
-                if (await _db.Productos.AnyAsync(m => m.Codigo.ToLower().Equals(productoDto.Codigo.ToLower())))
-                    throw new HandledException("Ya existe una Producto con mismo código.");
+                if (!string.IsNullOrEmpty(productoDto.Codigo))
+                    if (await _db.Productos.AnyAsync(m => m.Codigo.ToLower().Equals(productoDto.Codigo.ToLower())))
+                        throw new HandledException("Ya existe una Producto con mismo código.");
 
                 producto = new Producto()
                 {
-                    Codigo = productoDto.Codigo.ToUpper(),
+                    Codigo = productoDto.Codigo?.ToUpper(),
                     DescripcionCorta = productoDto.DescripcionCorta,
                     DescripcionLarga = productoDto.DescripcionLarga,
                     MarcaId = EncryptionService.Decrypt<int>(productoDto.MarcaEncryptedId),
@@ -129,14 +130,15 @@ namespace Natom.Petshop.Gestion.Biz.Managers
             {
                 int productoId = EncryptionService.Decrypt<int>(productoDto.EncryptedId);
 
-                if (await _db.Productos.AnyAsync(m => m.Codigo.ToLower().Equals(productoDto.Codigo.ToLower()) && m.ProductoId != productoId))
-                    throw new HandledException("Ya existe una Producto con mismo código.");
+                if (!string.IsNullOrEmpty(productoDto.Codigo))
+                    if (await _db.Productos.AnyAsync(m => m.Codigo.ToLower().Equals(productoDto.Codigo.ToLower()) && m.ProductoId != productoId))
+                        throw new HandledException("Ya existe una Producto con mismo código.");
 
                 producto = await _db.Productos
                                     .FirstAsync(u => u.ProductoId.Equals(productoId));
 
                 _db.Entry(producto).State = EntityState.Modified;
-                producto.Codigo = productoDto.Codigo.ToUpper();
+                producto.Codigo = productoDto.Codigo?.ToUpper();
                 producto.DescripcionCorta = productoDto.DescripcionCorta;
                 producto.DescripcionLarga = productoDto.DescripcionLarga;
                 producto.MarcaId = EncryptionService.Decrypt<int>(productoDto.MarcaEncryptedId);
