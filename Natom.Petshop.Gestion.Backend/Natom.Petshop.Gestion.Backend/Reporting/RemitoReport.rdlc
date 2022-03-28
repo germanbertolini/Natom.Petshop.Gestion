@@ -1188,7 +1188,7 @@
         <Top>7.18931cm</Top>
         <Left>0.43604cm</Left>
         <Height>2.2095cm</Height>
-        <Width>19.01cm</Width>
+        <Width>19.01001cm</Width>
         <ZIndex>12</ZIndex>
         <Style>
           <Border>
@@ -1220,7 +1220,6 @@
                 <Value>=First(Fields!EntregaFecha.Value, "DataSet1")</Value>
                 <Style>
                   <FontSize>9pt</FontSize>
-                  <Format>dd/MM/yy</Format>
                 </Style>
               </TextRun>
             </TextRuns>
