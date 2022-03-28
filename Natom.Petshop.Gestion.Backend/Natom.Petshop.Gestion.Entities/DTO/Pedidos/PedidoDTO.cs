@@ -24,7 +24,7 @@ namespace Natom.Petshop.Gestion.Entities.DTO.Pedidos
         public string ClienteEncryptedId { get; set; }
 
         [JsonProperty("entrega_estimada_fecha")]
-        public DateTime EntregaEstimadaFecha { get; set; }
+        public DateTime? EntregaEstimadaFecha { get; set; }
 
         [JsonProperty("entrega_estimada_rango_horario_encrypted_id")]
         public string EntregaEstimadaRangoHorarioEncryptedId { get; set; }
@@ -77,7 +77,7 @@ namespace Natom.Petshop.Gestion.Entities.DTO.Pedidos
             Numero = entity.NumeroPedido.ToString().PadLeft(8, '0');
             FechaHora = entity.FechaHoraPedido;
             ClienteEncryptedId = EncryptionService.Encrypt(entity.ClienteId);
-            EntregaEstimadaFecha = entity.EntregaEstimadaFecha.Value;
+            EntregaEstimadaFecha = entity.EntregaEstimadaFecha;
             EntregaEstimadaRangoHorarioEncryptedId = EncryptionService.Encrypt(entity.EntregaEstimadaRangoHorarioId);
             EntregaObservaciones = entity.EntregaObservaciones;
             Usuario = entity.Usuario?.Nombre ?? "Admin";

@@ -1084,7 +1084,7 @@ namespace Natom.Petshop.Gestion.Backend.Reporting {
                         string RemitoNumero, 
                         string VentaNumero, 
                         string VentaComprobante, 
-                        System.DateTime EntregaFecha, 
+                        string EntregaFecha, 
                         string EntregaRangoHorario, 
                         string EntregaDomicilio, 
                         string EntregaEntreCalles, 
@@ -1224,7 +1224,7 @@ namespace Natom.Petshop.Gestion.Backend.Reporting {
                 base.Columns.Add(this.columnVentaNumero);
                 this.columnVentaComprobante = new global::System.Data.DataColumn("VentaComprobante", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnVentaComprobante);
-                this.columnEntregaFecha = new global::System.Data.DataColumn("EntregaFecha", typeof(global::System.DateTime), null, global::System.Data.MappingType.Element);
+                this.columnEntregaFecha = new global::System.Data.DataColumn("EntregaFecha", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnEntregaFecha);
                 this.columnEntregaRangoHorario = new global::System.Data.DataColumn("EntregaRangoHorario", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnEntregaRangoHorario);
@@ -1817,7 +1817,7 @@ namespace Natom.Petshop.Gestion.Backend.Reporting {
                         string RemitoNumero, 
                         string VentaNumero, 
                         string VentaComprobante, 
-                        System.DateTime EntregaFecha, 
+                        string EntregaFecha, 
                         string EntregaRangoHorario, 
                         string EntregaDomicilio, 
                         string EntregaEntreCalles, 
@@ -1954,7 +1954,7 @@ namespace Natom.Petshop.Gestion.Backend.Reporting {
                 base.Columns.Add(this.columnVentaNumero);
                 this.columnVentaComprobante = new global::System.Data.DataColumn("VentaComprobante", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnVentaComprobante);
-                this.columnEntregaFecha = new global::System.Data.DataColumn("EntregaFecha", typeof(global::System.DateTime), null, global::System.Data.MappingType.Element);
+                this.columnEntregaFecha = new global::System.Data.DataColumn("EntregaFecha", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnEntregaFecha);
                 this.columnEntregaRangoHorario = new global::System.Data.DataColumn("EntregaRangoHorario", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnEntregaRangoHorario);
@@ -5701,10 +5701,10 @@ namespace Natom.Petshop.Gestion.Backend.Reporting {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
-            public System.DateTime EntregaFecha {
+            public string EntregaFecha {
                 get {
                     try {
-                        return ((global::System.DateTime)(this[this.tabledtSpReportOrdenDePedidoResult.EntregaFechaColumn]));
+                        return ((string)(this[this.tabledtSpReportOrdenDePedidoResult.EntregaFechaColumn]));
                     }
                     catch (global::System.InvalidCastException e) {
                         throw new global::System.Data.StrongTypingException("El valor de la columna \'EntregaFecha\' de la tabla \'dtSpReportOrdenDePedidoResult\'" +
@@ -6700,10 +6700,10 @@ namespace Natom.Petshop.Gestion.Backend.Reporting {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
-            public System.DateTime EntregaFecha {
+            public string EntregaFecha {
                 get {
                     try {
-                        return ((global::System.DateTime)(this[this.tabledtSpReportRemitoResult.EntregaFechaColumn]));
+                        return ((string)(this[this.tabledtSpReportRemitoResult.EntregaFechaColumn]));
                     }
                     catch (global::System.InvalidCastException e) {
                         throw new global::System.Data.StrongTypingException("El valor de la columna \'EntregaFecha\' de la tabla \'dtSpReportRemitoResult\' es DBN" +

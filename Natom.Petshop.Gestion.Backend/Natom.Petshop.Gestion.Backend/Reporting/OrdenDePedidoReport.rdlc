@@ -1524,7 +1524,6 @@
                 <Value>=First(Fields!EntregaFecha.Value, "DataSet1")</Value>
                 <Style>
                   <FontSize>9pt</FontSize>
-                  <Format>dd/MM/yy</Format>
                 </Style>
               </TextRun>
             </TextRuns>
@@ -1532,7 +1531,7 @@
           </Paragraph>
         </Paragraphs>
         <rd:DefaultName>EntregaFecha</rd:DefaultName>
-        <Top>3.51931cm</Top>
+        <Top>3.48403cm</Top>
         <Left>0.43603cm</Left>
         <Height>0.49417cm</Height>
         <Width>4.405cm</Width>
@@ -1879,7 +1878,7 @@
           </Paragraph>
         </Paragraphs>
         <rd:DefaultName>Anulado</rd:DefaultName>
-        <Top>2.53042cm</Top>
+        <Top>2.51632cm</Top>
         <Left>1.07104cm</Left>
         <Height>2.71044cm</Height>
         <Width>18.0575cm</Width>

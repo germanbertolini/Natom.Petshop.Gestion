@@ -19,7 +19,7 @@ namespace Natom.Petshop.Gestion.Entities.Model.Results
 		public string RemitoNumero { get; set; }
 		public string VentaNumero { get; set; }
 		public string VentaComprobante { get; set; }
-		public DateTime EntregaFecha { get; set; }
+		public string EntregaFecha { get; set; }
 		public string EntregaRangoHorario { get; set; }
 		public string EntregaDomicilio { get; set; }
 		public string EntregaEntreCalles { get; set; }

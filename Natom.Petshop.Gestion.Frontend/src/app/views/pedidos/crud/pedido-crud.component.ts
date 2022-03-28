@@ -345,16 +345,18 @@ export class PedidoCrudComponent implements OnInit {
       return;
     }
 
-    if (this.crud.model.entrega_estimada_fecha === undefined || this.crud.model.entrega_estimada_fecha === null)
-    {
-      this.confirmDialogService.showError("Debes seleccionar una Fecha estimada de entrega.");
-      return;
-    }
+    if (this.featureFlagsService.current.pedidos.fecha_y_hora_entrega_obligatorio) {
+      if (this.crud.model.entrega_estimada_fecha === undefined || this.crud.model.entrega_estimada_fecha === null)
+      {
+        this.confirmDialogService.showError("Debes seleccionar una Fecha estimada de entrega.");
+        return;
+      }
 
-    if (this.crud.model.entrega_estimada_rango_horario_encrypted_id === undefined || this.crud.model.entrega_estimada_rango_horario_encrypted_id.length === 0)
-    {
-      this.confirmDialogService.showError("Debes seleccionar el Rango horario de entrega.");
-      return;
+      if (this.crud.model.entrega_estimada_rango_horario_encrypted_id === undefined || this.crud.model.entrega_estimada_rango_horario_encrypted_id.length === 0)
+      {
+        this.confirmDialogService.showError("Debes seleccionar el Rango horario de entrega.");
+        return;
+      }
     }
 
     if (this.crud.model.retira_personalmente === false) {

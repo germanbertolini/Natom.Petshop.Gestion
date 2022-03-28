@@ -207,7 +207,7 @@ namespace Natom.Petshop.Gestion.Biz.Managers
             if (!_featureFlagsService.FeatureFlags.Stock.PermitirVentaConStockNegativo)
                 await ValidarStockAsync(pedidoDto.Detalle);
 
-            if (pedidoDto.EntregaEstimadaFecha.Date < ahora.Date)
+            if (_featureFlagsService.FeatureFlags.Pedidos.FechaYHoraEntregaObligatorio && pedidoDto.EntregaEstimadaFecha.HasValue && pedidoDto.EntregaEstimadaFecha.Value.Date < ahora.Date)
                 throw new HandledException("La Fecha estimada de entrega debe ser mayor.");
 
             var productosIds = pedidoDto.Detalle.Select(d => EncryptionService.Decrypt<int>(d.ProductoEncryptedId)).ToList();
@@ -221,7 +221,7 @@ namespace Natom.Petshop.Gestion.Biz.Managers
                 FechaHoraPedido = ahora,
                 RetiraPersonalmente = pedidoDto.RetiraPersonalmente,
                 EntregaEstimadaFecha = pedidoDto.EntregaEstimadaFecha,
-                EntregaEstimadaRangoHorarioId = EncryptionService.Decrypt<int>(pedidoDto.EntregaEstimadaRangoHorarioEncryptedId),
+                EntregaEstimadaRangoHorarioId = EncryptionService.Decrypt<int?>(pedidoDto.EntregaEstimadaRangoHorarioEncryptedId),
                 EntregaDomicilio = pedidoDto.EntregaDomicilio,
                 EntregaEntreCalles = pedidoDto.EntregaEntreCalles,
                 EntregaLocalidad = pedidoDto.EntregaLocalidad,

@@ -17,6 +17,15 @@ namespace Natom.Petshop.Gestion.Entities.DTO
 
         [JsonProperty("acceso")]
         public FeatureFlagsAccesoDTO Acceso { get; set; }
+
+        [JsonProperty("pedidos")]
+        public FeatureFlagsPedidosDTO Pedidos { get; set; }
+    }
+
+    public class FeatureFlagsPedidosDTO
+    {
+        [JsonProperty("fecha_y_hora_entrega_obligatorio")]
+        public bool FechaYHoraEntregaObligatorio { get; set; }
     }
 
     public class FeatureFlagsClientesDTO

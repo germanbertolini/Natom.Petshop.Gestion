@@ -9,5 +9,8 @@
   },
   "stock": {
     "permitir_venta_con_stock_negativo": false
+  },
+  "pedidos": {
+    "fecha_y_hora_entrega_obligatorio": false
   }
 }
