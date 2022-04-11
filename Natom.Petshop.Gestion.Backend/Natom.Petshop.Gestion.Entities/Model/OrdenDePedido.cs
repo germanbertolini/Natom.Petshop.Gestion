@@ -64,7 +64,7 @@ namespace Natom.Petshop.Gestion.Entities.Model
 		[ForeignKey("MarcoEntregaUsuarioId")]
 		public Usuario MarcoEntregaUsuario { get; set; }
 
-		public int PesoTotalEnGramos { get; set; }
+		public decimal PesoTotalEnGramos { get; set; }
 		public decimal? MontoTotal { get; set; }
 
 		public string MedioDePago { get; set; }

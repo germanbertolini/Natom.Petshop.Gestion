@@ -23,7 +23,7 @@ namespace Natom.Petshop.Gestion.Entities.Model
 		public Usuario Usuario { get; set; }
 
 		public string Tipo { get; set; } //(I) NGRESO / (E) GRESO
-		public int Cantidad { get; set; }
+		public decimal Cantidad { get; set; }
 
 		public int DepositoId { get; set; }
 		public Deposito Deposito { get; set; }

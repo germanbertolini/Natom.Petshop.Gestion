@@ -512,7 +512,7 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
 
                 var manager = new PedidosManager(_serviceProvider);
                 var detalleEntrega = detalle
-                                        .Select(x => new KeyValuePair<int, int>(EncryptionService.Decrypt<int>(x.EncryptedId), x.Entregado.Value))
+                                        .Select(x => new KeyValuePair<int, decimal>(EncryptionService.Decrypt<int>(x.EncryptedId), x.Entregado.Value))
                                         .ToDictionary(x => x.Key, x => x.Value);
                 var conDevoluciones = await manager.MarcarEntregaAsync((int)(_token?.UserId ?? 0), ordenDePedidoId, detalleEntrega);
 
@@ -549,7 +549,7 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
 
                 var manager = new PedidosManager(_serviceProvider);
                 var detalleModificacion = detalle
-                                        .Select(x => new KeyValuePair<int, int>(EncryptionService.Decrypt<int>(x.EncryptedId), x.Cantidad))
+                                        .Select(x => new KeyValuePair<int, decimal>(EncryptionService.Decrypt<int>(x.EncryptedId), x.Cantidad))
                                         .ToDictionary(x => x.Key, x => x.Value);
                 await manager.ModificarCantidadesAsync((int)(_token?.UserId ?? 0), ordenDePedidoId, detalleModificacion);
 

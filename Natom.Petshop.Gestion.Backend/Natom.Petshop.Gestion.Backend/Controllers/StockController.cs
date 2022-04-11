@@ -113,7 +113,7 @@ namespace Natom.Petshop.Gestion.Backend.Controllers
                 var manager = new StockManager(_serviceProvider);
                 var stockActual = await manager.ObtenerStockActualAsync(productoId, depositoId);
 
-                return Ok(new ApiResultDTO<int>
+                return Ok(new ApiResultDTO<decimal>
                 {
                     Success = true,
                     Data = stockActual

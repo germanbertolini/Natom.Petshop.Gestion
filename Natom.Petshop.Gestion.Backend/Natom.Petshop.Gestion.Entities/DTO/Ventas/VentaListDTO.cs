@@ -42,7 +42,7 @@ namespace Natom.Petshop.Gestion.Entities.DTO.Ventas
         public string MedioDePago { get; set; }
 
         [JsonProperty("peso_total_gramos")]
-        public int PesoTotalGramos { get; set; }
+        public decimal PesoTotalGramos { get; set; }
 
         [JsonProperty("anulado")]
         public bool Anulado { get; set; }
