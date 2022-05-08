@@ -220,13 +220,13 @@ namespace Natom.Petshop.Gestion.Biz.Managers
                 };
 
                 if (reajustePrecio.EsIncremento && reajustePrecio.EsPorcentual)
-                    nuevoPrecio.Precio = actual.Precio * ((reajustePrecio.Valor / 100) + 1);
+                    nuevoPrecio.Precio = Math.Round(actual.Precio * ((reajustePrecio.Valor / 100) + 1), 0, MidpointRounding.AwayFromZero);
                 else if (reajustePrecio.EsIncremento && !reajustePrecio.EsPorcentual)
-                    nuevoPrecio.Precio = actual.Precio + reajustePrecio.Valor;
+                    nuevoPrecio.Precio = Math.Round(actual.Precio + reajustePrecio.Valor, 0, MidpointRounding.AwayFromZero);
                 else if (!reajustePrecio.EsIncremento && reajustePrecio.EsPorcentual)
-                    nuevoPrecio.Precio = actual.Precio / ((reajustePrecio.Valor / 100) + 1);
+                    nuevoPrecio.Precio = Math.Round(actual.Precio / ((reajustePrecio.Valor / 100) + 1), 0, MidpointRounding.AwayFromZero);
                 else if (!reajustePrecio.EsIncremento && !reajustePrecio.EsPorcentual)
-                    nuevoPrecio.Precio = actual.Precio - reajustePrecio.Valor;
+                    nuevoPrecio.Precio = Math.Round(actual.Precio - reajustePrecio.Valor, 0, MidpointRounding.AwayFromZero);
 
                 _db.ProductosPrecios.Add(nuevoPrecio);
             }
