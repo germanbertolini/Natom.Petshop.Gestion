@@ -19,6 +19,7 @@ namespace Natom.Petshop.Gestion.Entities.Model.Results
 		public string ClienteDocumento { get; set; }
 		public string ClienteDomicilio { get; set; }
 		public string ClienteLocalidad { get; set; }
+		public decimal ClienteSaldo { get; set; }
 		public string Remitos { get; set; }
 		public string FacturadoPor { get; set; }
 		public string Observaciones { get; set; }

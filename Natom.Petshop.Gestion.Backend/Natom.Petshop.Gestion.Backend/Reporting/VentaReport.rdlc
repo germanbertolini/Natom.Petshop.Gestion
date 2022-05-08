@@ -1449,7 +1449,7 @@
           </Paragraph>
         </Paragraphs>
         <rd:DefaultName>Observaciones</rd:DefaultName>
-        <Top>7.76676cm</Top>
+        <Top>8.71926cm</Top>
         <Left>0.43602cm</Left>
         <Height>1.02528cm</Height>
         <Width>19.01cm</Width>
@@ -1500,7 +1500,7 @@
         </Style>
       </Textbox>
       <Line Name="Line4">
-        <Top>7.44926cm</Top>
+        <Top>8.40176cm</Top>
         <Left>0.43601cm</Left>
         <Height>0cm</Height>
         <Width>19.01001cm</Width>
@@ -1592,8 +1592,78 @@
           </Border>
         </Style>
       </Line>
+      <Textbox Name="ClienteSaldo">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>=Sum(Fields!ClienteSaldo.Value, "DataSet1")</Value>
+                <Style>
+                  <FontSize>12pt</FontSize>
+                  <FontWeight>Bold</FontWeight>
+                  <Format>'$'#,0.00</Format>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>ClienteSaldo</rd:DefaultName>
+        <Top>7.3527cm</Top>
+        <Left>12.56685cm</Left>
+        <Height>0.62117cm</Height>
+        <Width>3.06916cm</Width>
+        <ZIndex>19</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+          <rd:FormatSymbolCulture>es-AR</rd:FormatSymbolCulture>
+        </Style>
+      </Textbox>
+      <Textbox Name="ClienteSaldo2">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>SALDO:</Value>
+                <Style>
+                  <FontSize>11pt</FontSize>
+                  <FontWeight>Bold</FontWeight>
+                  <Format>'$'#,0.00</Format>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>ClienteSaldo</rd:DefaultName>
+        <Top>7.3527cm</Top>
+        <Left>10.60063cm</Left>
+        <Height>0.62117cm</Height>
+        <Width>1.86039cm</Width>
+        <ZIndex>20</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+          <rd:FormatSymbolCulture>es-AR</rd:FormatSymbolCulture>
+        </Style>
+      </Textbox>
     </ReportItems>
-    <Height>8.9402cm</Height>
+    <Height>9.74454cm</Height>
     <Style />
   </Body>
   <Width>20cm</Width>
@@ -1768,6 +1838,10 @@
         <Field Name="Comprobante">
           <DataField>Comprobante</DataField>
           <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="ClienteSaldo">
+          <DataField>ClienteSaldo</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
         </Field>
       </Fields>
       <rd:DataSetInfo>
